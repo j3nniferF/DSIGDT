@@ -80,3 +80,21 @@ body {
   opacity: 1;
   border-bottom: 3px solid #e11;
 }
+
+/* ===== CARDS (STRUCTURE ONLY) =====
+   Purpose: create visual separation between functional areas
+   without committing to final textures or polish yet.
+*/
+
+.card {
+  background: #111;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+
+.card-title {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  letter-spacing: 0.4px;
+  opacity: 0.85;
+}
