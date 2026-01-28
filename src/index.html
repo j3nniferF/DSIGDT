@@ -4,41 +4,52 @@
     <!--
       HP (Home Page) - HTML Skeleton
       Purpose: Create a clean, explainable structure that matches the locked HP mockup.
-      We are NOT styling or adding behavior yet. This is just the "bones".
+      This file is the "bones" (structure). CSS handles visuals. JS handles behavior later.
+
+      IMPORTANT RULES:
+      - Put visible page content ONLY in <body>.
+      - <head> is only metadata (title, CSS link, etc.).
+      - If you change the on-page title text, also update the <title> tag below so browser tab text matches.
     -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dumb Shit I Gotta Do Today</title>
 
-    <!-- Styles (later we’ll build out styles.css to match HP v1) -->
+    <!-- CSS file path:
+         This index.html lives in /src
+         styles.css lives in /src/css
+         So the correct path is ./css/styles.css
+    -->
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
 
   <body>
     <!--
-      PAGE WRAPPER
-      Why: gives us one container to control layout width, spacing, and responsive rules later.
+      PAGE WRAPPER (.app)
+      Why: one container to control max-width + padding now,
+      and responsive layout rules later (desktop grid vs mobile stacking).
     -->
     <div class="app" id="app">
       <!-- =========================
            HEADER / TITLE ZONE
-           Matches HP v1: cut-out collage title + reduced background texture.
+           Matches HP v1: two-line title.
+           If you change these words, also change the <title> in <head>.
            ========================= -->
       <header class="header" id="header">
         <h1 class="title" id="title">
-          <!-- Title lines are separate spans so we can style/stack them exactly like the mockup -->
           <span class="title-line" id="titleLine1">DUMB SHIT</span>
           <span class="title-line" id="titleLine2">I GOTTA DO TODAY</span>
         </h1>
 
-        <!-- Optional: top texture area (we’ll handle this with CSS later) -->
+        <!-- Future: top texture fade area (CSS later). Keeps layout hooks stable. -->
         <div class="header-texture" aria-hidden="true"></div>
       </header>
 
       <!-- =========================
            TABS BAR
-           Rules: Only one active tab at a time. Active = red underline + brighter label.
-           Tabs locked to HP v1 labels.
+           Locked labels (HP v1):
+           1) DUE TODAY  2) SOON  3) AS SOON AS I CAN  4) DON'T FORGET
+           Behavior later: one active tab at a time (red underline).
            ========================= -->
       <nav class="tabs" id="tabs" aria-label="Task lists">
         <button class="tab tab--active" type="button" data-tab="dueToday" aria-current="page">
@@ -50,18 +61,15 @@
       </nav>
 
       <!-- =========================
-           MAIN CONTENT GRID
-           Why: we can place task list + timer + progress side-by-side on desktop,
-           then stack on mobile using media queries.
+           MAIN CONTENT (MVP)
+           Later we’ll grid this. For now it stacks naturally.
            ========================= -->
       <main class="main" id="main">
         <!-- -------- TASK LIST CARD -------- -->
         <section class="card card--tasks" id="tasksCard" aria-labelledby="tasksHeading">
           <h2 class="card-title" id="tasksHeading">DUE TODAY:</h2>
 
-          <!-- Task list container (JS will render tasks here) -->
           <ul class="task-list" id="taskList">
-            <!-- Placeholder items for now (we remove later once JS renders real tasks) -->
             <li class="task">
               <label class="task-row">
                 <input class="task-checkbox" type="checkbox" />
@@ -70,7 +78,6 @@
             </li>
           </ul>
 
-          <!-- Add task area (validation later: prevent empty tasks from being saved) -->
           <form class="task-add" id="taskAddForm" autocomplete="off">
             <label class="sr-only" for="taskInput">Add a task</label>
             <input
@@ -89,16 +96,13 @@
         <section class="card card--timer" id="timerCard" aria-labelledby="timerHeading">
           <h2 class="card-title" id="timerHeading">FOCUS TIMER</h2>
 
-          <!-- Focus On dropdown (JS will keep it synced with selected task) -->
           <div class="field">
             <label class="field-label" for="focusSelect">FOCUS ON:</label>
             <select class="field-select" id="focusSelect" name="focusSelect">
               <option value="">(Pick a task)</option>
-              <!-- JS will populate options from current tab's tasks -->
             </select>
           </div>
 
-          <!-- Duration dropdown (locked presets; custom option exists in mockup, behavior later) -->
           <div class="field">
             <label class="field-label" for="durationSelect">DURATION:</label>
             <select class="field-select" id="durationSelect" name="durationSelect">
@@ -110,20 +114,16 @@
             </select>
           </div>
 
-          <!-- Mockup shows "+ set a custom timer" (we keep it as a button for later) -->
           <button class="linkish" id="customTimerBtn" type="button">+ SET A CUSTOM TIMER</button>
 
-          <!-- Display (JS will update the countdown) -->
           <div class="timer-display" id="timerDisplay" aria-live="polite">15:00</div>
 
-          <!-- Controls -->
           <div class="timer-controls">
             <button class="btn" id="startBtn" type="button">START</button>
             <button class="btn" id="pauseBtn" type="button">PAUSE</button>
             <button class="btn" id="stopBtn" type="button">STOP</button>
           </div>
 
-          <!-- Guidance text (we can toggle copy later for PG/Goblin; MVP = one tone) -->
           <p class="helper-text" id="timerHelperText">
             Pick a task → set a timer → check it off → get a prize.
           </p>
@@ -132,11 +132,7 @@
         <!-- -------- PROGRESS CARD -------- -->
         <section class="card card--progress" id="progressCard" aria-labelledby="progressHeading">
           <h2 class="card-title" id="progressHeading">PROGRESS</h2>
-
-          <!-- Text progress (JS updates counts) -->
           <p class="progress-text" id="progressText">0 / 0 TASKS DONE</p>
-
-          <!-- Circle placeholder (we’ll do CSS or SVG later) -->
           <div class="progress-ring" id="progressRing" aria-hidden="true"></div>
         </section>
 
@@ -144,37 +140,42 @@
         <section class="card card--completed" id="completedCard" aria-labelledby="completedHeading">
           <h2 class="card-title" id="completedHeading">SHIT I DID</h2>
 
-          <!-- Grouping by tab (HP v1 shows grouping like "DUE TODAY") -->
           <div class="completed-group" id="completedGroupDueToday">
             <h3 class="completed-subheading">DUE TODAY</h3>
-            <ul class="completed-list" id="completedListDueToday">
-              <!-- JS will move checked tasks here -->
-            </ul>
+            <ul class="completed-list" id="completedListDueToday"></ul>
           </div>
         </section>
       </main>
 
       <!-- =========================
-           MUSIC PLAYER (HP v1: stays, no changes)
-           We keep it as a section; styling later.
+           MUSIC PLAYER (HP v1: stays)
+           Styling later. Behavior later (optional).
            ========================= -->
       <footer class="music" id="musicPlayer" aria-label="Music player">
         <div class="music-title">NOW PLAYING:</div>
         <div class="music-track" id="musicTrack">GRUNGY TUNES</div>
+
         <div class="music-controls">
           <button class="btn btn--small" type="button" aria-label="Previous track">◀</button>
           <button class="btn btn--small" type="button" aria-label="Play/Pause">▶</button>
           <button class="btn btn--small" type="button" aria-label="Next track">▶▶</button>
         </div>
+
         <div class="music-progress" aria-hidden="true"></div>
       </footer>
     </div>
 
     <!-- =========================
-         PRIZE MODAL (HP v1: stays, no changes)
-         Starts hidden. JS will show it ONLY when current tab is fully complete.
+         PRIZE MODAL (HP v1: stays)
+         Starts hidden. JS later will show it ONLY when the current tab is complete.
          ========================= -->
-    <div class="modal-overlay is-hidden" id="prizeOverlay" role="dialog" aria-modal="true" aria-labelledby="prizeTitle">
+    <div
+      class="modal-overlay is-hidden"
+      id="prizeOverlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="prizeTitle"
+    >
       <div class="modal" id="prizeModal">
         <h2 class="modal-title" id="prizeTitle">GOOD JOB.</h2>
         <p class="modal-subtitle" id="prizeSubtitle">YOU GET A PRIZE.</p>
@@ -189,7 +190,12 @@
       </div>
     </div>
 
-    <!-- Scripts (later we’ll implement behavior in app.js) -->
+    <!-- JS file path:
+         This index.html lives in /src
+         app.js will live in /src/js
+         So the correct path is ./js/app.js
+         NOTE: It’s okay if app.js is empty for now.
+    -->
     <script src="./js/app.js" defer></script>
   </body>
 </html>
