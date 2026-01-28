@@ -109,3 +109,40 @@ body {
   grid-template-columns: 1fr;
   gap: 20px;
 }
+
+/* ===== TIMER CARD (INTERNAL LAYOUT) =====
+   Purpose: organize fields and controls for clarity
+   NOTE: Do not rename classes without updating JS selectors later.
+*/
+
+.card--timer .field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.field-label {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.field-select {
+  background: #0b0b0b;
+  color: inherit;
+  border: 1px solid #222;
+  padding: 6px 8px;
+}
+
+.timer-display {
+  margin: 12px 0;
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
