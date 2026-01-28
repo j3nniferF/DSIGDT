@@ -98,3 +98,14 @@ body {
   letter-spacing: 0.4px;
   opacity: 0.85;
 }
+
+/* ===== MAIN LAYOUT (DESKTOP-FIRST SCAFFOLD) =====
+   Purpose: prepare a two-column layout without breaking mobile.
+   We will add media queries later.
+*/
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
