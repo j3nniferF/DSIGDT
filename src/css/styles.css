@@ -23,3 +23,60 @@ body {
   margin: 0 auto;
   padding: 24px;
 }
+
+/* ===== HEADER + TITLE =====
+   Purpose: establish visual hierarchy and rhythm at the top of the page
+*/
+
+.header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.title-line {
+  display: block;
+}
+
+.title-line:first-child {
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+}
+
+.title-line:last-child {
+  font-size: 1.4rem;
+  opacity: 0.85;
+}
+
+/* ===== TABS (NEXT) =====
+   Purpose: style task category tabs and active state.
+   NOTE: Do not change markup without updating JS selectors later.
+*/
+
+.tabs {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin: 12px 0 28px;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  padding: 10px 6px;
+  color: inherit;
+  font: inherit;
+  letter-spacing: 0.3px;
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+.tab--active {
+  opacity: 1;
+  border-bottom: 3px solid #e11;
+}
