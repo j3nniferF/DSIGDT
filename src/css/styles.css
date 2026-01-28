@@ -146,3 +146,32 @@ body {
   justify-content: center;
   margin-bottom: 8px;
 }
+
+/* ===== DESKTOP LAYOUT (2 COLUMNS) =====
+   Purpose: split content into left/right columns on larger screens.
+*/
+
+@media (min-width: 900px) {
+  .main {
+    grid-template-columns: 1.4fr 1fr;
+    align-items: start;
+  }
+
+  /* Left column */
+  .card--tasks {
+    grid-column: 1;
+  }
+
+  .card--completed {
+    grid-column: 1;
+  }
+
+  /* Right column */
+  .card--timer {
+    grid-column: 2;
+  }
+
+  .card--progress {
+    grid-column: 2;
+  }
+}
