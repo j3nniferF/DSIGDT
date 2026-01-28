@@ -1,0 +1,25 @@
+/* ===== CSS FOUNDATION =====
+   Purpose: establish baseline layout, background, and typography
+   before styling individual components.
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #0b0b0b;
+  color: #eaeaea;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.app {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px;
+}
