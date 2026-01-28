@@ -4,52 +4,33 @@
     <!--
       HP (Home Page) - HTML Skeleton
       Purpose: Create a clean, explainable structure that matches the locked HP mockup.
-      This file is the "bones" (structure). CSS handles visuals. JS handles behavior later.
-
-      IMPORTANT RULES:
-      - Put visible page content ONLY in <body>.
-      - <head> is only metadata (title, CSS link, etc.).
-      - If you change the on-page title text, also update the <title> tag below so browser tab text matches.
+      Structure only. CSS handles visuals. JS handles behavior.
     -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dumb Shit I Gotta Do Today</title>
 
-    <!-- CSS file path:
-         This index.html lives in /src
-         styles.css lives in /src/css
-         So the correct path is ./css/styles.css
-    -->
+    <!-- CSS lives in /src/css -->
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
 
   <body>
-    <!--
-      PAGE WRAPPER (.app)
-      Why: one container to control max-width + padding now,
-      and responsive layout rules later (desktop grid vs mobile stacking).
-    -->
+    <!-- PAGE WRAPPER -->
     <div class="app" id="app">
+
       <!-- =========================
-           HEADER / TITLE ZONE
-           Matches HP v1: two-line title.
-           If you change these words, also change the <title> in <head>.
+           HEADER / TITLE
            ========================= -->
       <header class="header" id="header">
         <h1 class="title" id="title">
           <span class="title-line" id="titleLine1">DUMB SHIT</span>
           <span class="title-line" id="titleLine2">I GOTTA DO TODAY</span>
         </h1>
-
-        <!-- Future: top texture fade area (CSS later). Keeps layout hooks stable. -->
         <div class="header-texture" aria-hidden="true"></div>
       </header>
 
       <!-- =========================
-           TABS BAR
-           Locked labels (HP v1):
-           1) DUE TODAY  2) SOON  3) AS SOON AS I CAN  4) DON'T FORGET
-           Behavior later: one active tab at a time (red underline).
+           TABS
            ========================= -->
       <nav class="tabs" id="tabs" aria-label="Task lists">
         <button class="tab tab--active" type="button" data-tab="dueToday" aria-current="page">
@@ -61,22 +42,16 @@
       </nav>
 
       <!-- =========================
-           MAIN CONTENT (MVP)
-           Later we’ll grid this. For now it stacks naturally.
+           MAIN CONTENT
            ========================= -->
       <main class="main" id="main">
-        <!-- -------- TASK LIST CARD -------- -->
+
+        <!-- TASK LIST -->
         <section class="card card--tasks" id="tasksCard" aria-labelledby="tasksHeading">
           <h2 class="card-title" id="tasksHeading">DUE TODAY:</h2>
 
-          <ul class="task-list" id="taskList">
-            <li class="task">
-              <label class="task-row">
-                <input class="task-checkbox" type="checkbox" />
-                <span class="task-text">Example task (placeholder)</span>
-              </label>
-            </li>
-          </ul>
+          <!-- JS renders tasks here -->
+          <ul class="task-list" id="taskList"></ul>
 
           <form class="task-add" id="taskAddForm" autocomplete="off">
             <label class="sr-only" for="taskInput">Add a task</label>
@@ -92,7 +67,7 @@
           </form>
         </section>
 
-        <!-- -------- TIMER CARD -------- -->
+        <!-- TIMER -->
         <section class="card card--timer" id="timerCard" aria-labelledby="timerHeading">
           <h2 class="card-title" id="timerHeading">FOCUS TIMER</h2>
 
@@ -129,46 +104,41 @@
           </p>
         </section>
 
-        <!-- -------- PROGRESS CARD -------- -->
+        <!-- PROGRESS -->
         <section class="card card--progress" id="progressCard" aria-labelledby="progressHeading">
           <h2 class="card-title" id="progressHeading">PROGRESS</h2>
           <p class="progress-text" id="progressText">0 / 0 TASKS DONE</p>
           <div class="progress-ring" id="progressRing" aria-hidden="true"></div>
         </section>
 
-        <!-- -------- SHIT I DID (COMPLETED) -------- -->
+        <!-- COMPLETED -->
         <section class="card card--completed" id="completedCard" aria-labelledby="completedHeading">
           <h2 class="card-title" id="completedHeading">SHIT I DID</h2>
 
-          <div class="completed-group" id="completedGroupDueToday">
+          <div class="completed-group">
             <h3 class="completed-subheading">DUE TODAY</h3>
-            <ul class="completed-list" id="completedListDueToday"></ul>
+            <!-- JS renders completed tasks here -->
+            <ul class="completed-list" id="completedList"></ul>
           </div>
         </section>
+
       </main>
 
-      <!-- =========================
-           MUSIC PLAYER (HP v1: stays)
-           Styling later. Behavior later (optional).
-           ========================= -->
+      <!-- MUSIC PLAYER -->
       <footer class="music" id="musicPlayer" aria-label="Music player">
         <div class="music-title">NOW PLAYING:</div>
         <div class="music-track" id="musicTrack">GRUNGY TUNES</div>
-
         <div class="music-controls">
           <button class="btn btn--small" type="button" aria-label="Previous track">◀</button>
           <button class="btn btn--small" type="button" aria-label="Play/Pause">▶</button>
           <button class="btn btn--small" type="button" aria-label="Next track">▶▶</button>
         </div>
-
         <div class="music-progress" aria-hidden="true"></div>
       </footer>
+
     </div>
 
-    <!-- =========================
-         PRIZE MODAL (HP v1: stays)
-         Starts hidden. JS later will show it ONLY when the current tab is complete.
-         ========================= -->
+    <!-- PRIZE MODAL -->
     <div
       class="modal-overlay is-hidden"
       id="prizeOverlay"
@@ -177,7 +147,7 @@
       aria-labelledby="prizeTitle"
     >
       <div class="modal" id="prizeModal">
-        <h2 class="modal-title" id="prizeTitle">GOOD JOB.</h2>
+        <h2 class="modal-title" id="prizeTitle">GOOD JOB DUMMY!</h2>
         <p class="modal-subtitle" id="prizeSubtitle">YOU GET A PRIZE.</p>
 
         <ul class="prize-list" id="prizeList">
@@ -190,12 +160,7 @@
       </div>
     </div>
 
-    <!-- JS file path:
-         This index.html lives in /src
-         app.js will live in /src/js
-         So the correct path is ./js/app.js
-         NOTE: It’s okay if app.js is empty for now.
-    -->
+    <!-- JS lives in /src/js -->
     <script src="./js/app.js" defer></script>
   </body>
 </html>

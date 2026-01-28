@@ -175,3 +175,20 @@ body {
     grid-column: 2;
   }
 }
+
+/* ===== PAPER STYLE (CONTROLLED) =====
+   Purpose: apply the paper look used in the HP mockup
+   ONLY to specific cards.
+*/
+
+.card--timer,
+.card--completed {
+  background: #f3f1e9;
+  color: #151515;
+  border: 1px solid #d6d0c3;
+}
+
+.card--timer .card-title,
+.card--completed .card-title {
+  opacity: 1;
+}
