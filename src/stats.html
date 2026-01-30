@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!--
+    STATS PAGE - HEAD
+    Purpose:
+    - Same baseline setup as index.html so styling + icons are consistent.
+    - Include favicon so Chrome doesn’t throw the favicon.ico 404.
+  -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Stats — Dumb Shit I Gotta Do Today</title>
+
+  <!-- Favicon (kills the 404 favicon.ico console error)
+       Put favicon.ico in /src so ./favicon.ico works on BOTH pages.
+  -->
+  <link rel="icon" href="./favicon.ico" />
+  <!-- <link rel="icon" type="image/png" href="./favicon.png" /> -->
+
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+
+  <body>
+    <div class="app" id="app">
+      <header class="header" id="header">
+        <h1 class="title" id="title">
+          <span class="title-line">STATS</span>
+          <span class="title-line">THE RECEIPTS PAGE</span>
+        </h1>
+      </header>
+
+      <nav class="tabs" aria-label="Pages">
+        <a class="tab" href="./index.html">DASHBOARD</a>
+        <a class="tab tab--active" aria-current="page" href="./stats.html">STATS</a>
+      </nav>
+
+      <main class="main" id="main">
+        <section class="card" aria-labelledby="statsHeading">
+          <h2 class="card-title" id="statsHeading">COMING SOON</h2>
+          <p>This page will visualize saved task data using Chart.js.</p>
+        </section>
+      </main>
+    </div>
+
+    <script src="./js/stats.js" defer></script>
+  </body>
+</html>
