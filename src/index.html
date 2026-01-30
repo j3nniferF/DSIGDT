@@ -65,63 +65,65 @@
         </section>
 
         <!-- TIMER -->
-        <section class="card card--timer" id="timerCard" aria-labelledby="timerHeading">
-          <h2 class="card-title" id="timerHeading">FOCUS TIMER</h2>
-          <p class="helper-text helper-text--rules" id="timerHelperText">
-            Choose violence (pick a tab / pick a task) → set timer → murder it ✅ → claim prize.
-          </p>
+<section class="card card--timer" id="timerCard" aria-labelledby="timerHeading">
+  <h2 class="card-title" id="timerHeading">TIMER</h2>
 
-          <!-- NEW: choose which tab tab to show in the focus dropdown -->
-          <div class="field">
-            <label class="field-label" for="focusTabSelect">PICK A TAB:</label>
-            <select class="field-select" id="focusTabSelect" name="focusTabSelect">
-              <option value="all">ALL TABS</option>
-              <option value="dueToday">DUE TODAY</option>
-              <option value="soon">NEXT UP</option>
-              <option value="asSoonAsICan">WHEN I CAN</option>
-              <option value="dontForget">DON’T FORGET</option>
-            </select>
-          </div>
+  <p class="helper-text helper-text--rules" id="timerHelperText"><br />
+  → Choose violence:<br />
+      (pick a tab / pick a task)<br />
+  → Set timer<br />
+  → Murder tasks<br />
+  → ✅<br />
+  → Prize!
+  </p>
 
-          <div class="field">
-            <label class="field-label" for="focusSelect">PICK A TASK:</label>
-            <select class="field-select" id="focusSelect" name="focusSelect">
-              <option value="">(Pick a task)</option>
-            </select>
-          </div>
+  <div class="field">
+    <label class="field-label" for="focusTabSelect">PICK A TAB:</label>
+    <select class="field-select" id="focusTabSelect" name="focusTabSelect">
+      <option value="all">ALL TABS</option>
+      <option value="dueToday">DUE TODAY</option>
+      <option value="soon">NEXT UP</option>
+      <option value="asSoonAsICan">WHEN I CAN</option>
+      <option value="dontForget">DON’T FORGET</option>
+    </select>
+  </div>
 
-          <p class="current-task" id="currentTaskText">
-            CURRENT: <span class="current-task__name">(none)</span>
-          </p>
-          <p class="helper-text helper-text--tiny">
-            To finish it for real: check the box on the left. ✅
-          </p>
-          
-          <div class="field">
-            <label class="field-label" for="durationSelect">DURATION:</label>
-            <select class="field-select" id="durationSelect" name="durationSelect">
-              <option value="300">5 min</option>
-              <option value="900" selected>15 min</option>
-              <option value="1800">30 min</option>
-              <option value="2700">45 min</option>
-              <option value="3600">60 min</option>
-            </select>
-          </div>
+  <div class="field">
+    <label class="field-label" for="focusSelect">PICK A TASK:</label>
+    <select class="field-select" id="focusSelect" name="focusSelect">
+      <option value="">(Pick a task)</option>
+    </select>
+  </div>
 
-          <button class="linkish" id="customTimerBtn" type="button">+ SET A CUSTOM TIMER</button>
-          <button class="linkish" id="resetBtn" type="button">🧨 RESET EVERYTHING</button>
-          <div class="timer-display" id="timerDisplay" aria-live="polite">15:00</div>
+  <p class="current-task" id="currentTaskText">
+    CURRENT: <span class="current-task__name">(none)</span>
+  </p>
+  <p class="helper-text helper-text--tiny">
+    To finish it for real: check the box on the left. ✅
+  </p>
 
-          <div class="timer-controls">
-            <button class="btn" id="startBtn" type="button">START</button>
-            <button class="btn" id="pauseBtn" type="button">PAUSE</button>
-            <button class="btn" id="stopBtn" type="button">STOP</button>
-          </div>
+  <div class="field">
+    <label class="field-label" for="durationSelect">DURATION:</label>
+    <select class="field-select" id="durationSelect" name="durationSelect">
+      <option value="300">5 min</option>
+      <option value="900" selected>15 min</option>
+      <option value="1800">30 min</option>
+      <option value="2700">45 min</option>
+      <option value="3600">60 min</option>
+    </select>
+  </div>
 
-          <p class="helper-text" id="timerHelperText">
-            Pick a task → set a timer → check it off → get a prize! 
-          </p>
-        </section>
+  <button class="linkish" id="customTimerBtn" type="button">+ SET A CUSTOM TIMER</button>
+  <button class="linkish" id="resetBtn" type="button">🧨 RESET EVERYTHING</button>
+
+  <div class="timer-display" id="timerDisplay" aria-live="polite">15:00</div>
+
+  <div class="timer-controls">
+    <button class="btn" id="startBtn" type="button">START</button>
+    <button class="btn" id="pauseBtn" type="button">PAUSE</button>
+    <button class="btn" id="stopBtn" type="button">STOP</button>
+  </div>
+</section>
 
         <!-- PROGRESS -->
         <section class="card card--progress" id="progressCard" aria-labelledby="progressHeading">
