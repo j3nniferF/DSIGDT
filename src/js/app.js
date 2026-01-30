@@ -1,125 +1,66 @@
 /* =====================================================
-   HP Tabs + Tasks (MVP v3.1 - LOCALSTORAGE + GROUPED COMPLETED + FOCUS SELECT)
-   Fixes:
-   - ONE storage key (no duplicates)
-   - Add task goes to ACTIVE TAB (not always dueToday)
-   - Completed list grouped by tab
-   - Timer dropdown grouped by tab (labels not selectable)
-   - Clicking a task sets it as the “focus” task
-   - Adding a task auto-selects it in the focus dropdown
-
-   Assumes HTML has:
-   - .tab elements with data-tab="dueToday|soon|asSoonAsICan|dontForget"
-   - #taskList (UL)
-   - #completedList (UL)
-   - #tasksHeading (H3 or similar)
-   - #taskInput (input)
-   - #addTaskBtn (button)
-   - #focusSelect (select)
+   HP Tabs + Tasks (MVP v3.2 - LOCALSTORAGE + GROUPED COMPLETED + FOCUS PICKER)
+   - Tabs: per-tab tasks
+   - Checkbox: marks complete (stored per tab)
+   - Completed card: grouped by tab
+   - Focus picker: choose "ALL" or one tab, then choose task
+   - Click a task row: selects it in the focus dropdown
 ===================================================== */
 
-/* -------------------------------
-   DOM HOOKS (change IDs here if yours differ)
--------------------------------- */
-const elTaskList = document.getElementById("taskList");
-const elCompletedList = document.getElementById("completedList");
-const elTasksHeading = document.getElementById("tasksHeading");
+const STORAGE_KEY = "dsigdt_state_v1";
 
-const elTaskInput = document.getElementById("taskInput");
-const elAddTaskBtn = document.getElementById("addTaskBtn");
+const TAB_ORDER = ["dueToday", "soon", "asSoonAsICan", "dontForget"];
 
-const elFocusSelect = document.getElementById("focusSelect");
-
-/* -------------------------------
-   STORAGE
--------------------------------- */
-const STORAGE_KEY = "dsigt_state_v1";
-
-/* -------------------------------
-   TAB LABELS
--------------------------------- */
 const TAB_LABELS = {
   dueToday: "DUE TODAY",
   soon: "SOON",
   asSoonAsICan: "AS SOON AS I CAN",
-  dontForget: "DON’T FORGET"
+  dontForget: "DON’T FORGET",
 };
 
-const TAB_KEYS_IN_ORDER = ["dueToday", "soon", "asSoonAsICan", "dontForget"];
-
-/* -------------------------------
-   STATE (defaults)
--------------------------------- */
 let TASKS_BY_TAB = {
   dueToday: ["Email landlord", "Finish capstone work", "Take meds"],
   soon: ["Clean kitchen", "Grocery run"],
   asSoonAsICan: ["Organize closet", "Call dentist"],
-  dontForget: ["Buy cat food", "Pay credit card"]
+  dontForget: ["Buy cat food", "Pay credit card"],
 };
 
 let COMPLETED_TASKS = {
   dueToday: [],
   soon: [],
   asSoonAsICan: [],
-  dontForget: []
+  dontForget: [],
 };
 
 let activeTabKey = "dueToday";
 
-/* Which task is currently “focused” in the timer dropdown */
-let focusedTask = {
-  tabKey: null,
-  taskText: null
-};
+/* Focus UI state */
+let focusScope = "all"; // "all" or a tabKey
+let selectedFocusValue = ""; // `${tabKey}::${taskText}`
 
 /* -------------------------------
-   HELPERS
+   Persistence
 -------------------------------- */
-function normalizeTabKey(raw) {
-  // Supports common variants in HTML just in case
-  const map = {
-    dueToday: "dueToday",
-    "due-today": "dueToday",
-    due_today: "dueToday",
-
-    soon: "soon",
-
-    asSoonAsICan: "asSoonAsICan",
-    "as-soon-as-i-can": "asSoonAsICan",
-    as_soon_as_i_can: "asSoonAsICan",
-
-    dontForget: "dontForget",
-    "dont-forget": "dontForget",
-    "don't-forget": "dontForget",
-    dont_forget: "dontForget"
-  };
-
-  return map[raw] || raw;
-}
-
-function getLabel(tabKey) {
-  return TAB_LABELS[tabKey] || tabKey;
-}
-
-function safeEnsureTabBuckets() {
-  // Prevent crashes if storage is missing keys
-  TAB_KEYS_IN_ORDER.forEach((k) => {
-    if (!TASKS_BY_TAB[k]) TASKS_BY_TAB[k] = [];
-    if (!COMPLETED_TASKS[k]) COMPLETED_TASKS[k] = [];
+function normalizeState() {
+  // Ensure all tab keys exist and are arrays
+  TAB_ORDER.forEach((k) => {
+    if (!Array.isArray(TASKS_BY_TAB[k])) TASKS_BY_TAB[k] = [];
+    if (!Array.isArray(COMPLETED_TASKS[k])) COMPLETED_TASKS[k] = [];
   });
+
+  if (!TAB_ORDER.includes(activeTabKey)) activeTabKey = "dueToday";
+  if (focusScope !== "all" && !TAB_ORDER.includes(focusScope)) focusScope = "all";
+  if (typeof selectedFocusValue !== "string") selectedFocusValue = "";
 }
 
-/* -------------------------------
-   SAVE / LOAD
--------------------------------- */
 function saveState() {
   const state = {
     tasksByTab: TASKS_BY_TAB,
     completedByTab: COMPLETED_TASKS,
-    activeTabKey: activeTabKey,
-    focusedTask: focusedTask
+    activeTabKey,
+    focusScope,
+    selectedFocusValue,
   };
-
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
@@ -133,281 +74,360 @@ function loadState() {
     if (parsed.tasksByTab && typeof parsed.tasksByTab === "object") {
       TASKS_BY_TAB = parsed.tasksByTab;
     }
+
     if (parsed.completedByTab && typeof parsed.completedByTab === "object") {
       COMPLETED_TASKS = parsed.completedByTab;
     }
+
     if (typeof parsed.activeTabKey === "string") {
       activeTabKey = parsed.activeTabKey;
     }
-    if (
-      parsed.focusedTask &&
-      typeof parsed.focusedTask === "object" &&
-      typeof parsed.focusedTask.tabKey === "string" &&
-      typeof parsed.focusedTask.taskText === "string"
-    ) {
-      focusedTask = parsed.focusedTask;
+
+    if (typeof parsed.focusScope === "string") {
+      focusScope = parsed.focusScope;
     }
 
-    safeEnsureTabBuckets();
+    if (typeof parsed.selectedFocusValue === "string") {
+      selectedFocusValue = parsed.selectedFocusValue;
+    }
+
+    normalizeState();
   } catch (err) {
     console.warn("Saved state corrupted; using defaults.", err);
+    normalizeState();
   }
 }
 
 /* -------------------------------
-   HEADINGS
+   Helpers
 -------------------------------- */
-function syncHeadings(tabKey) {
-  if (!elTasksHeading) return;
-  elTasksHeading.textContent = `${getLabel(tabKey)}:`;
+function makeTaskValue(tabKey, taskText) {
+  return `${tabKey}::${taskText}`;
+}
+
+function parseTaskValue(value) {
+  const [tabKey, ...rest] = value.split("::");
+  return { tabKey, taskText: rest.join("::") };
+}
+
+function getIncompleteTasks(tabKey) {
+  const all = TASKS_BY_TAB[tabKey] || [];
+  const done = COMPLETED_TASKS[tabKey] || [];
+  return all.filter((t) => !done.includes(t));
 }
 
 /* -------------------------------
-   TAB UI
+   UI sync
 -------------------------------- */
+function syncHeadings(tabKey) {
+  const tasksHeading = document.getElementById("tasksHeading");
+  const label = TAB_LABELS[tabKey] || tabKey;
+  if (tasksHeading) tasksHeading.textContent = `${label}:`;
+}
+
 function syncActiveTabUI(tabsNodeList, tabKey) {
   tabsNodeList.forEach((t) => {
-    const key = normalizeTabKey(t.dataset.tab);
-    const isActive = key === tabKey;
-
+    const isActive = t.dataset.tab === tabKey;
     t.classList.toggle("tab--active", isActive);
-
     if (isActive) t.setAttribute("aria-current", "page");
     else t.removeAttribute("aria-current");
   });
 }
 
-/* -------------------------------
-   FOCUS DROPDOWN (timer select)
-   - grouped by tab using <optgroup> (labels NOT selectable)
--------------------------------- */
-function renderFocusSelect() {
-  if (!elFocusSelect) return;
+function updateProgress() {
+  const progressText = document.getElementById("progressText");
+  if (!progressText) return;
 
-  elFocusSelect.innerHTML = "";
+  let total = 0;
+  let done = 0;
 
-  // Placeholder option
-  const placeholder = document.createElement("option");
-  placeholder.value = "";
-  placeholder.textContent = "Pick a task";
-  elFocusSelect.appendChild(placeholder);
-
-  TAB_KEYS_IN_ORDER.forEach((tabKey) => {
-    const tasks = TASKS_BY_TAB[tabKey] || [];
-
-    // Optionally: do NOT include completed tasks in focus menu
-    const available = tasks.filter((t) => !(COMPLETED_TASKS[tabKey] || []).includes(t));
-
-    const group = document.createElement("optgroup");
-    group.label = getLabel(tabKey);
-
-    available.forEach((taskText) => {
-      const opt = document.createElement("option");
-      // value encodes tab + task so duplicates across tabs are fine
-      opt.value = `${tabKey}||${taskText}`;
-      opt.textContent = taskText;
-      group.appendChild(opt);
-    });
-
-    elFocusSelect.appendChild(group);
+  TAB_ORDER.forEach((tabKey) => {
+    const all = TASKS_BY_TAB[tabKey] || [];
+    const completed = COMPLETED_TASKS[tabKey] || [];
+    total += all.length;
+    done += completed.length;
   });
 
-  // Restore selection if focusedTask exists
-  if (focusedTask.tabKey && focusedTask.taskText) {
-    const targetVal = `${focusedTask.tabKey}||${focusedTask.taskText}`;
-    elFocusSelect.value = targetVal;
-  }
-}
-
-function setFocusedTask(tabKey, taskText) {
-  focusedTask = { tabKey, taskText };
-  saveState();
-  renderFocusSelect();
+  progressText.textContent = `${done} / ${total} TASKS DONE`;
 }
 
 /* -------------------------------
-   RENDER TASKS (active tab only)
-   - clicking a task sets focus
-   - checking completes + saves
+   Tasks render
 -------------------------------- */
+function setSelectedFocus(value) {
+  selectedFocusValue = value;
+
+  const focusSelect = document.getElementById("focusSelect");
+  if (focusSelect) {
+    const exists = Array.from(focusSelect.options).some((o) => o.value === value);
+    focusSelect.value = exists ? value : "";
+  }
+
+  renderTasks(activeTabKey);
+  saveState();
+}
+
 function renderTasks(tabKey) {
-  if (!elTaskList) return;
+  const taskList = document.getElementById("taskList");
+  if (!taskList) return;
 
-  elTaskList.innerHTML = "";
+  taskList.innerHTML = "";
 
-  const tasks = (TASKS_BY_TAB[tabKey] || []).filter(
-    (t) => !(COMPLETED_TASKS[tabKey] || []).includes(t)
-  );
+  const remaining = getIncompleteTasks(tabKey);
 
-  tasks.forEach((taskText) => {
+  remaining.forEach((taskText) => {
+    const value = makeTaskValue(tabKey, taskText);
+
     const li = document.createElement("li");
     li.className = "task";
-
-    // optional highlight if focused
-    const isFocused = focusedTask.tabKey === tabKey && focusedTask.taskText === taskText;
-    if (isFocused) li.classList.add("task--focused");
+    if (value === selectedFocusValue) li.classList.add("task--selected");
 
     li.innerHTML = `
       <label class="task-row">
         <input class="task-checkbox" type="checkbox" />
-        <span class="task-text">${taskText}</span>
+        <span class="task-text"></span>
       </label>
     `;
 
-    // Clicking the text row sets focus for timer
-    li.addEventListener("click", (e) => {
-      // Don’t steal the click from checkbox toggle logic
-      if (e.target.classList.contains("task-checkbox")) return;
+    li.querySelector(".task-text").textContent = taskText;
+    taskList.appendChild(li);
 
-      setFocusedTask(tabKey, taskText);
-      renderTasks(tabKey); // refresh highlight
+    // Clicking the row selects it for the timer dropdown
+    li.addEventListener("click", () => {
+      // Ensure focusScope includes the task (if user is scoped to a different tab)
+      const focusTabSelect = document.getElementById("focusTabSelect");
+      if (focusTabSelect && focusScope !== "all" && focusScope !== tabKey) {
+        focusScope = "all";
+        focusTabSelect.value = "all";
+        buildFocusSelect(); // rebuild first so option exists
+      }
+
+      buildFocusSelect(value);
+      setSelectedFocus(value);
     });
 
     const checkbox = li.querySelector(".task-checkbox");
     checkbox.addEventListener("change", (e) => {
       if (!e.target.checked) return;
 
+      if (!COMPLETED_TASKS[tabKey]) COMPLETED_TASKS[tabKey] = [];
       if (!COMPLETED_TASKS[tabKey].includes(taskText)) {
         COMPLETED_TASKS[tabKey].push(taskText);
       }
 
-      // If you complete the focused task, clear focus
-      if (focusedTask.tabKey === tabKey && focusedTask.taskText === taskText) {
-        focusedTask = { tabKey: null, taskText: null };
-      }
+      // If the completed item was selected for focus, clear selection
+      if (selectedFocusValue === value) selectedFocusValue = "";
 
       saveState();
+
       renderTasks(tabKey);
       renderCompletedGrouped();
-      renderFocusSelect();
+      buildFocusSelect(); // remove completed from options
+      updateProgress();
     });
-
-    elTaskList.appendChild(li);
   });
 }
 
 /* -------------------------------
-   COMPLETED LIST (GROUPED BY TAB)
+   Completed render (GROUPED BY TAB)
 -------------------------------- */
 function renderCompletedGrouped() {
-  if (!elCompletedList) return;
+  const groups = document.getElementById("completedGroups"); // ✅ matches index.html
+  if (!groups) return;
 
-  elCompletedList.innerHTML = "";
+  groups.innerHTML = "";
 
-  TAB_KEYS_IN_ORDER.forEach((tabKey) => {
+  TAB_ORDER.forEach((tabKey) => {
     const done = COMPLETED_TASKS[tabKey] || [];
     if (done.length === 0) return;
 
-    // Group heading
-    const heading = document.createElement("li");
-    heading.className = "completed-heading";
-    heading.textContent = getLabel(tabKey);
-    elCompletedList.appendChild(heading);
+    const section = document.createElement("section");
+    section.className = "completed-group";
+
+    const h3 = document.createElement("h3");
+    h3.className = "completed-subheading";
+    h3.textContent = TAB_LABELS[tabKey] || tabKey;
+
+    const ul = document.createElement("ul");
+    ul.className = "completed-list";
 
     done.forEach((taskText) => {
       const li = document.createElement("li");
-      li.className = "completed-item";
       li.textContent = taskText;
-      elCompletedList.appendChild(li);
+      ul.appendChild(li);
     });
+
+    section.appendChild(h3);
+    section.appendChild(ul);
+    groups.appendChild(section);
   });
 }
 
 /* -------------------------------
-   ADD TASK (to ACTIVE tab)
-   - adds to TASKS_BY_TAB[activeTabKey]
-   - saves
-   - rerenders
-   - auto-focuses new task + selects in dropdown
+   Focus dropdown builder
+   - Uses focusScope:
+     - "all" => optgroups per tab
+     - tabKey => only that tab's tasks
+   - Optionally sets selection (auto-select new task, or clicked task)
 -------------------------------- */
-function addTaskFromInput() {
-  if (!elTaskInput) return;
+function buildFocusSelect(valueToSelect) {
+  const focusSelect = document.getElementById("focusSelect");
+  const focusTabSelect = document.getElementById("focusTabSelect");
+  if (!focusSelect) return;
 
-  const raw = elTaskInput.value.trim();
-  if (!raw) return;
+  const previous = valueToSelect ?? selectedFocusValue ?? focusSelect.value;
 
-  const tabKey = activeTabKey;
+  // Sync UI dropdown with state
+  if (focusTabSelect) focusTabSelect.value = focusScope;
 
-  // prevent exact duplicates in same tab (optional)
-  if (!TASKS_BY_TAB[tabKey].includes(raw)) {
-    TASKS_BY_TAB[tabKey].push(raw);
+  focusSelect.innerHTML = "";
+  const base = document.createElement("option");
+  base.value = "";
+  base.textContent = "(Pick a task)";
+  focusSelect.appendChild(base);
+
+  const addTaskOption = (tabKey, taskText, parent) => {
+    const opt = document.createElement("option");
+    opt.value = makeTaskValue(tabKey, taskText);
+    opt.textContent = taskText;
+    parent.appendChild(opt);
+  };
+
+  if (focusScope === "all") {
+    TAB_ORDER.forEach((tabKey) => {
+      const tasks = getIncompleteTasks(tabKey);
+      if (tasks.length === 0) return;
+
+      const og = document.createElement("optgroup");
+      og.label = TAB_LABELS[tabKey] || tabKey;
+
+      tasks.forEach((taskText) => addTaskOption(tabKey, taskText, og));
+      focusSelect.appendChild(og);
+    });
+  } else {
+    const tasks = getIncompleteTasks(focusScope);
+    tasks.forEach((taskText) => addTaskOption(focusScope, taskText, focusSelect));
   }
 
-  // Set this new task as focused immediately
-  focusedTask = { tabKey, taskText: raw };
-
-  elTaskInput.value = "";
-
-  saveState();
-  renderTasks(tabKey);
-  renderCompletedGrouped();
-  renderFocusSelect();
+  const exists = Array.from(focusSelect.options).some((o) => o.value === previous);
+  focusSelect.value = exists ? previous : "";
+  selectedFocusValue = exists ? previous : "";
 }
 
 /* -------------------------------
-   INIT
+   Wiring
+-------------------------------- */
+function wireAddTaskForm() {
+  const form = document.getElementById("taskAddForm");
+  const input = document.getElementById("taskInput");
+  const error = document.getElementById("taskError");
+
+  if (!form || !input) return;
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const raw = input.value.trim();
+    if (!raw) {
+      if (error) error.textContent = "Type something first.";
+      return;
+    }
+    if (error) error.textContent = "";
+
+    if (!TASKS_BY_TAB[activeTabKey]) TASKS_BY_TAB[activeTabKey] = [];
+
+    // prevent duplicates in same tab
+    if (!TASKS_BY_TAB[activeTabKey].includes(raw)) {
+      TASKS_BY_TAB[activeTabKey].push(raw);
+    }
+
+    // Make focus scope follow the active tab (feels natural)
+    const focusTabSelect = document.getElementById("focusTabSelect");
+    if (focusTabSelect) {
+      focusScope = activeTabKey;
+      focusTabSelect.value = activeTabKey;
+    }
+
+    const newValue = makeTaskValue(activeTabKey, raw);
+    selectedFocusValue = newValue;
+
+    saveState();
+
+    renderTasks(activeTabKey);
+    renderCompletedGrouped();
+    buildFocusSelect(newValue);
+    updateProgress();
+
+    input.value = "";
+    input.focus();
+  });
+}
+
+function wireFocusPickers() {
+  const focusTabSelect = document.getElementById("focusTabSelect");
+  const focusSelect = document.getElementById("focusSelect");
+
+  if (focusTabSelect) {
+    focusTabSelect.addEventListener("change", () => {
+      focusScope = focusTabSelect.value;
+      buildFocusSelect();
+      saveState();
+    });
+  }
+
+  if (focusSelect) {
+    focusSelect.addEventListener("change", () => {
+      selectedFocusValue = focusSelect.value || "";
+      renderTasks(activeTabKey); // update highlight if it’s in this tab
+      saveState();
+    });
+  }
+}
+
+/* -------------------------------
+   Boot
 -------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll(".tab");
 
-  loadState(); // load first
+  loadState();
+  normalizeState();
 
-  // Normalize active tab (in case storage had an old value)
-  activeTabKey = normalizeTabKey(activeTabKey);
-  safeEnsureTabBuckets();
-
-  // Tabs
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      const selectedTab = normalizeTabKey(tab.dataset.tab);
-      activeTabKey = selectedTab;
+      activeTabKey = tab.dataset.tab;
+
+      // When switching tabs, set focus list to that tab (your readability request)
+      const focusTabSelect = document.getElementById("focusTabSelect");
+      if (focusTabSelect) {
+        focusScope = activeTabKey;
+        focusTabSelect.value = activeTabKey;
+      }
 
       syncActiveTabUI(tabs, activeTabKey);
       syncHeadings(activeTabKey);
 
       renderTasks(activeTabKey);
       renderCompletedGrouped();
-      renderFocusSelect();
+      buildFocusSelect();
+      updateProgress();
 
       saveState();
     });
   });
 
-  // Add task
-  if (elAddTaskBtn) elAddTaskBtn.addEventListener("click", addTaskFromInput);
+  wireAddTaskForm();
+  wireFocusPickers();
 
-  // Enter key adds task too (optional but nice)
-  if (elTaskInput) {
-    elTaskInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") addTaskFromInput();
-    });
-  }
+  // Initial paint
+  const focusTabSelect = document.getElementById("focusTabSelect");
+  if (focusTabSelect) focusTabSelect.value = focusScope;
 
-  // Changing dropdown sets focus
-  if (elFocusSelect) {
-    elFocusSelect.addEventListener("change", (e) => {
-      const val = e.target.value;
-      if (!val) {
-        focusedTask = { tabKey: null, taskText: null };
-        saveState();
-        renderTasks(activeTabKey);
-        return;
-      }
-
-      const [tabKey, taskText] = val.split("||");
-      focusedTask = { tabKey, taskText };
-      saveState();
-
-      // if focused task is in a different tab, we do NOT auto-switch tabs (MVP rule)
-      renderTasks(activeTabKey);
-    });
-  }
-
-  // First paint
   syncActiveTabUI(tabs, activeTabKey);
   syncHeadings(activeTabKey);
 
   renderTasks(activeTabKey);
   renderCompletedGrouped();
-  renderFocusSelect();
+  buildFocusSelect(selectedFocusValue);
+  updateProgress();
 });

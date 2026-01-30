@@ -1,15 +1,6 @@
-/* ===== CSS FOUNDATION =====
-   Purpose: establish baseline layout, background, and typography
-   before styling individual components.
-*/
-
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-}
+/* ===== CSS FOUNDATION ===== */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 
 body {
   margin: 0;
@@ -24,10 +15,7 @@ body {
   padding: 24px;
 }
 
-/* ===== HEADER + TITLE =====
-   Purpose: establish visual hierarchy and rhythm at the top of the page
-*/
-
+/* ===== HEADER + TITLE ===== */
 .header {
   margin-bottom: 32px;
   text-align: center;
@@ -39,25 +27,11 @@ body {
   letter-spacing: 0.5px;
 }
 
-.title-line {
-  display: block;
-}
+.title-line { display: block; }
+.title-line:first-child { font-size: 2.2rem; margin-bottom: 6px; }
+.title-line:last-child { font-size: 1.4rem; opacity: 0.85; }
 
-.title-line:first-child {
-  font-size: 2.2rem;
-  margin-bottom: 6px;
-}
-
-.title-line:last-child {
-  font-size: 1.4rem;
-  opacity: 0.85;
-}
-
-/* ===== TABS (NEXT) =====
-   Purpose: style task category tabs and active state.
-   NOTE: Do not change markup without updating JS selectors later.
-*/
-
+/* ===== TABS ===== */
 .tabs {
   display: flex;
   gap: 14px;
@@ -74,6 +48,7 @@ body {
   letter-spacing: 0.3px;
   opacity: 0.75;
   cursor: pointer;
+  text-decoration: none; /* for <a class="tab"> on stats.html */
 }
 
 .tab--active {
@@ -81,11 +56,7 @@ body {
   border-bottom: 3px solid #e11;
 }
 
-/* ===== CARDS (STRUCTURE ONLY) =====
-   Purpose: create visual separation between functional areas
-   without committing to final textures or polish yet.
-*/
-
+/* ===== CARDS ===== */
 .card {
   background: #111;
   padding: 16px 18px;
@@ -99,26 +70,45 @@ body {
   opacity: 0.85;
 }
 
-/* ===== MAIN LAYOUT (DESKTOP-FIRST SCAFFOLD) =====
-   Purpose: prepare a two-column layout without breaking mobile.
-   We will add media queries later.
-*/
-
+/* ===== MAIN LAYOUT ===== */
 .main {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
 }
 
-/* ===== TIMER CARD (INTERNAL LAYOUT) =====
-   Purpose: organize fields and controls for clarity
-   NOTE: Do not rename classes without updating JS selectors later.
-*/
+/* ===== TASKS LIST ===== */
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
 
+.task {
+  padding: 6px 8px;
+  border-radius: 6px;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.task-checkbox { transform: translateY(0.5px); }
+
+.task--selected {
+  outline: 2px solid #e11;
+  outline-offset: 2px;
+}
+
+/* ===== TIMER CARD (layout) ===== */
 .card--timer .field {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   margin-bottom: 10px;
 }
 
@@ -128,59 +118,26 @@ body {
 }
 
 .field-select {
-  background: #0b0b0b;
-  color: inherit;
   border: 1px solid #222;
   padding: 6px 8px;
+  min-width: 180px;
 }
 
-.timer-display {
-  margin: 12px 0;
-  font-size: 1.6rem;
-  text-align: center;
-}
-
-.timer-controls {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 8px;
-}
-
-/* ===== DESKTOP LAYOUT (2 COLUMNS) =====
-   Purpose: split content into left/right columns on larger screens.
-*/
-
+/* ===== DESKTOP LAYOUT ===== */
 @media (min-width: 900px) {
   .main {
     grid-template-columns: 1.4fr 1fr;
     align-items: start;
   }
 
-  /* Left column */
-  .card--tasks {
-    grid-column: 1;
-  }
+  .card--tasks { grid-column: 1; }
+  .card--completed { grid-column: 1; }
 
-  .card--completed {
-    grid-column: 1;
-  }
-
-  /* Right column */
-  .card--timer {
-    grid-column: 2;
-  }
-
-  .card--progress {
-    grid-column: 2;
-  }
+  .card--timer { grid-column: 2; }
+  .card--progress { grid-column: 2; }
 }
 
-/* ===== PAPER STYLE (CONTROLLED) =====
-   Purpose: apply the paper look used in the HP mockup
-   ONLY to specific cards.
-*/
-
+/* ===== PAPER STYLE ===== */
 .card--timer,
 .card--completed {
   background: #f3f1e9;
@@ -192,3 +149,15 @@ body {
 .card--completed .card-title {
   opacity: 1;
 }
+
+/* Fix: dropdown readability on the paper timer card */
+.card--timer .field-select {
+  background: #ffffff;
+  color: #151515;
+  border: 1px solid #c9c2b4;
+}
+
+/* Completed sections */
+.completed-group { margin-top: 12px; }
+.completed-subheading { margin: 10px 0 6px; font-size: 0.85rem; }
+.completed-list { margin: 0; padding-left: 18px; }

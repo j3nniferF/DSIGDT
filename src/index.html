@@ -3,38 +3,30 @@
   <head>
     <!--
       HP (Home Page) - HTML Skeleton
-      Purpose: Create a clean, explainable structure that matches the locked HP mockup.
-      Structure only. CSS handles visuals. JS handles behavior.
+      Purpose: Structure only. CSS handles visuals. JS handles behavior.
 
       HEAD RULES:
       - Keep paths relative to /src because Live Server is serving /src as the site root.
-      - Add a favicon link so Chrome stops yelling about favicon.ico in the console.
+      - Avoid favicon.ico 404 by using a data-URI favicon (no file needed).
     -->
 
-    <!-- Required meta -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Tab title -->
     <title>Dumb Shit I Gotta Do Today</title>
 
-    <!-- Favicon (kills the 404 favicon.ico console error)
-         Option 1: put favicon.ico in /src and keep this line
-         Option 2: use a PNG instead (see commented line below)
-    -->
-    <link rel="icon" href="./favicon.ico" />
-    <!-- <link rel="icon" type="image/png" href="./favicon.png" /> -->
+    <!-- No-file favicon (stops console 404 spam) -->
+    <link
+      rel="icon"
+      href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="0.9em" font-size="90">✅</text></svg>'
+    />
 
-    <!-- CSS lives in /src/css -->
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
 
   <body>
-    <!-- PAGE WRAPPER -->
     <div class="app" id="app">
-      <!-- =========================
-           HEADER / TITLE
-           ========================= -->
+      <!-- HEADER -->
       <header class="header" id="header">
         <h1 class="title" id="title">
           <span class="title-line" id="titleLine1">DUMB SHIT</span>
@@ -43,41 +35,23 @@
         <div class="header-texture" aria-hidden="true"></div>
       </header>
 
-      <!-- =========================
-           TABS
-           ========================= -->
+      <!-- TABS -->
       <nav class="tabs" id="tabs" aria-label="Task lists">
-        <button
-          class="tab tab--active"
-          type="button"
-          data-tab="dueToday"
-          aria-current="page"
-        >
+        <button class="tab tab--active" type="button" data-tab="dueToday" aria-current="page">
           DUE TODAY
         </button>
         <button class="tab" type="button" data-tab="soon">SOON</button>
-        <button class="tab" type="button" data-tab="asSoonAsICan">
-          AS SOON AS I CAN
-        </button>
+        <button class="tab" type="button" data-tab="asSoonAsICan">AS SOON AS I CAN</button>
         <button class="tab" type="button" data-tab="dontForget">DON’T FORGET</button>
       </nav>
 
-      <!-- =========================
-           MAIN CONTENT
-           ========================= -->
       <main class="main" id="main">
-        <!-- TASK LIST -->
-        <section
-          class="card card--tasks"
-          id="tasksCard"
-          aria-labelledby="tasksHeading"
-        >
+        <!-- TASKS -->
+        <section class="card card--tasks" id="tasksCard" aria-labelledby="tasksHeading">
           <h2 class="card-title" id="tasksHeading">DUE TODAY:</h2>
 
-          <!-- JS renders tasks here -->
           <ul class="task-list" id="taskList"></ul>
 
-          <!-- Add task form -->
           <form class="task-add" id="taskAddForm" autocomplete="off">
             <label class="sr-only" for="taskInput">Add a task</label>
             <input
@@ -93,18 +67,25 @@
         </section>
 
         <!-- TIMER -->
-        <section
-          class="card card--timer"
-          id="timerCard"
-          aria-labelledby="timerHeading"
-        >
+        <section class="card card--timer" id="timerCard" aria-labelledby="timerHeading">
           <h2 class="card-title" id="timerHeading">FOCUS TIMER</h2>
+
+          <!-- NEW: choose which tab list to show in the focus dropdown -->
+          <div class="field">
+            <label class="field-label" for="focusTabSelect">FOCUS LIST:</label>
+            <select class="field-select" id="focusTabSelect" name="focusTabSelect">
+              <option value="all">ALL LISTS</option>
+              <option value="dueToday">DUE TODAY</option>
+              <option value="soon">SOON</option>
+              <option value="asSoonAsICan">AS SOON AS I CAN</option>
+              <option value="dontForget">DON’T FORGET</option>
+            </select>
+          </div>
 
           <div class="field">
             <label class="field-label" for="focusSelect">FOCUS ON:</label>
             <select class="field-select" id="focusSelect" name="focusSelect">
               <option value="">(Pick a task)</option>
-              <!-- JS will populate this list -->
             </select>
           </div>
 
@@ -119,9 +100,7 @@
             </select>
           </div>
 
-          <button class="linkish" id="customTimerBtn" type="button">
-            + SET A CUSTOM TIMER
-          </button>
+          <button class="linkish" id="customTimerBtn" type="button">+ SET A CUSTOM TIMER</button>
 
           <div class="timer-display" id="timerDisplay" aria-live="polite">15:00</div>
 
@@ -137,30 +116,18 @@
         </section>
 
         <!-- PROGRESS -->
-        <section
-          class="card card--progress"
-          id="progressCard"
-          aria-labelledby="progressHeading"
-        >
+        <section class="card card--progress" id="progressCard" aria-labelledby="progressHeading">
           <h2 class="card-title" id="progressHeading">PROGRESS</h2>
           <p class="progress-text" id="progressText">0 / 0 TASKS DONE</p>
           <div class="progress-ring" id="progressRing" aria-hidden="true"></div>
         </section>
 
         <!-- COMPLETED -->
-        <section
-          class="card card--completed"
-          id="completedCard"
-          aria-labelledby="completedHeading"
-        >
+        <section class="card card--completed" id="completedCard" aria-labelledby="completedHeading">
           <h2 class="card-title" id="completedHeading">SHIT I DID</h2>
 
-          <!--
-            IMPORTANT:
-            We do NOT hardcode a single tab subheading here.
-            JS will render grouped headings + tasks for ALL tabs inside #completedList.
-          -->
-          <ul class="completed-list" id="completedList"></ul>
+          <!-- JS renders one section per tab -->
+          <div class="completed-groups" id="completedGroups"></div>
         </section>
       </main>
 
@@ -177,7 +144,7 @@
       </footer>
     </div>
 
-    <!-- PRIZE MODAL -->
+    <!-- PRIZE MODAL (unchanged) -->
     <div
       class="modal-overlay is-hidden"
       id="prizeOverlay"
@@ -199,7 +166,6 @@
       </div>
     </div>
 
-    <!-- JS lives in /src/js -->
     <script src="./js/app.js" defer></script>
   </body>
 </html>
