@@ -1,81 +1,251 @@
 /* =====================================================
-   HP Tabs + Tasks (MVP v2)
-   Purpose:
-   - Allow switching between task tabs
-   - Enforce ONE active tab at a time (visual + aria-current)
-   - Render tasks per tab from static seed data
-   - When a task is checked, move it to "SHIT I DID" (in-memory only)
+   HP Tabs + Tasks (MVP v3.1 - LOCALSTORAGE + GROUPED COMPLETED + FOCUS SELECT)
+   Fixes:
+   - ONE storage key (no duplicates)
+   - Add task goes to ACTIVE TAB (not always dueToday)
+   - Completed list grouped by tab
+   - Timer dropdown grouped by tab (labels not selectable)
+   - Clicking a task sets it as the “focus” task
+   - Adding a task auto-selects it in the focus dropdown
 
-   NOT YET:
-   - No localStorage (refresh resets)
-   - No uncheck-to-undo
-   - No progress counts
-   - No reward modal triggers
-
-   IMPORTANT RULES (future-proofing):
-   - Do NOT rename .tab or .tab--active without updating CSS
-   - Do NOT change data-tab values without updating TASK KEYS below
-   - If you change the default active tab in HTML,
-     update activeTabKey's default AND the initial aria-current/tab--active in index.html
+   Assumes HTML has:
+   - .tab elements with data-tab="dueToday|soon|asSoonAsICan|dontForget"
+   - #taskList (UL)
+   - #completedList (UL)
+   - #tasksHeading (H3 or similar)
+   - #taskInput (input)
+   - #addTaskBtn (button)
+   - #focusSelect (select)
 ===================================================== */
 
 /* -------------------------------
-   Static task seed data (MVP)
-   Later this will come from state/localStorage.
-   If you rename a tab key here, you MUST also update:
-   - the HTML: data-tab="..."
-   - COMPLETED_TASKS keys
+   DOM HOOKS (change IDs here if yours differ)
 -------------------------------- */
+const elTaskList = document.getElementById("taskList");
+const elCompletedList = document.getElementById("completedList");
+const elTasksHeading = document.getElementById("tasksHeading");
 
-const TASKS_BY_TAB = {
+const elTaskInput = document.getElementById("taskInput");
+const elAddTaskBtn = document.getElementById("addTaskBtn");
+
+const elFocusSelect = document.getElementById("focusSelect");
+
+/* -------------------------------
+   STORAGE
+-------------------------------- */
+const STORAGE_KEY = "dsigt_state_v1";
+
+/* -------------------------------
+   TAB LABELS
+-------------------------------- */
+const TAB_LABELS = {
+  dueToday: "DUE TODAY",
+  soon: "SOON",
+  asSoonAsICan: "AS SOON AS I CAN",
+  dontForget: "DON’T FORGET"
+};
+
+const TAB_KEYS_IN_ORDER = ["dueToday", "soon", "asSoonAsICan", "dontForget"];
+
+/* -------------------------------
+   STATE (defaults)
+-------------------------------- */
+let TASKS_BY_TAB = {
   dueToday: ["Email landlord", "Finish capstone work", "Take meds"],
   soon: ["Clean kitchen", "Grocery run"],
   asSoonAsICan: ["Organize closet", "Call dentist"],
   dontForget: ["Buy cat food", "Pay credit card"]
 };
 
-/* -------------------------------
-   Completed tasks (in-memory)
-   This is the "state" for what you've finished per tab.
-   Later we will persist this (localStorage).
--------------------------------- */
-
-const COMPLETED_TASKS = {
+let COMPLETED_TASKS = {
   dueToday: [],
   soon: [],
   asSoonAsICan: [],
   dontForget: []
 };
 
-/* -------------------------------
-   Active tab state
-   IMPORTANT:
-   - Must match the default active tab in HTML (tab--active + aria-current).
-   - Must match a key in TASKS_BY_TAB.
--------------------------------- */
-
 let activeTabKey = "dueToday";
 
+/* Which task is currently “focused” in the timer dropdown */
+let focusedTask = {
+  tabKey: null,
+  taskText: null
+};
+
 /* -------------------------------
-   Render tasks for a given tab
-   Behavior:
-   - Shows only tasks NOT yet completed
-   - Attaches checkbox handler:
-       check -> move to COMPLETED_TASKS -> re-render both lists
+   HELPERS
 -------------------------------- */
+function normalizeTabKey(raw) {
+  // Supports common variants in HTML just in case
+  const map = {
+    dueToday: "dueToday",
+    "due-today": "dueToday",
+    due_today: "dueToday",
 
+    soon: "soon",
+
+    asSoonAsICan: "asSoonAsICan",
+    "as-soon-as-i-can": "asSoonAsICan",
+    as_soon_as_i_can: "asSoonAsICan",
+
+    dontForget: "dontForget",
+    "dont-forget": "dontForget",
+    "don't-forget": "dontForget",
+    dont_forget: "dontForget"
+  };
+
+  return map[raw] || raw;
+}
+
+function getLabel(tabKey) {
+  return TAB_LABELS[tabKey] || tabKey;
+}
+
+function safeEnsureTabBuckets() {
+  // Prevent crashes if storage is missing keys
+  TAB_KEYS_IN_ORDER.forEach((k) => {
+    if (!TASKS_BY_TAB[k]) TASKS_BY_TAB[k] = [];
+    if (!COMPLETED_TASKS[k]) COMPLETED_TASKS[k] = [];
+  });
+}
+
+/* -------------------------------
+   SAVE / LOAD
+-------------------------------- */
+function saveState() {
+  const state = {
+    tasksByTab: TASKS_BY_TAB,
+    completedByTab: COMPLETED_TASKS,
+    activeTabKey: activeTabKey,
+    focusedTask: focusedTask
+  };
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+
+  try {
+    const parsed = JSON.parse(raw);
+
+    if (parsed.tasksByTab && typeof parsed.tasksByTab === "object") {
+      TASKS_BY_TAB = parsed.tasksByTab;
+    }
+    if (parsed.completedByTab && typeof parsed.completedByTab === "object") {
+      COMPLETED_TASKS = parsed.completedByTab;
+    }
+    if (typeof parsed.activeTabKey === "string") {
+      activeTabKey = parsed.activeTabKey;
+    }
+    if (
+      parsed.focusedTask &&
+      typeof parsed.focusedTask === "object" &&
+      typeof parsed.focusedTask.tabKey === "string" &&
+      typeof parsed.focusedTask.taskText === "string"
+    ) {
+      focusedTask = parsed.focusedTask;
+    }
+
+    safeEnsureTabBuckets();
+  } catch (err) {
+    console.warn("Saved state corrupted; using defaults.", err);
+  }
+}
+
+/* -------------------------------
+   HEADINGS
+-------------------------------- */
+function syncHeadings(tabKey) {
+  if (!elTasksHeading) return;
+  elTasksHeading.textContent = `${getLabel(tabKey)}:`;
+}
+
+/* -------------------------------
+   TAB UI
+-------------------------------- */
+function syncActiveTabUI(tabsNodeList, tabKey) {
+  tabsNodeList.forEach((t) => {
+    const key = normalizeTabKey(t.dataset.tab);
+    const isActive = key === tabKey;
+
+    t.classList.toggle("tab--active", isActive);
+
+    if (isActive) t.setAttribute("aria-current", "page");
+    else t.removeAttribute("aria-current");
+  });
+}
+
+/* -------------------------------
+   FOCUS DROPDOWN (timer select)
+   - grouped by tab using <optgroup> (labels NOT selectable)
+-------------------------------- */
+function renderFocusSelect() {
+  if (!elFocusSelect) return;
+
+  elFocusSelect.innerHTML = "";
+
+  // Placeholder option
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Pick a task";
+  elFocusSelect.appendChild(placeholder);
+
+  TAB_KEYS_IN_ORDER.forEach((tabKey) => {
+    const tasks = TASKS_BY_TAB[tabKey] || [];
+
+    // Optionally: do NOT include completed tasks in focus menu
+    const available = tasks.filter((t) => !(COMPLETED_TASKS[tabKey] || []).includes(t));
+
+    const group = document.createElement("optgroup");
+    group.label = getLabel(tabKey);
+
+    available.forEach((taskText) => {
+      const opt = document.createElement("option");
+      // value encodes tab + task so duplicates across tabs are fine
+      opt.value = `${tabKey}||${taskText}`;
+      opt.textContent = taskText;
+      group.appendChild(opt);
+    });
+
+    elFocusSelect.appendChild(group);
+  });
+
+  // Restore selection if focusedTask exists
+  if (focusedTask.tabKey && focusedTask.taskText) {
+    const targetVal = `${focusedTask.tabKey}||${focusedTask.taskText}`;
+    elFocusSelect.value = targetVal;
+  }
+}
+
+function setFocusedTask(tabKey, taskText) {
+  focusedTask = { tabKey, taskText };
+  saveState();
+  renderFocusSelect();
+}
+
+/* -------------------------------
+   RENDER TASKS (active tab only)
+   - clicking a task sets focus
+   - checking completes + saves
+-------------------------------- */
 function renderTasks(tabKey) {
-  const taskList = document.getElementById("taskList");
-  taskList.innerHTML = "";
+  if (!elTaskList) return;
 
-  // Filter out tasks that are already completed for this tab
+  elTaskList.innerHTML = "";
+
   const tasks = (TASKS_BY_TAB[tabKey] || []).filter(
-    (t) => !COMPLETED_TASKS[tabKey].includes(t)
+    (t) => !(COMPLETED_TASKS[tabKey] || []).includes(t)
   );
 
   tasks.forEach((taskText) => {
     const li = document.createElement("li");
     li.className = "task";
+
+    // optional highlight if focused
+    const isFocused = focusedTask.tabKey === tabKey && focusedTask.taskText === taskText;
+    if (isFocused) li.classList.add("task--focused");
 
     li.innerHTML = `
       <label class="task-row">
@@ -84,81 +254,160 @@ function renderTasks(tabKey) {
       </label>
     `;
 
-    taskList.appendChild(li);
+    // Clicking the text row sets focus for timer
+    li.addEventListener("click", (e) => {
+      // Don’t steal the click from checkbox toggle logic
+      if (e.target.classList.contains("task-checkbox")) return;
 
-    // Checkbox behavior (MVP):
-    // - Only responds when checked (no undo yet)
-    // - Moves task into completed state for this tab
+      setFocusedTask(tabKey, taskText);
+      renderTasks(tabKey); // refresh highlight
+    });
+
     const checkbox = li.querySelector(".task-checkbox");
     checkbox.addEventListener("change", (e) => {
       if (!e.target.checked) return;
 
-      // Move task to completed list for this tab
-      COMPLETED_TASKS[tabKey].push(taskText);
+      if (!COMPLETED_TASKS[tabKey].includes(taskText)) {
+        COMPLETED_TASKS[tabKey].push(taskText);
+      }
 
-      // Re-render both lists so UI reflects state
+      // If you complete the focused task, clear focus
+      if (focusedTask.tabKey === tabKey && focusedTask.taskText === taskText) {
+        focusedTask = { tabKey: null, taskText: null };
+      }
+
+      saveState();
       renderTasks(tabKey);
-      renderCompleted(tabKey);
+      renderCompletedGrouped();
+      renderFocusSelect();
+    });
+
+    elTaskList.appendChild(li);
+  });
+}
+
+/* -------------------------------
+   COMPLETED LIST (GROUPED BY TAB)
+-------------------------------- */
+function renderCompletedGrouped() {
+  if (!elCompletedList) return;
+
+  elCompletedList.innerHTML = "";
+
+  TAB_KEYS_IN_ORDER.forEach((tabKey) => {
+    const done = COMPLETED_TASKS[tabKey] || [];
+    if (done.length === 0) return;
+
+    // Group heading
+    const heading = document.createElement("li");
+    heading.className = "completed-heading";
+    heading.textContent = getLabel(tabKey);
+    elCompletedList.appendChild(heading);
+
+    done.forEach((taskText) => {
+      const li = document.createElement("li");
+      li.className = "completed-item";
+      li.textContent = taskText;
+      elCompletedList.appendChild(li);
     });
   });
 }
 
 /* -------------------------------
-   Render completed tasks for a given tab
-   IMPORTANT:
-   - index.html must contain ONE element with id="completedList"
-   - If you change that id in HTML, update it here too
+   ADD TASK (to ACTIVE tab)
+   - adds to TASKS_BY_TAB[activeTabKey]
+   - saves
+   - rerenders
+   - auto-focuses new task + selects in dropdown
 -------------------------------- */
+function addTaskFromInput() {
+  if (!elTaskInput) return;
 
-function renderCompleted(tabKey) {
-  const completedList = document.getElementById("completedList");
-  completedList.innerHTML = "";
+  const raw = elTaskInput.value.trim();
+  if (!raw) return;
 
-  const done = COMPLETED_TASKS[tabKey] || [];
+  const tabKey = activeTabKey;
 
-  done.forEach((taskText) => {
-    const li = document.createElement("li");
-    li.textContent = taskText;
-    completedList.appendChild(li);
-  });
+  // prevent exact duplicates in same tab (optional)
+  if (!TASKS_BY_TAB[tabKey].includes(raw)) {
+    TASKS_BY_TAB[tabKey].push(raw);
+  }
+
+  // Set this new task as focused immediately
+  focusedTask = { tabKey, taskText: raw };
+
+  elTaskInput.value = "";
+
+  saveState();
+  renderTasks(tabKey);
+  renderCompletedGrouped();
+  renderFocusSelect();
 }
 
 /* -------------------------------
-   Tabs behavior + initial render
-   Behavior:
-   - Click tab -> remove active from all -> set active on clicked
-   - Update aria-current="page" so assistive tech knows current tab
-   - Update activeTabKey state
-   - Re-render tasks + completed for that tab
+   INIT
 -------------------------------- */
-
 document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll(".tab");
 
+  loadState(); // load first
+
+  // Normalize active tab (in case storage had an old value)
+  activeTabKey = normalizeTabKey(activeTabKey);
+  safeEnsureTabBuckets();
+
+  // Tabs
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      // Remove active state from all tabs (visual + accessibility)
-      tabs.forEach((t) => {
-        t.classList.remove("tab--active");
-        t.removeAttribute("aria-current");
-      });
-
-      // Activate clicked tab
-      tab.classList.add("tab--active");
-      tab.setAttribute("aria-current", "page");
-
-      // Update active tab state (must match TASKS_BY_TAB keys)
-      const selectedTab = tab.dataset.tab;
+      const selectedTab = normalizeTabKey(tab.dataset.tab);
       activeTabKey = selectedTab;
 
-      // Render lists for current tab
+      syncActiveTabUI(tabs, activeTabKey);
+      syncHeadings(activeTabKey);
+
       renderTasks(activeTabKey);
-      renderCompleted(activeTabKey);
+      renderCompletedGrouped();
+      renderFocusSelect();
+
+      saveState();
     });
   });
 
-  // Initial render:
-  // If you change the default active tab in HTML, update activeTabKey above too.
+  // Add task
+  if (elAddTaskBtn) elAddTaskBtn.addEventListener("click", addTaskFromInput);
+
+  // Enter key adds task too (optional but nice)
+  if (elTaskInput) {
+    elTaskInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addTaskFromInput();
+    });
+  }
+
+  // Changing dropdown sets focus
+  if (elFocusSelect) {
+    elFocusSelect.addEventListener("change", (e) => {
+      const val = e.target.value;
+      if (!val) {
+        focusedTask = { tabKey: null, taskText: null };
+        saveState();
+        renderTasks(activeTabKey);
+        return;
+      }
+
+      const [tabKey, taskText] = val.split("||");
+      focusedTask = { tabKey, taskText };
+      saveState();
+
+      // if focused task is in a different tab, we do NOT auto-switch tabs (MVP rule)
+      renderTasks(activeTabKey);
+    });
+  }
+
+  // First paint
+  syncActiveTabUI(tabs, activeTabKey);
+  syncHeadings(activeTabKey);
+
   renderTasks(activeTabKey);
-  renderCompleted(activeTabKey);
+  renderCompletedGrouped();
+  renderFocusSelect();
 });
