@@ -37,11 +37,9 @@
 
       <!-- TABS -->
       <nav class="tabs" id="tabs" aria-label="Task lists">
-        <button class="tab tab--active" type="button" data-tab="dueToday" aria-current="page">
-          DUE TODAY
-        </button>
-        <button class="tab" type="button" data-tab="soon">SOON</button>
-        <button class="tab" type="button" data-tab="asSoonAsICan">AS SOON AS I CAN</button>
+        <button class="tab tab--active" type="button" data-tab="dueToday" aria-current="page">DUE TODAY</button>
+        <button class="tab" type="button" data-tab="soon">NEXT UP</button>
+        <button class="tab" type="button" data-tab="asSoonAsICan">WHEN I CAN</button>
         <button class="tab" type="button" data-tab="dontForget">DON’T FORGET</button>
       </nav>
 
@@ -69,26 +67,36 @@
         <!-- TIMER -->
         <section class="card card--timer" id="timerCard" aria-labelledby="timerHeading">
           <h2 class="card-title" id="timerHeading">FOCUS TIMER</h2>
+          <p class="helper-text helper-text--rules" id="timerHelperText">
+            Choose violence (pick a tab / pick a task) → set timer → murder it ✅ → claim prize.
+          </p>
 
-          <!-- NEW: choose which tab list to show in the focus dropdown -->
+          <!-- NEW: choose which tab tab to show in the focus dropdown -->
           <div class="field">
-            <label class="field-label" for="focusTabSelect">FOCUS LIST:</label>
+            <label class="field-label" for="focusTabSelect">PICK A TAB:</label>
             <select class="field-select" id="focusTabSelect" name="focusTabSelect">
-              <option value="all">ALL LISTS</option>
+              <option value="all">ALL TABS</option>
               <option value="dueToday">DUE TODAY</option>
-              <option value="soon">SOON</option>
-              <option value="asSoonAsICan">AS SOON AS I CAN</option>
+              <option value="soon">NEXT UP</option>
+              <option value="asSoonAsICan">WHEN I CAN</option>
               <option value="dontForget">DON’T FORGET</option>
             </select>
           </div>
 
           <div class="field">
-            <label class="field-label" for="focusSelect">FOCUS ON:</label>
+            <label class="field-label" for="focusSelect">PICK A TASK:</label>
             <select class="field-select" id="focusSelect" name="focusSelect">
               <option value="">(Pick a task)</option>
             </select>
           </div>
 
+          <p class="current-task" id="currentTaskText">
+            CURRENT: <span class="current-task__name">(none)</span>
+          </p>
+          <p class="helper-text helper-text--tiny">
+            To finish it for real: check the box on the left. ✅
+          </p>
+          
           <div class="field">
             <label class="field-label" for="durationSelect">DURATION:</label>
             <select class="field-select" id="durationSelect" name="durationSelect">
@@ -101,7 +109,7 @@
           </div>
 
           <button class="linkish" id="customTimerBtn" type="button">+ SET A CUSTOM TIMER</button>
-
+          <button class="linkish" id="resetBtn" type="button">🧨 RESET EVERYTHING</button>
           <div class="timer-display" id="timerDisplay" aria-live="polite">15:00</div>
 
           <div class="timer-controls">
@@ -111,7 +119,7 @@
           </div>
 
           <p class="helper-text" id="timerHelperText">
-            Pick a task → set a timer → check it off → get a prize.
+            Pick a task → set a timer → check it off → get a prize! 
           </p>
         </section>
 
@@ -119,6 +127,12 @@
         <section class="card card--progress" id="progressCard" aria-labelledby="progressHeading">
           <h2 class="card-title" id="progressHeading">PROGRESS</h2>
           <p class="progress-text" id="progressText">0 / 0 TASKS DONE</p>
+
+          <details class="progress-details">
+            <summary class="progress-summary">SEE BREAKDOWN</summary>
+            <ul class="progress-breakdown" id="progressBreakdown"></ul>
+          </details>
+
           <div class="progress-ring" id="progressRing" aria-hidden="true"></div>
         </section>
 

@@ -98,11 +98,6 @@ body {
 
 .task-checkbox { transform: translateY(0.5px); }
 
-.task--selected {
-  outline: 2px solid #e11;
-  outline-offset: 2px;
-}
-
 /* ===== TIMER CARD (layout) ===== */
 .card--timer .field {
   display: flex;
@@ -161,3 +156,185 @@ body {
 .completed-group { margin-top: 12px; }
 .completed-subheading { margin: 10px 0 6px; font-size: 0.85rem; }
 .completed-list { margin: 0; padding-left: 18px; }
+
+/* ===== CURRENT TASK CALLOUT ===== */
+.current-task { margin: 10px 0 6px; font-weight: 800; letter-spacing: 0.2px; }
+.current-task__name { font-weight: 700; text-transform: none; }
+.helper-text--tiny { margin-top: 0; font-size: 0.85rem; opacity: 0.85; }
+
+/* ===== SELECTED TASK (IN PROGRESS) ===== */
+.task--selected { border: 2px solid #e11; border-radius: 10px; padding: 10px 12px; }
+.task--selected .task-text::before { content: "▶ "; font-weight: 900; }
+
+/* =========================
+   COOL PASS v1 (safe polish)
+   ========================= */
+
+/* Slightly nicer base spacing */
+.card {
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+/* Task rows feel clickable */
+.task {
+  transition: transform 0.06s ease, background 0.2s ease;
+}
+.task:hover {
+  background: rgba(255,255,255,0.05);
+}
+.task-row {
+  padding: 6px 4px;
+}
+
+/* Checkbox is easier to hit */
+.task-checkbox {
+  width: 18px;
+  height: 18px;
+}
+
+/* Selected task = "IN PROGRESS" vibe */
+.task--selected {
+  border: 2px solid #e11;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(225, 17, 17, 0.08);
+  position: relative;
+}
+
+.task--selected::after {
+  content: "IN PROGRESS";
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  font-size: 0.7rem;
+  letter-spacing: 0.6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #e11;
+  color: #fff;
+}
+
+/* CURRENT callout looks intentional */
+.current-task {
+  margin: 10px 0 6px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.08);
+  border: 1px dashed rgba(0,0,0,0.25);
+}
+
+.current-task__name {
+  font-weight: 800;
+  background: rgba(225, 17, 17, 0.12);
+  border: 1px solid rgba(225, 17, 17, 0.35);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+/* Helper tiny text reads better on paper */
+.card--timer .helper-text--tiny {
+  opacity: 0.9;
+}
+
+/* Buttons look less default */
+.btn, .task-add-btn {
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.2);
+  padding: 10px 14px;
+  font-weight: 800;
+}
+
+.card--timer .btn,
+.card--timer .task-add-btn {
+  background: #151515;
+  color: #fff;
+}
+
+.linkish {
+  background: transparent;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+/* Inputs look cleaner */
+.task-input, .field-select {
+  border-radius: 12px;
+}
+
+/* =========================
+   PROGRESS <details> POLISH
+   ========================= */
+
+.progress-details {
+  margin-top: 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 12px;
+}
+
+.progress-summary {
+  cursor: pointer;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  list-style: none; /* removes default triangle in some browsers */
+}
+
+.progress-summary::-webkit-details-marker {
+  display: none; /* removes default triangle in Chrome/Safari */
+}
+
+.progress-summary::before {
+  content: "▸ ";
+  display: inline-block;
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.progress-details[open] .progress-summary::before {
+  content: "▾ ";
+}
+
+.progress-breakdown {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  line-height: 1.4;
+}
+
+.progress-breakdown li {
+  margin: 6px 0;
+  opacity: 0.92;
+}
+
+/* =========================
+   TIMER RULES (sass + clarity)
+   ========================= */
+
+.helper-text--rules {
+  margin: 8px 0 14px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+}
+
+/* On the paper timer card: make it feel like a stamped warning */
+.card--timer .helper-text--rules {
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px dashed rgba(0, 0, 0, 0.25);
+}
+
+/* Make the words pop a little */
+.card--timer .helper-text--rules::before {
+  content: "⚡ RULES: ";
+  font-weight: 900;
+}

@@ -1,10 +1,15 @@
 /* =====================================================
-   HP Tabs + Tasks (MVP v3.2 - LOCALSTORAGE + GROUPED COMPLETED + FOCUS PICKER)
+   DSIGDT — MVP v3.3 (CLEAN)
    - Tabs: per-tab tasks
+   - Add task: goes into active tab
    - Checkbox: marks complete (stored per tab)
    - Completed card: grouped by tab
-   - Focus picker: choose "ALL" or one tab, then choose task
-   - Click a task row: selects it in the focus dropdown
+   - Focus picker:
+       1) PICK A LIST (ALL or one tab)
+       2) PICK A TASK
+   - Click a task row: sets CURRENT task + highlights it
+   - If CURRENT is (none): highlight clears
+   - Timer: minimal START/PAUSE/STOP wiring
 ===================================================== */
 
 const STORAGE_KEY = "dsigdt_state_v1";
@@ -13,11 +18,12 @@ const TAB_ORDER = ["dueToday", "soon", "asSoonAsICan", "dontForget"];
 
 const TAB_LABELS = {
   dueToday: "DUE TODAY",
-  soon: "SOON",
-  asSoonAsICan: "AS SOON AS I CAN",
+  soon: "NEXT UP",
+  asSoonAsICan: "WHEN I CAN",
   dontForget: "DON’T FORGET",
 };
 
+// Default seed (only used if no localStorage state exists)
 let TASKS_BY_TAB = {
   dueToday: ["Email landlord", "Finish capstone work", "Take meds"],
   soon: ["Clean kitchen", "Grocery run"],
@@ -35,21 +41,24 @@ let COMPLETED_TASKS = {
 let activeTabKey = "dueToday";
 
 /* Focus UI state */
-let focusScope = "all"; // "all" or a tabKey
+let focusScope = "dueToday"; // "all" or a tabKey
 let selectedFocusValue = ""; // `${tabKey}::${taskText}`
+
+/* Timer state */
+let remainingSeconds = 0;
+let intervalId = null;
 
 /* -------------------------------
    Persistence
 -------------------------------- */
 function normalizeState() {
-  // Ensure all tab keys exist and are arrays
   TAB_ORDER.forEach((k) => {
     if (!Array.isArray(TASKS_BY_TAB[k])) TASKS_BY_TAB[k] = [];
     if (!Array.isArray(COMPLETED_TASKS[k])) COMPLETED_TASKS[k] = [];
   });
 
   if (!TAB_ORDER.includes(activeTabKey)) activeTabKey = "dueToday";
-  if (focusScope !== "all" && !TAB_ORDER.includes(focusScope)) focusScope = "all";
+  if (focusScope !== "all" && !TAB_ORDER.includes(focusScope)) focusScope = activeTabKey;
   if (typeof selectedFocusValue !== "string") selectedFocusValue = "";
 }
 
@@ -74,22 +83,12 @@ function loadState() {
     if (parsed.tasksByTab && typeof parsed.tasksByTab === "object") {
       TASKS_BY_TAB = parsed.tasksByTab;
     }
-
     if (parsed.completedByTab && typeof parsed.completedByTab === "object") {
       COMPLETED_TASKS = parsed.completedByTab;
     }
-
-    if (typeof parsed.activeTabKey === "string") {
-      activeTabKey = parsed.activeTabKey;
-    }
-
-    if (typeof parsed.focusScope === "string") {
-      focusScope = parsed.focusScope;
-    }
-
-    if (typeof parsed.selectedFocusValue === "string") {
-      selectedFocusValue = parsed.selectedFocusValue;
-    }
+    if (typeof parsed.activeTabKey === "string") activeTabKey = parsed.activeTabKey;
+    if (typeof parsed.focusScope === "string") focusScope = parsed.focusScope;
+    if (typeof parsed.selectedFocusValue === "string") selectedFocusValue = parsed.selectedFocusValue;
 
     normalizeState();
   } catch (err) {
@@ -134,105 +133,54 @@ function syncActiveTabUI(tabsNodeList, tabKey) {
   });
 }
 
+function syncCurrentTaskText() {
+  const wrap = document.getElementById("currentTaskText");
+  if (!wrap) return;
+
+  const nameEl = wrap.querySelector(".current-task__name");
+  if (!nameEl) return;
+
+  if (!selectedFocusValue) {
+    nameEl.textContent = "(none)";
+    return;
+  }
+
+  const { taskText } = parseTaskValue(selectedFocusValue);
+  nameEl.textContent = taskText || "(none)";
+}
+
 function updateProgress() {
   const progressText = document.getElementById("progressText");
-  if (!progressText) return;
+  const breakdown = document.getElementById("progressBreakdown"); // optional
 
   let total = 0;
   let done = 0;
 
   TAB_ORDER.forEach((tabKey) => {
-    const all = TASKS_BY_TAB[tabKey] || [];
-    const completed = COMPLETED_TASKS[tabKey] || [];
-    total += all.length;
-    done += completed.length;
+    total += (TASKS_BY_TAB[tabKey] || []).length;
+    done += (COMPLETED_TASKS[tabKey] || []).length;
   });
 
-  progressText.textContent = `${done} / ${total} TASKS DONE`;
-}
+  if (progressText) progressText.textContent = `${done} / ${total} TASKS DONE`;
 
-/* -------------------------------
-   Tasks render
--------------------------------- */
-function setSelectedFocus(value) {
-  selectedFocusValue = value;
-
-  const focusSelect = document.getElementById("focusSelect");
-  if (focusSelect) {
-    const exists = Array.from(focusSelect.options).some((o) => o.value === value);
-    focusSelect.value = exists ? value : "";
+  // Optional breakdown (only if you add the markup)
+  if (breakdown) {
+    breakdown.innerHTML = "";
+    TAB_ORDER.forEach((tabKey) => {
+      const t = (TASKS_BY_TAB[tabKey] || []).length;
+      const d = (COMPLETED_TASKS[tabKey] || []).length;
+      const li = document.createElement("li");
+      li.textContent = `${TAB_LABELS[tabKey]}: ${d} / ${t}`;
+      breakdown.appendChild(li);
+    });
   }
-
-  renderTasks(activeTabKey);
-  saveState();
-}
-
-function renderTasks(tabKey) {
-  const taskList = document.getElementById("taskList");
-  if (!taskList) return;
-
-  taskList.innerHTML = "";
-
-  const remaining = getIncompleteTasks(tabKey);
-
-  remaining.forEach((taskText) => {
-    const value = makeTaskValue(tabKey, taskText);
-
-    const li = document.createElement("li");
-    li.className = "task";
-    if (value === selectedFocusValue) li.classList.add("task--selected");
-
-    li.innerHTML = `
-      <label class="task-row">
-        <input class="task-checkbox" type="checkbox" />
-        <span class="task-text"></span>
-      </label>
-    `;
-
-    li.querySelector(".task-text").textContent = taskText;
-    taskList.appendChild(li);
-
-    // Clicking the row selects it for the timer dropdown
-    li.addEventListener("click", () => {
-      // Ensure focusScope includes the task (if user is scoped to a different tab)
-      const focusTabSelect = document.getElementById("focusTabSelect");
-      if (focusTabSelect && focusScope !== "all" && focusScope !== tabKey) {
-        focusScope = "all";
-        focusTabSelect.value = "all";
-        buildFocusSelect(); // rebuild first so option exists
-      }
-
-      buildFocusSelect(value);
-      setSelectedFocus(value);
-    });
-
-    const checkbox = li.querySelector(".task-checkbox");
-    checkbox.addEventListener("change", (e) => {
-      if (!e.target.checked) return;
-
-      if (!COMPLETED_TASKS[tabKey]) COMPLETED_TASKS[tabKey] = [];
-      if (!COMPLETED_TASKS[tabKey].includes(taskText)) {
-        COMPLETED_TASKS[tabKey].push(taskText);
-      }
-
-      // If the completed item was selected for focus, clear selection
-      if (selectedFocusValue === value) selectedFocusValue = "";
-
-      saveState();
-
-      renderTasks(tabKey);
-      renderCompletedGrouped();
-      buildFocusSelect(); // remove completed from options
-      updateProgress();
-    });
-  });
 }
 
 /* -------------------------------
-   Completed render (GROUPED BY TAB)
+   Completed render (grouped)
 -------------------------------- */
 function renderCompletedGrouped() {
-  const groups = document.getElementById("completedGroups"); // ✅ matches index.html
+  const groups = document.getElementById("completedGroups");
   if (!groups) return;
 
   groups.innerHTML = "";
@@ -265,19 +213,14 @@ function renderCompletedGrouped() {
 
 /* -------------------------------
    Focus dropdown builder
-   - Uses focusScope:
-     - "all" => optgroups per tab
-     - tabKey => only that tab's tasks
-   - Optionally sets selection (auto-select new task, or clicked task)
 -------------------------------- */
 function buildFocusSelect(valueToSelect) {
   const focusSelect = document.getElementById("focusSelect");
   const focusTabSelect = document.getElementById("focusTabSelect");
   if (!focusSelect) return;
 
-  const previous = valueToSelect ?? selectedFocusValue ?? focusSelect.value;
+  const desired = valueToSelect ?? selectedFocusValue ?? focusSelect.value;
 
-  // Sync UI dropdown with state
   if (focusTabSelect) focusTabSelect.value = focusScope;
 
   focusSelect.innerHTML = "";
@@ -286,7 +229,7 @@ function buildFocusSelect(valueToSelect) {
   base.textContent = "(Pick a task)";
   focusSelect.appendChild(base);
 
-  const addTaskOption = (tabKey, taskText, parent) => {
+  const addOption = (tabKey, taskText, parent) => {
     const opt = document.createElement("option");
     opt.value = makeTaskValue(tabKey, taskText);
     opt.textContent = taskText;
@@ -301,27 +244,111 @@ function buildFocusSelect(valueToSelect) {
       const og = document.createElement("optgroup");
       og.label = TAB_LABELS[tabKey] || tabKey;
 
-      tasks.forEach((taskText) => addTaskOption(tabKey, taskText, og));
+      tasks.forEach((taskText) => addOption(tabKey, taskText, og));
       focusSelect.appendChild(og);
     });
   } else {
     const tasks = getIncompleteTasks(focusScope);
-    tasks.forEach((taskText) => addTaskOption(focusScope, taskText, focusSelect));
+    tasks.forEach((taskText) => addOption(focusScope, taskText, focusSelect));
   }
 
-  const exists = Array.from(focusSelect.options).some((o) => o.value === previous);
-  focusSelect.value = exists ? previous : "";
-  selectedFocusValue = exists ? previous : "";
+  const exists = Array.from(focusSelect.options).some((o) => o.value === desired);
+  selectedFocusValue = exists ? desired : "";
+  focusSelect.value = selectedFocusValue;
+
+  // If selection became invalid -> clear highlight + CURRENT text
+  syncCurrentTaskText();
+  renderTasks(activeTabKey);
+  saveState();
+}
+
+function setSelectedFocus(value) {
+  selectedFocusValue = value || "";
+  buildFocusSelect(selectedFocusValue);
+  syncCurrentTaskText();
+  renderTasks(activeTabKey);
+  saveState();
+}
+
+function clearSelectedFocus() {
+  setSelectedFocus("");
 }
 
 /* -------------------------------
-   Wiring
+   Tasks render
+-------------------------------- */
+function renderTasks(tabKey) {
+  const taskList = document.getElementById("taskList");
+  if (!taskList) return;
+
+  taskList.innerHTML = "";
+
+  const remaining = getIncompleteTasks(tabKey);
+
+  remaining.forEach((taskText) => {
+    const value = makeTaskValue(tabKey, taskText);
+
+    const li = document.createElement("li");
+    li.className = "task";
+    if (value === selectedFocusValue) li.classList.add("task--selected");
+
+    li.innerHTML = `
+      <label class="task-row">
+        <input class="task-checkbox" type="checkbox" />
+        <span class="task-text"></span>
+      </label>
+    `;
+
+    li.querySelector(".task-text").textContent = taskText;
+    taskList.appendChild(li);
+
+    const checkbox = li.querySelector(".task-checkbox");
+
+    // Prevent checkbox click from selecting the row
+    checkbox.addEventListener("click", (e) => e.stopPropagation());
+
+    // Click row selects CURRENT task
+    li.addEventListener("click", () => {
+      // If focus list is scoped to another tab, widen to ALL so dropdown always contains it
+      const focusTabSelect = document.getElementById("focusTabSelect");
+      if (focusTabSelect && focusScope !== "all" && focusScope !== tabKey) {
+        focusScope = "all";
+        focusTabSelect.value = "all";
+      }
+      setSelectedFocus(value);
+    });
+
+    // Checkbox completes task
+    checkbox.addEventListener("change", (e) => {
+      if (!e.target.checked) return;
+
+      if (!COMPLETED_TASKS[tabKey]) COMPLETED_TASKS[tabKey] = [];
+      if (!COMPLETED_TASKS[tabKey].includes(taskText)) {
+        COMPLETED_TASKS[tabKey].push(taskText);
+      }
+
+      // If the completed task was CURRENT, clear it
+      if (selectedFocusValue === value) {
+        selectedFocusValue = "";
+      }
+
+      saveState();
+      syncCurrentTaskText();
+      renderTasks(tabKey);
+      renderCompletedGrouped();
+      buildFocusSelect();
+      updateProgress();
+    });
+  });
+}
+
+/* -------------------------------
+   Add task
 -------------------------------- */
 function wireAddTaskForm() {
   const form = document.getElementById("taskAddForm");
   const input = document.getElementById("taskInput");
   const error = document.getElementById("taskError");
-
   if (!form || !input) return;
 
   form.addEventListener("submit", (e) => {
@@ -341,7 +368,7 @@ function wireAddTaskForm() {
       TASKS_BY_TAB[activeTabKey].push(raw);
     }
 
-    // Make focus scope follow the active tab (feels natural)
+    // After adding: scope picker to current tab (reduces confusion)
     const focusTabSelect = document.getElementById("focusTabSelect");
     if (focusTabSelect) {
       focusScope = activeTabKey;
@@ -356,6 +383,7 @@ function wireAddTaskForm() {
     renderTasks(activeTabKey);
     renderCompletedGrouped();
     buildFocusSelect(newValue);
+    syncCurrentTaskText();
     updateProgress();
 
     input.value = "";
@@ -363,6 +391,9 @@ function wireAddTaskForm() {
   });
 }
 
+/* -------------------------------
+   Focus pickers
+-------------------------------- */
 function wireFocusPickers() {
   const focusTabSelect = document.getElementById("focusTabSelect");
   const focusSelect = document.getElementById("focusSelect");
@@ -370,18 +401,145 @@ function wireFocusPickers() {
   if (focusTabSelect) {
     focusTabSelect.addEventListener("change", () => {
       focusScope = focusTabSelect.value;
+
+      // If switching list scope makes CURRENT invalid, buildFocusSelect clears it
       buildFocusSelect();
-      saveState();
     });
   }
 
   if (focusSelect) {
     focusSelect.addEventListener("change", () => {
-      selectedFocusValue = focusSelect.value || "";
-      renderTasks(activeTabKey); // update highlight if it’s in this tab
-      saveState();
+      const val = focusSelect.value || "";
+      if (!val) {
+        clearSelectedFocus();
+        return;
+      }
+      setSelectedFocus(val);
     });
   }
+}
+
+/* -------------------------------
+   Reset
+-------------------------------- */
+function emptyState() {
+  return { dueToday: [], soon: [], asSoonAsICan: [], dontForget: [] };
+}
+
+function wireResetButton(tabsNodeList) {
+  const resetBtn = document.getElementById("resetBtn");
+  if (!resetBtn) return;
+
+  resetBtn.addEventListener("click", () => {
+    const ok = confirm(
+      "💣 YOU REALLY WANNA RE-SET EVERYTHING? 💣\nThis clears all tasks + completed items."
+    );
+    if (!ok) return;
+
+    TASKS_BY_TAB = emptyState();
+    COMPLETED_TASKS = emptyState();
+
+    activeTabKey = "dueToday";
+    focusScope = "dueToday";
+    selectedFocusValue = "";
+
+    stopInterval();
+    resetTimerToSelectedDuration();
+
+    saveState();
+
+    syncActiveTabUI(tabsNodeList, activeTabKey);
+    syncHeadings(activeTabKey);
+
+    renderTasks(activeTabKey);
+    renderCompletedGrouped();
+    buildFocusSelect();
+    syncCurrentTaskText();
+    updateProgress();
+  });
+}
+
+/* -------------------------------
+   Timer (minimal wiring)
+-------------------------------- */
+function formatTime(seconds) {
+  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const ss = String(seconds % 60).padStart(2, "0");
+  return `${mm}:${ss}`;
+}
+
+function setTimerDisplay(seconds) {
+  const el = document.getElementById("timerDisplay");
+  if (el) el.textContent = formatTime(seconds);
+}
+
+function getSelectedDurationSeconds() {
+  const durationSelect = document.getElementById("durationSelect");
+  const n = Number(durationSelect?.value ?? 900);
+  return Number.isFinite(n) ? n : 900;
+}
+
+function resetTimerToSelectedDuration() {
+  remainingSeconds = getSelectedDurationSeconds();
+  setTimerDisplay(remainingSeconds);
+}
+
+function stopInterval() {
+  if (intervalId !== null) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+}
+
+function wireTimer() {
+  const startBtn = document.getElementById("startBtn");
+  const pauseBtn = document.getElementById("pauseBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const durationSelect = document.getElementById("durationSelect");
+
+  if (!startBtn || !pauseBtn || !stopBtn || !durationSelect) {
+    console.warn("Timer elements missing. Check IDs in index.html.");
+    return;
+  }
+
+  resetTimerToSelectedDuration();
+
+  durationSelect.addEventListener("change", () => {
+    // Only reset duration if timer isn't running
+    if (intervalId === null) resetTimerToSelectedDuration();
+  });
+
+  startBtn.addEventListener("click", () => {
+    // Require a CURRENT task to reduce confusion
+    if (!selectedFocusValue) {
+      alert("Pick a task first. That becomes your CURRENT task.");
+      return;
+    }
+
+    if (intervalId !== null) return; // already running
+    if (remainingSeconds <= 0) resetTimerToSelectedDuration();
+
+    intervalId = setInterval(() => {
+      remainingSeconds -= 1;
+      setTimerDisplay(remainingSeconds);
+
+      if (remainingSeconds <= 0) {
+        stopInterval();
+        remainingSeconds = 0;
+        setTimerDisplay(0);
+        // Optional later: show prize modal here
+      }
+    }, 1000);
+  });
+
+  pauseBtn.addEventListener("click", () => {
+    stopInterval(); // keep remainingSeconds
+  });
+
+  stopBtn.addEventListener("click", () => {
+    stopInterval();
+    resetTimerToSelectedDuration();
+  });
 }
 
 /* -------------------------------
@@ -393,11 +551,17 @@ document.addEventListener("DOMContentLoaded", () => {
   loadState();
   normalizeState();
 
+  wireResetButton(tabs);
+  wireAddTaskForm();
+  wireFocusPickers();
+  wireTimer();
+
+  // Tab click behavior
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       activeTabKey = tab.dataset.tab;
 
-      // When switching tabs, set focus list to that tab (your readability request)
+      // Scope list picker to active tab (clearer)
       const focusTabSelect = document.getElementById("focusTabSelect");
       if (focusTabSelect) {
         focusScope = activeTabKey;
@@ -409,15 +573,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       renderTasks(activeTabKey);
       renderCompletedGrouped();
-      buildFocusSelect();
-      updateProgress();
 
+      // dropdown rebuild can auto-clear invalid CURRENT task
+      buildFocusSelect(selectedFocusValue);
+      syncCurrentTaskText();
+
+      updateProgress();
       saveState();
     });
   });
-
-  wireAddTaskForm();
-  wireFocusPickers();
 
   // Initial paint
   const focusTabSelect = document.getElementById("focusTabSelect");
@@ -429,5 +593,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTasks(activeTabKey);
   renderCompletedGrouped();
   buildFocusSelect(selectedFocusValue);
+  syncCurrentTaskText();
   updateProgress();
 });
