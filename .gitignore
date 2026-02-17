@@ -18,3 +18,4 @@ Thumbs.db
 # Environment files
 .env
 config.js
+.DS_Store
