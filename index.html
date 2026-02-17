@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dUMb shit I GotTA Do TODay</title>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="appTitle">dUMb shit I GOTta dO TODay</h1>
+            <p class="tagline" id="tagline">Stay focused, get things done</p>
+            
+            <!-- PG Mode Toggle -->
+            <label class="pg-switch" title="Toggle PG Mode">
+                <input type="checkbox" id="pgToggle" />
+                <span class="pg-switch__slider"></span>
+                <span class="pg-switch__label" id="pgLabel">$H!T MODE</span>
+            </label>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tabs">
+            <button class="tab-button active" data-tab="tasks">Tasks</button>
+            <button class="tab-button" data-tab="timer">Timer</button>
+            <button class="tab-button" data-tab="stats">Stats</button>
+            <a href="about.html" class="tab-button tab-link" style="text-decoration: none;">About</a>
+        </nav>
+
+        <!-- Tab Content -->
+        <main>
+            <!-- Tasks Tab -->
+            <div id="tasks" class="tab-content active">
+                <div class="task-header">
+                    <h2>My Tasks</h2>
+                    <span id="taskCount" class="task-count">0/0 completed</span>
+                </div>
+                <div class="task-section">
+                    <div class="task-input-container">
+                        <input 
+                            type="text" 
+                            id="task-input" 
+                            placeholder="+ ADD MORE SHIT"
+                            aria-label="New task input"
+                        >
+                        <button id="add-task-btn" aria-label="Add task">
+                            <span>+</span> Add
+                        </button>
+                    </div>
+                    <ul id="task-list" class="task-list"></ul>
+                    <div id="empty-state" class="empty-state">
+                        <p>🎯 No tasks yet. Add one to get started!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timer Tab -->
+            <div id="timer" class="tab-content">
+                <h2>Focus Timer</h2>
+                <div class="timer-section">
+                    <div class="timer-display">
+                        <div id="time-left" class="time-left">25:00</div>
+                        <div id="timer-label" class="timer-label">Focus Session</div>
+                    </div>
+                    <div class="timer-controls">
+                        <button id="start-btn" class="timer-btn primary">Start</button>
+                        <button id="pause-btn" class="timer-btn secondary" disabled>Pause</button>
+                        <button id="reset-btn" class="timer-btn secondary">Reset</button>
+                    </div>
+                    <div class="timer-presets">
+                        <button class="preset-btn" data-minutes="25">25 min</button>
+                        <button class="preset-btn" data-minutes="15">15 min</button>
+                        <button class="preset-btn" data-minutes="5">5 min</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Tab -->
+            <div id="stats" class="tab-content">
+                <h2>Statistics</h2>
+                <div class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-number" id="statCompletedTasks">0</div>
+                        <div class="stat-label">Tasks Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="statTimerSessions">0</div>
+                        <div class="stat-label">Focus Sessions</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p id="quote" class="motivational-quote">Loading inspiration...</p>
+        </footer>
+    </div>
+
+    <!-- Reward Modal -->
+    <div class="modal-overlay is-hidden" id="prizeOverlay" role="dialog" aria-modal="true">
+        <div class="modal" id="prizeModal">
+            <button class="modal-close-x" id="closePrizeX" type="button" title="Close">✕</button>
+            
+            <h2 class="modal-title" id="prizeTitle">
+                <span class="modal-title-line1" id="prizeLine1">GOOD JOB</span>
+                <span class="modal-title-line2" id="prizeLine2">DUMMY!</span>
+            </h2>
+            
+            <p class="modal-subtitle" id="prizeSubtitle">PICK A PRIZE</p>
+
+            <ul class="prize-list" id="prizeList">
+                <li>GO FOR A WALK.</li>
+                <li>TAKE A QUICK NAP.</li>
+                <li>GO GET YOUR PRODUCTIVE ASS SOME SKITTLES.</li>
+            </ul>
+
+            <img class="prize-gif" id="prizeGif" src="https://media.giphy.com/media/uF4QwYRpMDuGuMXL1G/giphy.gif" alt="Reward cat"/>
+            <p class="prize-note" id="prizeNote">or you can stare at this cute dumb cat</p>
+
+            <div class="prize-actions">
+                <button class="btn btn--primary" id="backToItBtn" type="button">
+                    NOW GET BACK TO WORK!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="confetti.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
