@@ -54,12 +54,11 @@ body.pg-mode .tagline {
   color: #333;
 }
 
-/* add dirty paper here!!!!!!!! */
 .container {
   background: white;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 600px;
+  max-width: 1100px;
   width: 100%;
   overflow: hidden;
 }
@@ -154,14 +153,6 @@ body.pg-mode * {
 }
 
 /* PG Mode Additional Styling */
-body.pg-mode .tab-button.active {
-  color: #56ab2f;
-}
-
-body.pg-mode .tab-button.active::after {
-  background: #56ab2f;
-}
-
 body.pg-mode #add-task-btn {
   background: #56ab2f;
 }
@@ -222,35 +213,6 @@ body.pg-mode .tab-content {
       rgba(195, 107, 255, 0.22)
     ),
     rgba(255, 255, 255, 0.9);
-}
-
-/* Tab Content */
-main {
-  padding: 20px;
-  display: grid;
-  gap: 16px;
-}
-
-.tab-content {
-  display: block;
-  animation: fadeIn 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 12px;
-  padding: 18px;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-}
-
-.tab-content.active {
-  display: block;
-  animation: fadeIn 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 12px;
-  padding: 18px;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
-    url("./assets/textures/dirty-paper.png") center/cover;
 }
 
 @keyframes fadeIn {
@@ -319,10 +281,10 @@ footer {
 }
 
 .motivational-quote {
-  color: #666;
-  font-style: italic;
+  color: #000000;
+  font-family: "punk2";
   text-align: center;
-  font-size: 0.95em;
+  font-size: 2.5em;
 }
 
 /* Task Section */
@@ -836,17 +798,6 @@ body.pg-mode .task-complete-card {
     padding: 20px 15px;
   }
 
-  .tabs {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .tab-button {
-    width: 100%;
-    padding: 12px;
-    font-size: 0.95em;
-  }
-
   .tab-content {
     padding: 20px 15px;
   }
@@ -892,11 +843,6 @@ body.pg-mode .task-complete-card {
     font-size: 0.9em;
   }
 
-  .stats-section {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-
   .stat-card {
     padding: 25px;
   }
@@ -924,25 +870,13 @@ body.pg-mode .task-complete-card {
 
 /* Tablet adjustments */
 @media (min-width: 769px) and (max-width: 1024px) {
-  .container {
-    max-width: 700px;
-  }
-
   header h1 {
     font-size: 2.2em;
-  }
-
-  .stats-section {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 /* Desktop enhancements */
 @media (min-width: 1025px) {
-  .container {
-    max-width: 800px;
-  }
-
   header h1 {
     font-size: 2.8em;
   }
@@ -954,10 +888,6 @@ body.pg-mode .task-complete-card {
   /* Hover effects for desktop */
   .task-item:hover {
     transform: translateX(5px);
-  }
-
-  .tab-button:hover {
-    transform: translateY(-2px);
   }
 }
 
