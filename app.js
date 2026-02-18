@@ -15,13 +15,17 @@ const UI_TEXT = {
   SHIT_MODE: {
     TASK_PLACEHOLDER: "+ ADD MORE SHIT",
     TASK_PLACEHOLDER_ERROR: "⚠️ ADD SOME SHIT FIRST, DUH!",
-    APP_TITLE: "dUMb shit I GOTta dO TODay",
+    TITLE_MAIN: "DUMB SHIT",
+    TITLE_SUB: "I GOTTA DO TODAY",
+    DOC_TITLE: "Dumb Shit I Gotta Do Today",
     TAGLINE: "Stay focused, get shit done",
   },
   PG_MODE: {
     TASK_PLACEHOLDER: "+ Add a new task",
     TASK_PLACEHOLDER_ERROR: "⚠️ Please enter a task",
-    APP_TITLE: "Silly Stuff To Get Done!",
+    TITLE_MAIN: "SILLY STUFF",
+    TITLE_SUB: "I GOTTA DO TODAY",
+    DOC_TITLE: "Silly Stuff I Gotta Do Today",
     TAGLINE: "Stay organized, be productive, you got this!",
   },
 };
@@ -583,9 +587,14 @@ let isPgMode = false;
 async function applyThemeText(mode) {
   const modeText = mode === "pg" ? UI_TEXT.PG_MODE : UI_TEXT.SHIT_MODE;
 
-  const title = document.getElementById("appTitle");
-  if (title) {
-    title.textContent = modeText.APP_TITLE;
+  const titleMain = document.getElementById("titleMain");
+  if (titleMain) {
+    titleMain.textContent = modeText.TITLE_MAIN;
+  }
+
+  const titleSub = document.getElementById("titleSub");
+  if (titleSub) {
+    titleSub.textContent = modeText.TITLE_SUB;
   }
 
   const tagline = document.getElementById("tagline");
@@ -598,7 +607,7 @@ async function applyThemeText(mode) {
     taskInput.placeholder = modeText.TASK_PLACEHOLDER;
   }
 
-  document.title = modeText.APP_TITLE;
+  document.title = modeText.DOC_TITLE;
 
   // Update prize modal content
   const prizeLine1 = document.getElementById("prizeLine1");
