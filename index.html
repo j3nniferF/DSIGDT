@@ -16,19 +16,20 @@
         </h1>
         <p class="tagline" id="tagline">Stay focused, get shit done</p>
 
-        <!-- PG Mode Toggle -->
-        <label class="pg-switch" title="Toggle PG Mode">
-          <input type="checkbox" id="pgToggle" />
-          <span class="pg-switch__slider"></span>
-          <span class="pg-switch__label" id="pgLabel">$H!T MODE</span>
-        </label>
         <div class="utility-buttons">
-          <button id="openStatsBtn" class="utility-btn" type="button">
-            Stats
-          </button>
-          <button id="openAboutBtn" class="utility-btn" type="button">
+          <button
+            id="openAboutBtn"
+            class="utility-btn utility-btn--about"
+            type="button"
+          >
             About
           </button>
+          <!-- PG Mode Toggle -->
+          <label class="pg-switch" title="Toggle PG Mode">
+            <input type="checkbox" id="pgToggle" />
+            <span class="pg-switch__slider"></span>
+            <span class="pg-switch__label" id="pgLabel">$H!T MODE</span>
+          </label>
         </div>
       </header>
 
@@ -66,33 +67,163 @@
           </div>
         </div>
 
-        <!-- Timer -->
-        <div id="timer" class="tab-content">
-          <h2>Focus Timer</h2>
-          <div class="timer-section">
-            <div class="timer-display">
-              <div id="time-left" class="time-left">25:00</div>
-              <div id="timer-label" class="timer-label">Focus Session</div>
-            </div>
-            <div class="timer-controls">
-              <button id="start-btn" class="timer-btn primary">Start</button>
-              <button id="pause-btn" class="timer-btn secondary" disabled>
-                Pause
+        <div class="timer-stats-row">
+          <!-- Timer -->
+          <div id="timer" class="tab-content">
+            <h2>Focus Timer</h2>
+            <div class="timer-section">
+              <div class="timer-display">
+                <div id="time-left" class="time-left">25:00</div>
+                <div id="timer-label" class="timer-label">Focus Session</div>
+              </div>
+              <div class="timer-controls">
+                <button id="start-btn" class="timer-btn primary">Start</button>
+                <button id="pause-btn" class="timer-btn secondary" disabled>
+                  Pause
+                </button>
+                <button id="reset-btn" class="timer-btn secondary">
+                  Reset
+                </button>
+              </div>
+              <div class="timer-presets">
+                <button class="preset-btn" data-minutes="25">25 min</button>
+                <button class="preset-btn" data-minutes="15">15 min</button>
+                <button class="preset-btn" data-minutes="5">5 min</button>
+              </div>
+              <button
+                id="openTaskTimerBtn"
+                class="timer-btn primary timer-btn--task"
+                type="button"
+              >
+                Open Task Timer
               </button>
-              <button id="reset-btn" class="timer-btn secondary">Reset</button>
             </div>
-            <div class="timer-presets">
-              <button class="preset-btn" data-minutes="25">25 min</button>
-              <button class="preset-btn" data-minutes="15">15 min</button>
-              <button class="preset-btn" data-minutes="5">5 min</button>
+          </div>
+
+          <div id="stats" class="tab-content">
+            <h2>Statistics</h2>
+            <div class="stats-section">
+              <div class="stat-card">
+                <div class="stat-number" id="statCompletedTasks">0</div>
+                <div class="stat-label">Tasks Completed</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-number" id="statTimerSessions">0</div>
+                <div class="stat-label">Focus Sessions</div>
+              </div>
             </div>
           </div>
         </div>
+
+        <section class="tab-content completed-section" id="completedSection">
+          <h3 id="completedTitle">SHIT I DID</h3>
+          <div id="completedByTab" class="completed-by-tab"></div>
+        </section>
       </main>
 
       <footer>
         <p id="quote" class="motivational-quote">Loading inspiration...</p>
       </footer>
+    </div>
+
+    <div
+      class="modal-overlay is-hidden"
+      id="taskTimerOverlay"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal task-timer-modal" id="taskTimerModal">
+        <button class="modal-close-x" id="closeTaskTimerBtn" type="button">
+          ✕
+        </button>
+        <h2 class="modal-title">TASK TIMER</h2>
+        <p class="timer-current-tab">
+          IN PROGRESS TAB: <strong id="currentTabName">DUE TODAY</strong>
+        </p>
+        <p class="timer-current-task">
+          TASK: <strong id="currentTaskName">Select a task first</strong>
+        </p>
+
+        <div class="timer-dials">
+          <label
+            >HRS
+            <select id="dialHours"></select>
+          </label>
+          <label
+            >MIN
+            <select id="dialMinutes"></select>
+          </label>
+          <label
+            >SEC
+            <select id="dialSeconds"></select>
+          </label>
+        </div>
+
+        <div class="timer-controls">
+          <button
+            id="taskTimerStartBtn"
+            class="timer-btn primary"
+            type="button"
+          >
+            Start
+          </button>
+          <button
+            id="taskTimerPauseBtn"
+            class="timer-btn secondary"
+            type="button"
+            disabled
+          >
+            Pause
+          </button>
+          <button
+            id="taskTimerResetBtn"
+            class="timer-btn secondary"
+            type="button"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="floating-timer is-hidden" id="floatingTimer">
+      <div class="floating-timer__time" id="floatingTimerTime">00:00:00</div>
+      <div class="floating-timer__task" id="floatingTimerTask">
+        No task selected
+      </div>
+    </div>
+
+    <div class="focus-floating-clock is-hidden" id="focusFloatingClock">
+      <div class="focus-floating-clock__label">FOCUS TIMER</div>
+      <div class="focus-floating-clock__time" id="focusFloatingClockTime">
+        25:00
+      </div>
+    </div>
+
+    <div
+      class="modal-overlay is-hidden"
+      id="timerCompleteOverlay"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal task-timer-modal">
+        <h2 class="modal-title">TIME UP</h2>
+        <p class="timer-current-task">
+          Done with <strong id="timerDoneTaskName">this task</strong>?
+        </p>
+        <div class="timer-controls">
+          <button id="timerDoneYesBtn" class="timer-btn primary" type="button">
+            Yes, Done
+          </button>
+          <button
+            id="timerPlusFiveBtn"
+            class="timer-btn secondary"
+            type="button"
+          >
+            +5 Minutes
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Reward Modal -->
@@ -142,27 +273,6 @@
         </div>
       </div>
     </div>
-    <div
-      class="modal-overlay is-hidden"
-      id="statsOverlay"
-      role="dialog"
-      aria-modal="true"
-    >
-      <div class="modal utility-modal">
-        <button class="modal-close-x" id="closeStatsBtn" type="button">✕</button>
-        <h2>Statistics</h2>
-        <div class="stats-section">
-          <div class="stat-card">
-            <div class="stat-number" id="statCompletedTasks">0</div>
-            <div class="stat-label">Tasks Completed</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="statTimerSessions">0</div>
-            <div class="stat-label">Focus Sessions</div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div
       class="modal-overlay is-hidden"
@@ -170,14 +280,49 @@
       role="dialog"
       aria-modal="true"
     >
-      <div class="modal utility-modal">
-        <button class="modal-close-x" id="closeAboutBtn" type="button">✕</button>
-        <h2>About</h2>
-        <p>
-          DSIGDT helps you track tasks, run focus timers, and keep momentum with
-          simple stats.
+      <div class="modal utility-modal about-modal">
+        <button class="modal-close-x" id="closeAboutBtn" type="button">
+          ✕
+        </button>
+        <h2 class="about-title">About</h2>
+        <p class="about-intro">
+          DSIGDT helps you track tasks, focus, and finish what matters in either
+          SHIT MODE or PG MODE.
         </p>
-        <p>Want full details? <a href="about.html">Open full About page</a>.</p>
+        <div class="about-features">
+          <section>
+            <h3>Tasks</h3>
+            <ul>
+              <li>Add tasks per tab</li>
+              <li>Rename tasks (double-click)</li>
+              <li>Track completed vs total</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Tabs</h3>
+            <ul>
+              <li>4 tabs with separate task groups</li>
+              <li>Rename tab names</li>
+              <li>Completed tasks stay grouped by tab</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Timer</h3>
+            <ul>
+              <li>Quick focus timer + presets</li>
+              <li>Task timer with H/M/S dials</li>
+              <li>Done or +5 min flow when timer ends</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Modes</h3>
+            <ul>
+              <li>SHIT mode with grime/punk style</li>
+              <li>PG mode with rainbow/clean style</li>
+              <li>Separate task storage per mode</li>
+            </ul>
+          </section>
+        </div>
       </div>
     </div>
 

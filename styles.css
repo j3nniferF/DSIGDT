@@ -20,9 +20,7 @@
 }
 /* fix background */
 body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
-    Cantarell, sans-serif;
+  font-family: "Punk2", "Segoe UI", sans-serif;
   background:
     linear-gradient(rgba(18, 18, 18, 0.35), rgba(18, 18, 18, 0.35)),
     url("./assets/textures/grime.png") center/cover fixed;
@@ -40,8 +38,20 @@ body.pg-mode {
 }
 
 body.pg-mode header {
-  background: rgba(255, 255, 255, 0.95);
-  color: #333;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.22),
+      rgba(255, 217, 61, 0.22),
+      rgba(107, 255, 154, 0.22),
+      rgba(107, 180, 255, 0.22),
+      rgba(195, 107, 255, 0.22)
+    ),
+    rgba(255, 255, 255, 0.9);
+  border-color: transparent;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.7),
+    0 0 0 4px rgba(255, 124, 203, 0.35);
 }
 
 body.pg-mode header h1,
@@ -55,6 +65,37 @@ body.pg-mode .tagline {
   color: #333;
 }
 
+body.pg-mode header {
+  border-color: #78ca8f;
+}
+
+body.pg-mode .app-title {
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 2px solid #78ca8f;
+  background: linear-gradient(
+    135deg,
+    rgba(86, 214, 111, 0.24),
+    rgba(113, 216, 255, 0.24),
+    rgba(157, 232, 107, 0.24)
+  );
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.72);
+}
+
+body.pg-mode .tagline {
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 2px solid #78ca8f;
+  background: linear-gradient(
+    135deg,
+    rgba(86, 214, 111, 0.2),
+    rgba(113, 216, 255, 0.2),
+    rgba(157, 232, 107, 0.2)
+  );
+  display: inline-block;
+}
+
 .container {
   background: rgba(255, 255, 255, 0.72);
   border-radius: 20px;
@@ -65,7 +106,10 @@ body.pg-mode .tagline {
 }
 
 header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background:
+    linear-gradient(rgba(58, 11, 11, 0.86), rgba(58, 11, 11, 0.86)),
+    url("./assets/textures/dirty-paper.png") center/cover;
+  border: 2px solid #0d0d0d;
   color: lch(0% 0 0);
   padding: 30px;
   text-align: center;
@@ -80,15 +124,24 @@ header {
   margin-bottom: 8px;
 }
 
+body:not(.pg-mode) .app-title {
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 2px solid #0d0d0d;
+  background:
+    linear-gradient(rgba(245, 245, 245, 0.88), rgba(245, 245, 245, 0.88)),
+    url("./assets/textures/dirty-paper.png") center/cover;
+}
+
 #titleMain {
   font-family: "anarchy";
-  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-size: clamp(2.8rem, 8vw, 5rem);
   letter-spacing: 1px;
 }
 
 #titleSub {
   font-family: "anarchy";
-  font-size: clamp(1rem, 3vw, 1.4rem);
+  font-size: clamp(1.2rem, 3.2vw, 2rem);
   margin-top: 6px;
   letter-spacing: 1px;
 }
@@ -97,6 +150,7 @@ header {
 body.pg-mode,
 body.pg-mode * {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-weight: 300;
 }
 
 /* PG Mode Toggle Switch */
@@ -105,8 +159,9 @@ body.pg-mode * {
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 0;
   user-select: none;
+  min-height: 42px;
 }
 
 .pg-switch input[type="checkbox"] {
@@ -153,26 +208,87 @@ body.pg-mode * {
   letter-spacing: 1px;
 }
 
+body:not(.pg-mode) .pg-switch {
+  padding: 6px 10px;
+  border-radius: 12px;
+  border: 2px solid rgba(0, 0, 0, 0.65);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.84)),
+    url("./assets/textures/dirty-paper.png") center/cover;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.65);
+}
+
+body:not(.pg-mode) .pg-switch__label {
+  color: #181818;
+  text-shadow: none;
+  font-family: "Punk2", "Segoe UI", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+body.pg-mode .pg-switch {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 2px solid #ff89cf;
+  background: linear-gradient(135deg, #ffd2ee, #fff0fa);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
+}
+
+body.pg-mode .pg-switch__label {
+  color: #cf2c8f;
+  text-shadow: none;
+}
+
+body.pg-mode .pg-switch__label::before {
+  content: "♡ ";
+}
+
 .utility-buttons {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   margin-top: 12px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .utility-btn {
-  border: none;
-  border-radius: 999px;
-  padding: 8px 14px;
+  border: 2px solid #1f1f1f;
+  border-radius: 12px;
+  padding: 9px 14px;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 700;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.85);
-  color: #222;
+  background:
+    linear-gradient(rgba(245, 245, 245, 0.9), rgba(245, 245, 245, 0.9)),
+    url("./assets/textures/dirty-paper.png") center/cover;
+  color: #161616;
+  box-shadow: 0 3px 0 #101010;
+}
+
+body:not(.pg-mode) .utility-btn {
+  font-family: "Punk2", "Segoe UI", sans-serif;
+  font-style: normal;
+  font-weight: 400;
 }
 
 body.pg-mode .utility-btn {
-  background: rgba(255, 255, 255, 0.95);
-  color: #2456cc;
+  border-color: #ff89cf;
+  border-radius: 999px;
+  color: #c43188;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 179, 224, 0.95),
+    rgba(255, 221, 241, 0.95)
+  );
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
+}
+
+body.pg-mode .utility-btn::before {
+  content: "♡ ";
 }
 
 .utility-modal {
@@ -181,28 +297,42 @@ body.pg-mode .utility-btn {
 
 /* PG Mode Additional Styling */
 body.pg-mode #add-task-btn {
-  background: #56ab2f;
+  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
+  color: #17350f;
 }
 
 body.pg-mode #add-task-btn:hover {
-  background: #4a9428;
+  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
 }
 
 body.pg-mode .timer-btn.primary {
-  background: #56ab2f;
+  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
+  color: #17350f;
 }
 
 body.pg-mode .timer-btn.primary:hover:not(:disabled) {
-  background: #4a9428;
+  background: linear-gradient(135deg, #ff89cf, #71d8ff, #feeaf8);
 }
 
 body.pg-mode .stat-card {
-  background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
+  border-color: #3b0be873;
 }
 
 .tagline {
   font-size: 1em;
   opacity: 0.9;
+}
+
+body:not(.pg-mode) .tagline {
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 2px solid #0d0d0d;
+  background:
+    linear-gradient(rgba(245, 245, 245, 0.86), rgba(245, 245, 245, 0.86)),
+    url("./assets/textures/dirty-paper.png") center/cover;
+  display: inline-block;
 }
 
 /* Card layout (no tab bar) */
@@ -219,15 +349,33 @@ main {
   grid-column: 1 / -1;
 }
 
+.timer-stats-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.timer-stats-row #timer,
+.timer-stats-row #stats {
+  grid-column: auto;
+}
+
+#completedSection {
+  grid-column: 1 / -1;
+}
+
 .tab-content {
   display: block;
   animation: fadeIn 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 2px solid rgba(26, 26, 26, 0.45);
   border-radius: 12px;
   padding: 18px;
   background:
     linear-gradient(rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.86)),
     url("./assets/textures/dirty-paper.png") center/cover;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 
 body.pg-mode .tab-content {
@@ -241,6 +389,10 @@ body.pg-mode .tab-content {
       rgba(195, 107, 255, 0.22)
     ),
     rgba(255, 255, 255, 0.9);
+  border-color: transparent;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.7),
+    0 0 0 4px rgba(255, 124, 203, 0.35);
 }
 
 @keyframes fadeIn {
@@ -296,7 +448,7 @@ body.pg-mode .task-count {
 }
 
 .task-tab-btn {
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(0, 0, 0, 0.4);
   background: rgba(255, 255, 255, 0.85);
   border-radius: 999px;
   padding: 6px 12px;
@@ -305,8 +457,9 @@ body.pg-mode .task-count {
 }
 
 .task-tab-btn.active {
-  border-color: #d21c1c;
-  box-shadow: inset 0 -2px 0 #d21c1c;
+  border-color: #d21ccf;
+  color: #000000;
+  box-shadow: inset 0 -2px 0 #801cd2;
 }
 
 .rename-tab-btn {
@@ -321,6 +474,15 @@ body.pg-mode .task-count {
 body.pg-mode .rename-tab-btn {
   border-color: rgba(36, 86, 204, 0.35);
   color: #2456cc;
+}
+
+.task-item.selected {
+  outline: 2px dashed #8b1111;
+  outline-offset: 2px;
+}
+
+body.pg-mode .task-item.selected {
+  outline-color: #ff66bf;
 }
 
 /* Input validation error */
@@ -379,7 +541,7 @@ footer {
 
 #add-task-btn {
   padding: 12px 20px;
-  background: #667eea;
+  background: #782a2a;
   color: white;
   border: none;
   border-radius: 8px;
@@ -560,6 +722,7 @@ footer {
   display: flex;
   gap: 10px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .preset-btn {
@@ -576,6 +739,12 @@ footer {
   background: #667eea;
   color: white;
   border-color: #667eea;
+}
+
+.timer-btn--task {
+  margin-top: 14px;
+  width: min(220px, 100%);
+  align-self: center;
 }
 
 .timer-running .time-left {
@@ -597,12 +766,82 @@ body:not(.pg-mode) #timer .time-left {
   color: #f1f1f1;
 }
 
+/* SHIT mode: apply timer treatment to all key cards + titles in anarchy */
+body:not(.pg-mode) #tasks,
+body:not(.pg-mode) #stats,
+body:not(.pg-mode) #completedSection {
+  background:
+    linear-gradient(rgba(34, 34, 34, 0.62), rgba(34, 34, 34, 0.62)),
+    url("./assets/textures/dirty-paper.png") center/cover;
+  border-color: rgba(180, 30, 30, 0.35);
+}
+
+body:not(.pg-mode) #tasks h2,
+body:not(.pg-mode) #stats h2,
+body:not(.pg-mode) #completedTitle,
+body:not(.pg-mode) #timer h2,
+body:not(.pg-mode) #taskTimerModal .modal-title {
+  font-family: "anarchy", "Punk2", sans-serif;
+  font-weight: 400;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  color: #f1f1f1;
+  letter-spacing: 1px;
+}
+
+body:not(.pg-mode) #tasks .task-count,
+body:not(.pg-mode) #stats .stat-label,
+body:not(.pg-mode) #stats .stat-number,
+body:not(.pg-mode) #completedSection {
+  color: #f1f1f1;
+}
+
+body:not(.pg-mode) #aboutOverlay h2 {
+  font-family: "anarchy", "Punk2", sans-serif;
+  color: #1f1f1f;
+}
+
+body:not(.pg-mode) .task-tab-btn,
+body:not(.pg-mode) .rename-tab-btn {
+  font-family: "Punk2";
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+
+body:not(.pg-mode) .task-tab-btn.active {
+  border-color: #8b1111;
+  box-shadow: inset 0 -2px 0 #8b1111;
+}
+
+body:not(.pg-mode) .timer-running .time-left {
+  font-size: clamp(4.4rem, 15vw, 8rem);
+  font-family: "anarchy", "Punk2", sans-serif;
+  color: #ffffff;
+}
+
+body:not(.pg-mode) .completed-tab-group li {
+  font-size: 1.12rem;
+  line-height: 1.5;
+}
+
+body:not(.pg-mode) .stat-card {
+  background:
+    linear-gradient(rgba(34, 34, 34, 0.62), rgba(34, 34, 34, 0.62)),
+    url("./assets/textures/dirty-paper.png") center/cover;
+  border-color: rgba(180, 30, 30, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+body:not(.pg-mode) .stat-number,
+body:not(.pg-mode) .stat-label {
+  color: #f1f1f1;
+}
+
 body:not(.pg-mode) .timer-btn.primary {
-  background: #c21919;
+  background: #8b1111;
 }
 
 body:not(.pg-mode) .timer-btn.primary:hover:not(:disabled) {
-  background: #a11414;
+  background: #6f0e0e;
 }
 
 body:not(.pg-mode) .timer-btn.secondary {
@@ -643,7 +882,10 @@ body.pg-mode #timer {
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+    url("./assets/textures/dirty-paper.png") center/cover;
+  border: 2px solid rgba(22, 22, 22, 0.35);
   color: white;
   padding: 30px;
   border-radius: 15px;
@@ -656,11 +898,12 @@ body.pg-mode #timer {
   font-size: 3em;
   font-weight: 700;
   margin-bottom: 10px;
+  color: #1f1f1f;
 }
 
 .stat-label {
   font-size: 1.1em;
-  opacity: 0.9;
+  color: #2c2c2c;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -686,14 +929,231 @@ body.pg-mode #timer {
 
 /* Modal Container */
 .modal {
-  background: white;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+    url("./assets/textures/dirty-paper.png") center/cover;
   border-radius: 20px;
+  border: 2px solid rgba(16, 16, 16, 0.45);
   padding: 40px;
   max-width: 500px;
   width: 90%;
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   animation: scaleIn 0.3s ease;
+}
+
+body.pg-mode .modal {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.22),
+      rgba(255, 217, 61, 0.22),
+      rgba(107, 255, 154, 0.22),
+      rgba(107, 180, 255, 0.22),
+      rgba(195, 107, 255, 0.22)
+    ),
+    rgba(255, 255, 255, 0.93);
+  border-color: rgba(255, 124, 203, 0.55);
+}
+
+.completed-section {
+  margin-top: 20px;
+  border-top: 2px solid rgba(0, 0, 0, 0.18);
+  padding-top: 16px;
+}
+
+#completedTitle {
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  width: 100%;
+  text-align: center;
+}
+
+.completed-by-tab {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.completed-tab-group {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.completed-tab-group h4 {
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.completed-tab-group ul {
+  padding-left: 18px;
+}
+
+.completed-tab-group li {
+  font-size: 1.08rem;
+  line-height: 1.45;
+}
+
+.completed-tab-empty {
+  opacity: 0.8;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.timer-dials {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 14px 0 18px;
+}
+
+.timer-dials label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 700;
+  align-items: center;
+}
+
+.timer-dials select {
+  min-width: 70px;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.floating-timer {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 9998;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+.floating-timer.is-hidden {
+  display: none;
+}
+
+.floating-timer__time {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.floating-timer__task {
+  font-size: 0.9rem;
+}
+
+.focus-floating-clock {
+  position: fixed;
+  left: 14px;
+  bottom: 14px;
+  z-index: 9998;
+  min-width: 180px;
+  padding: 10px 14px;
+  border-radius: 12px;
+}
+
+.focus-floating-clock__label {
+  font-size: 0.78rem;
+  opacity: 0.9;
+}
+
+.focus-floating-clock__time {
+  font-size: 2rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+body:not(.pg-mode) .focus-floating-clock {
+  background:
+    linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)),
+    url("./assets/textures/dirty-paper.png") center/cover;
+  border: 2px solid rgba(139, 17, 17, 0.65);
+  color: #fff;
+}
+
+body:not(.pg-mode) .focus-floating-clock__time {
+  font-family: "anarchy", "Punk2", sans-serif;
+}
+
+body.pg-mode .focus-floating-clock {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(86, 214, 111, 0.42),
+      rgba(113, 216, 255, 0.42),
+      rgba(157, 232, 107, 0.42)
+    ),
+    rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(110, 201, 133, 0.55);
+  color: #214626;
+}
+
+.about-modal {
+  max-width: 760px;
+}
+
+.about-title {
+  margin-bottom: 10px;
+}
+
+.about-intro {
+  margin-bottom: 14px;
+}
+
+.about-features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.about-features section {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.about-features h3 {
+  margin-bottom: 6px;
+}
+
+.about-features ul {
+  padding-left: 18px;
+}
+
+body:not(.pg-mode) .app-title,
+body:not(.pg-mode) .utility-btn,
+body:not(.pg-mode) .pg-switch {
+  border: 2px solid rgba(20, 20, 20, 0.65);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
+}
+
+body.pg-mode .app-title,
+body.pg-mode .utility-btn,
+body.pg-mode .pg-switch {
+  border: 2px solid #ff89cf;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65);
+}
+
+body.pg-mode .about-modal {
+  color: #224;
+}
+
+body.pg-mode .about-features section {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 124, 203, 0.45);
+}
+
+.is-hidden {
+  display: none !important;
 }
 
 @keyframes scaleIn {
@@ -807,23 +1267,12 @@ body.pg-mode #timer {
 
 /* PG Mode Modal Styling */
 body.pg-mode .btn--primary {
-  background: #56ab2f;
+  background: linear-gradient(135deg, #56d66f, #71d8ff, #9de86b);
+  color: #17350f;
 }
 
 body.pg-mode .btn--primary:hover {
-  background: #4a9428;
-}
-
-/* Task item animations */
-@keyframes slideOut {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(20px);
-  }
+  background: linear-gradient(135deg, #49c75f, #5ec3ee, #86d95a);
 }
 
 /* =====================================================
@@ -870,7 +1319,8 @@ body.pg-mode .btn--primary:hover {
 }
 
 body.pg-mode .task-complete-card {
-  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+  background: linear-gradient(135deg, #56d66f, #71d8ff, #9de86b);
+  color: #17350f;
 }
 
 @media (max-width: 768px) {
@@ -912,34 +1362,31 @@ body.pg-mode .task-complete-card {
     padding: 20px 15px;
   }
 
-  .utility-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 12px;
-  }
-
-  .utility-btn {
-    border: none;
-    border-radius: 999px;
-    padding: 8px 14px;
-    font-weight: 700;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.85);
-    color: #222;
-  }
-
-  body.pg-mode .utility-btn {
-    background: rgba(255, 255, 255, 0.95);
-    color: #2456cc;
-  }
-
-  .utility-modal {
-    max-width: 620px;
-  }
-
   .tab-content {
     padding: 20px 15px;
+  }
+
+  .timer-stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .about-features {
+    grid-template-columns: 1fr;
+  }
+
+  .completed-by-tab {
+    grid-template-columns: 1fr;
+  }
+
+  .timer-btn--task {
+    width: 100%;
+  }
+
+  .focus-floating-clock {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    min-width: 0;
   }
 
   .task-input-container {
@@ -1008,6 +1455,12 @@ body.pg-mode .task-complete-card {
   }
 }
 
+@media (min-width: 769px) and (max-width: 1024px) {
+  .completed-by-tab {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* Tablet adjustments */
 @media (min-width: 769px) and (max-width: 1024px) {
   header h1 {
@@ -1023,11 +1476,6 @@ body.pg-mode .task-complete-card {
 
   .tab-content {
     padding: 40px;
-  }
-
-  /* Hover effects for desktop */
-  .task-item:hover {
-    transform: translateX(5px);
   }
 }
 

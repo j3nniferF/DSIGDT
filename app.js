@@ -10,6 +10,14 @@ let timeLeft = 25 * 60; // 25 minutes in seconds
 let isRunning = false;
 let stats = { completedTasks: 0, timerSessions: 0 };
 let audioCtx = null;
+let selectedTaskId = null;
+const taskTimerState = {
+  intervalId: null,
+  remainingSeconds: 0,
+  initialSeconds: 0,
+  running: false,
+  taskId: null,
+};
 
 const CONFETTI_COLORS = {
   pg: ["#ff6ad5", "#ffd93d", "#7bff8a", "#65b8ff", "#b28dff", "#ffffff"],
@@ -45,6 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeQuotes();
   initializeTabRename();
   initializeUtilityModals();
+  initializeTaskTimer();
+  initializePgMode();
+  initializePrizeModal();
 });
 
 /**
@@ -115,6 +126,9 @@ function initializeTasks() {
     const li = document.createElement("li");
     li.className = "task-item";
     li.dataset.id = task.id;
+    if (task.id === selectedTaskId) {
+      li.classList.add("selected");
+    }
     if (task.completed) {
       li.classList.add("completed");
     }
@@ -128,12 +142,19 @@ function initializeTasks() {
     // Create label
     const label = document.createElement("label");
     label.textContent = task.text;
+    label.addEventListener("click", () => {
+      selectedTaskId = task.id;
+      rerenderTaskList();
+      syncTaskTimerSelectionUI();
+    });
     label.addEventListener("dblclick", () => {
       const next = prompt("Edit task:", task.text);
       if (!next) return;
       task.text = next.trim() || task.text;
       saveTasks();
       rerenderTaskList();
+      renderCompletedByTab();
+      syncTaskTimerSelectionUI();
     });
 
     // Create delete button
@@ -153,7 +174,7 @@ function initializeTasks() {
   function rerenderTaskList() {
     taskList.innerHTML = "";
     tasks
-      .filter((t) => t.tabId === activeTabId)
+      .filter((t) => t.tabId === activeTabId && !t.completed)
       .forEach((task) => renderTask(task));
     updateTaskCount();
   }
@@ -195,6 +216,9 @@ function initializeTasks() {
       }
 
       saveTasks(); // Save to localStorage
+      rerenderTaskList();
+      renderCompletedByTab();
+      syncTaskTimerSelectionUI();
     }
   }
 
@@ -204,8 +228,13 @@ function initializeTasks() {
    */
   function deleteTask(taskId) {
     tasks = tasks.filter((t) => t.id !== taskId);
+    if (selectedTaskId === taskId) {
+      selectedTaskId = null;
+    }
     saveTasks();
     rerenderTaskList();
+    renderCompletedByTab();
+    syncTaskTimerSelectionUI();
   }
 
   /**
@@ -240,7 +269,12 @@ function initializeTasks() {
         tasks = [];
       }
     }
+    if (selectedTaskId && !tasks.some((task) => task.id === selectedTaskId)) {
+      selectedTaskId = null;
+    }
     rerenderTaskList();
+    renderCompletedByTab();
+    syncTaskTimerSelectionUI();
   }
 
   /**
@@ -254,10 +288,6 @@ function initializeTasks() {
       console.error("Error saving tasks:", error);
     }
   }
-
-  // Make renderTask globally accessible for PG mode
-  window.renderTaskGlobal = renderTask;
-  window.tasksInitialized = true;
 }
 
 /**
@@ -270,6 +300,8 @@ function initializeTimer() {
   const resetBtn = document.getElementById("reset-btn");
   const presetBtns = document.querySelectorAll(".preset-btn");
   const timerSection = document.querySelector(".timer-section");
+  const floatingClock = document.getElementById("focusFloatingClock");
+  const floatingClockTime = document.getElementById("focusFloatingClockTime");
 
   // Start button
   startBtn.addEventListener("click", startTimer);
@@ -299,6 +331,10 @@ function initializeTimer() {
       timerSection.classList.add("timer-running");
       startBtn.disabled = true;
       pauseBtn.disabled = false;
+      if (floatingClock) floatingClock.classList.remove("is-hidden");
+      if (floatingClockTime)
+        floatingClockTime.textContent =
+          document.getElementById("time-left").textContent;
 
       timerInterval = setInterval(() => {
         timeLeft--;
@@ -321,6 +357,7 @@ function initializeTimer() {
       clearInterval(timerInterval);
       startBtn.disabled = false;
       pauseBtn.disabled = true;
+      if (floatingClock) floatingClock.classList.add("is-hidden");
     }
   }
 
@@ -349,6 +386,9 @@ function initializeTimer() {
     const seconds = timeLeft % 60;
     const display = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     document.getElementById("time-left").textContent = display;
+    if (floatingClockTime && isRunning) {
+      floatingClockTime.textContent = display;
+    }
   }
 
   /**
@@ -372,11 +412,307 @@ function initializeTimer() {
     setTimeout(() => {
       document.getElementById("timer-label").textContent = "Focus Session";
       setTimer(25);
+      if (floatingClock) floatingClock.classList.add("is-hidden");
     }, 3000);
   }
 
   // Initialize display
   updateDisplay();
+}
+
+function getSelectedTask() {
+  return tasks.find((task) => task.id === selectedTaskId) || null;
+}
+
+function getTabNameById(tabId) {
+  const tab = tabs.find((item) => item.id === tabId);
+  return tab ? tab.name : "UNKNOWN";
+}
+
+function saveTasksForCurrentMode() {
+  localStorage.setItem(getModeStorageKey(), JSON.stringify(tasks));
+}
+
+function setCompletedTitleForMode() {
+  const completedTitle = document.getElementById("completedTitle");
+  if (!completedTitle) return;
+  completedTitle.textContent = isPgMode
+    ? "NEAT THINGS I GOT DONE TODAY"
+    : "SHIT I DID";
+}
+
+function renderCompletedByTab() {
+  const host = document.getElementById("completedByTab");
+  if (!host) return;
+
+  host.innerHTML = "";
+  tabs.forEach((tab) => {
+    const completed = tasks.filter(
+      (task) => task.tabId === tab.id && task.completed,
+    );
+
+    const group = document.createElement("section");
+    group.className = "completed-tab-group";
+
+    const title = document.createElement("h4");
+    title.textContent = tab.name;
+    group.appendChild(title);
+
+    if (completed.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "completed-tab-empty";
+      empty.textContent = "No completed tasks yet.";
+      group.appendChild(empty);
+    } else {
+      const list = document.createElement("ul");
+      completed.forEach((task) => {
+        const li = document.createElement("li");
+        li.textContent = task.text;
+        list.appendChild(li);
+      });
+      group.appendChild(list);
+    }
+
+    host.appendChild(group);
+  });
+}
+
+function formatSecondsToHms(totalSeconds) {
+  const seconds = Math.max(0, totalSeconds);
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+}
+
+function syncTaskTimerSelectionUI() {
+  const taskNameEl = document.getElementById("currentTaskName");
+  const tabNameEl = document.getElementById("currentTabName");
+  const floatingTaskEl = document.getElementById("floatingTimerTask");
+  const doneTaskEl = document.getElementById("timerDoneTaskName");
+  const task = getSelectedTask();
+
+  if (tabNameEl) {
+    tabNameEl.textContent = getTabNameById(activeTabId);
+  }
+
+  const selectedTaskText = task ? task.text : "Select a task first";
+  if (taskNameEl) taskNameEl.textContent = selectedTaskText;
+  if (floatingTaskEl) floatingTaskEl.textContent = selectedTaskText;
+  if (doneTaskEl) doneTaskEl.textContent = selectedTaskText;
+}
+
+function initializeTaskTimer() {
+  const overlay = document.getElementById("taskTimerOverlay");
+  const closeBtn = document.getElementById("closeTaskTimerBtn");
+  const openBtn = document.getElementById("openTaskTimerBtn");
+  const doneOverlay = document.getElementById("timerCompleteOverlay");
+  const doneYesBtn = document.getElementById("timerDoneYesBtn");
+  const plusFiveBtn = document.getElementById("timerPlusFiveBtn");
+  const floating = document.getElementById("floatingTimer");
+  const floatingTime = document.getElementById("floatingTimerTime");
+
+  const dialHours = document.getElementById("dialHours");
+  const dialMinutes = document.getElementById("dialMinutes");
+  const dialSeconds = document.getElementById("dialSeconds");
+
+  const startBtn = document.getElementById("taskTimerStartBtn");
+  const pauseBtn = document.getElementById("taskTimerPauseBtn");
+  const resetBtn = document.getElementById("taskTimerResetBtn");
+
+  if (
+    !overlay ||
+    !openBtn ||
+    !closeBtn ||
+    !doneOverlay ||
+    !doneYesBtn ||
+    !plusFiveBtn ||
+    !floating ||
+    !floatingTime ||
+    !dialHours ||
+    !dialMinutes ||
+    !dialSeconds ||
+    !startBtn ||
+    !pauseBtn ||
+    !resetBtn
+  ) {
+    return;
+  }
+
+  function setDialOptions(selectEl) {
+    if (selectEl.options.length > 0) return;
+    for (let i = 0; i <= 9; i += 1) {
+      const option = document.createElement("option");
+      option.value = `${i}`;
+      option.textContent = `${i}`;
+      selectEl.appendChild(option);
+    }
+  }
+
+  function readDialSeconds() {
+    const hrs = Number.parseInt(dialHours.value, 10) || 0;
+    const mins = Number.parseInt(dialMinutes.value, 10) || 0;
+    const secs = Number.parseInt(dialSeconds.value, 10) || 0;
+    return hrs * 3600 + mins * 60 + secs;
+  }
+
+  function updateFloating() {
+    floatingTime.textContent = formatSecondsToHms(
+      taskTimerState.remainingSeconds,
+    );
+    syncTaskTimerSelectionUI();
+  }
+
+  function stopInterval() {
+    if (taskTimerState.intervalId) {
+      clearInterval(taskTimerState.intervalId);
+    }
+    taskTimerState.intervalId = null;
+    taskTimerState.running = false;
+    startBtn.textContent = "Start";
+    pauseBtn.disabled = true;
+  }
+
+  function beginCountdown() {
+    if (taskTimerState.remainingSeconds <= 0) {
+      const fromDial = readDialSeconds();
+      taskTimerState.remainingSeconds = fromDial;
+      taskTimerState.initialSeconds = fromDial;
+    }
+    if (taskTimerState.remainingSeconds <= 0) {
+      alert("Set the timer above zero.");
+      return;
+    }
+
+    if (!taskTimerState.taskId) {
+      alert("Select a task first.");
+      return;
+    }
+
+    taskTimerState.running = true;
+    startBtn.textContent = "Stop";
+    pauseBtn.disabled = false;
+    floating.classList.remove("is-hidden");
+    updateFloating();
+
+    taskTimerState.intervalId = setInterval(() => {
+      taskTimerState.remainingSeconds -= 1;
+      updateFloating();
+
+      if (taskTimerState.remainingSeconds <= 0) {
+        stopInterval();
+        incrementTimerSessions();
+        celebrateByMode(2500);
+        playModeSound("timerDone");
+        doneOverlay.classList.remove("is-hidden");
+      }
+    }, 1000);
+  }
+
+  function resetToInitial() {
+    stopInterval();
+    taskTimerState.remainingSeconds = taskTimerState.initialSeconds;
+    updateFloating();
+  }
+
+  function markCurrentTaskDone() {
+    const task = tasks.find((item) => item.id === taskTimerState.taskId);
+    if (!task) return;
+    if (!task.completed) {
+      task.completed = true;
+      incrementCompletedTasks();
+      playModeSound("taskComplete");
+      celebrateByMode(1800);
+    }
+    saveTasksForCurrentMode();
+    if (typeof window.rerenderTaskList === "function") {
+      window.rerenderTaskList();
+    }
+    renderCompletedByTab();
+    selectedTaskId = null;
+    syncTaskTimerSelectionUI();
+    if (areAllTasksComplete()) {
+      showRewardModal();
+    }
+  }
+
+  setDialOptions(dialHours);
+  setDialOptions(dialMinutes);
+  setDialOptions(dialSeconds);
+  dialHours.value = "0";
+  dialMinutes.value = "2";
+  dialSeconds.value = "5";
+  taskTimerState.remainingSeconds = readDialSeconds();
+  taskTimerState.initialSeconds = taskTimerState.remainingSeconds;
+  updateFloating();
+
+  openBtn.addEventListener("click", () => {
+    const selected = getSelectedTask();
+    if (!selected) {
+      alert("Select a task first by clicking its text.");
+      return;
+    }
+    taskTimerState.taskId = selected.id;
+    syncTaskTimerSelectionUI();
+    overlay.classList.remove("is-hidden");
+  });
+
+  closeBtn.addEventListener("click", () => {
+    overlay.classList.add("is-hidden");
+  });
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) overlay.classList.add("is-hidden");
+  });
+
+  startBtn.addEventListener("click", () => {
+    if (taskTimerState.running) {
+      stopInterval();
+      taskTimerState.remainingSeconds = taskTimerState.initialSeconds;
+      updateFloating();
+      floating.classList.add("is-hidden");
+      return;
+    }
+    beginCountdown();
+  });
+
+  pauseBtn.addEventListener("click", () => {
+    stopInterval();
+  });
+
+  resetBtn.addEventListener("click", () => {
+    taskTimerState.initialSeconds = readDialSeconds();
+    resetToInitial();
+  });
+
+  [dialHours, dialMinutes, dialSeconds].forEach((selectEl) => {
+    selectEl.addEventListener("change", () => {
+      if (taskTimerState.running) return;
+      taskTimerState.initialSeconds = readDialSeconds();
+      taskTimerState.remainingSeconds = taskTimerState.initialSeconds;
+      updateFloating();
+    });
+  });
+
+  doneYesBtn.addEventListener("click", () => {
+    doneOverlay.classList.add("is-hidden");
+    markCurrentTaskDone();
+    stopInterval();
+    floating.classList.add("is-hidden");
+    overlay.classList.add("is-hidden");
+  });
+
+  plusFiveBtn.addEventListener("click", () => {
+    doneOverlay.classList.add("is-hidden");
+    taskTimerState.remainingSeconds += 5 * 60;
+    taskTimerState.initialSeconds = taskTimerState.remainingSeconds;
+    updateFloating();
+    beginCountdown();
+  });
+
+  doneOverlay.addEventListener("click", (event) => {
+    if (event.target === doneOverlay) doneOverlay.classList.add("is-hidden");
+  });
 }
 
 function celebrateByMode(duration = 2500) {
@@ -412,10 +748,7 @@ function playModeSound(type) {
 
       gain.gain.setValueAtTime(0.0001, now + index * 0.12);
       gain.gain.exponentialRampToValueAtTime(0.06, now + index * 0.12 + 0.01);
-      gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + index * 0.12 + 0.11,
-      );
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.12 + 0.11);
 
       osc.connect(gain);
       gain.connect(audioCtx.destination);
@@ -452,18 +785,24 @@ function initializeQuotes() {
 
   async function fetchShitModeAdvice() {
     try {
-      // Advice Slip API (no key)
+      // CoinGecko API (no key)
       const response = await fetch(
-        `https://api.adviceslip.com/advice?ts=${Date.now()}`,
+        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true",
       );
       if (!response.ok) {
         throw new Error("API request failed");
       }
 
       const data = await response.json();
-      const advice = data?.slip?.advice;
-      if (advice) {
-        displayMessage(`Advice: ${advice}`);
+      const btc = data?.bitcoin?.usd;
+      const eth = data?.ethereum?.usd;
+      const btcChange = data?.bitcoin?.usd_24h_change;
+
+      if (typeof btc === "number" && typeof eth === "number") {
+        const vibe = btcChange >= 0 ? "up" : "down";
+        displayMessage(
+          `PUNK ECONOMY ${vibe}: BTC $${Math.round(btc).toLocaleString()} | ETH $${Math.round(eth).toLocaleString()} | Get your tasks done anyway.`,
+        );
         return;
       }
     } catch (error) {
@@ -787,6 +1126,7 @@ function renderTaskTabs() {
       if (typeof window.rerenderTaskList === "function") {
         window.rerenderTaskList();
       }
+      syncTaskTimerSelectionUI();
     });
     btn.addEventListener("dblclick", () => {
       const next = prompt("Rename tab:", tab.name);
@@ -794,6 +1134,8 @@ function renderTaskTabs() {
       tab.name = next.trim() || tab.name;
       saveTabs();
       renderTaskTabs();
+      renderCompletedByTab();
+      syncTaskTimerSelectionUI();
     });
     tabsEl.appendChild(btn);
   });
@@ -809,6 +1151,8 @@ function initializeTabRename() {
     tab.name = next.trim() || tab.name;
     saveTabs();
     renderTaskTabs();
+    renderCompletedByTab();
+    syncTaskTimerSelectionUI();
   });
 }
 
@@ -817,7 +1161,7 @@ function initializeTabRename() {
  */
 function setPgMode(pgMode) {
   isPgMode = pgMode;
-  const mode = pgMode ? "pg" : "punk";
+  const mode = pgMode ? "pg" : "shit";
 
   document.body.classList.toggle("pg-mode", pgMode);
 
@@ -828,6 +1172,7 @@ function setPgMode(pgMode) {
   if (toggle) toggle.checked = !pgMode;
 
   applyThemeText(mode);
+  setCompletedTitleForMode();
   playModeSound("modeSwitch");
   localStorage.setItem(PG_MODE_KEY, pgMode ? "1" : "0");
   if (window.refreshQuoteGlobal) {
@@ -845,13 +1190,19 @@ function setPgMode(pgMode) {
   if (savedTasks) {
     try {
       tasks = JSON.parse(savedTasks);
-      if (typeof window.rerenderTaskList === "function") {
-        window.rerenderTaskList();
-      }
+      tasks = tasks.map((task) => ({
+        ...task,
+        tabId: task.tabId || DEFAULT_TABS[0].id,
+      }));
     } catch (e) {
       tasks = [];
     }
   }
+  if (typeof window.rerenderTaskList === "function") {
+    window.rerenderTaskList();
+  }
+  renderCompletedByTab();
+  syncTaskTimerSelectionUI();
 }
 
 /**
@@ -872,51 +1223,30 @@ function initializePgMode() {
 }
 
 function initializeUtilityModals() {
-  const statsOverlay = document.getElementById("statsOverlay");
+  const openAboutBtn = document.getElementById("openAboutBtn");
+  const closeAboutBtn = document.getElementById("closeAboutBtn");
   const aboutOverlay = document.getElementById("aboutOverlay");
 
-  const openStatsBtn = document.getElementById("openStatsBtn");
-  const openAboutBtn = document.getElementById("openAboutBtn");
-  const closeStatsBtn = document.getElementById("closeStatsBtn");
-  const closeAboutBtn = document.getElementById("closeAboutBtn");
-
-  if (openStatsBtn && statsOverlay) {
-    openStatsBtn.addEventListener("click", () => {
-      updateStatsDisplay();
-      statsOverlay.classList.remove("is-hidden");
-    });
-  }
-
   if (openAboutBtn && aboutOverlay) {
-    openAboutBtn.addEventListener("click", () => {
-      aboutOverlay.classList.remove("is-hidden");
-    });
-  }
-
-  if (closeStatsBtn && statsOverlay) {
-    closeStatsBtn.addEventListener("click", () => {
-      statsOverlay.classList.add("is-hidden");
-    });
+    openAboutBtn.addEventListener("click", () =>
+      aboutOverlay.classList.remove("is-hidden"),
+    );
   }
 
   if (closeAboutBtn && aboutOverlay) {
-    closeAboutBtn.addEventListener("click", () => {
-      aboutOverlay.classList.add("is-hidden");
-    });
+    closeAboutBtn.addEventListener("click", () =>
+      aboutOverlay.classList.add("is-hidden"),
+    );
   }
 
-  [statsOverlay, aboutOverlay].forEach((overlay) => {
-    if (!overlay) return;
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) overlay.classList.add("is-hidden");
+  if (aboutOverlay) {
+    aboutOverlay.addEventListener("click", (event) => {
+      if (event.target === aboutOverlay) {
+        aboutOverlay.classList.add("is-hidden");
+      }
     });
-  });
+  }
 }
-
-// Initialize on load
-document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(initializePgMode, 100);
-});
 
 /* =====================================================
    REWARD MODAL FUNCTIONALITY
@@ -1087,8 +1417,3 @@ function initializePrizeModal() {
     if (e.key === "Escape") closePrizeModal();
   });
 }
-
-// Initialize prize modal on load
-document.addEventListener("DOMContentLoaded", () => {
-  initializePrizeModal();
-});
