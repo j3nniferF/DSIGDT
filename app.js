@@ -30,37 +30,12 @@ const UI_TEXT = {
   },
 };
 
-// Tab Navigation
 document.addEventListener("DOMContentLoaded", () => {
   loadStats(); // Load stats first
-  initializeTabs();
   initializeTasks();
   initializeTimer();
   initializeQuotes();
 });
-
-/**
- * Initialize tab navigation system
- * Allows users to switch between Tasks, Timer, and Stats views
- */
-function initializeTabs() {
-  const tabButtons = document.querySelectorAll(".tab-button");
-  const tabContents = document.querySelectorAll(".tab-content");
-
-  tabButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const targetTab = button.getAttribute("data-tab");
-
-      // Remove active class from all tabs and contents
-      tabButtons.forEach((btn) => btn.classList.remove("active"));
-      tabContents.forEach((content) => content.classList.remove("active"));
-
-      // Add active class to clicked tab and corresponding content
-      button.classList.add("active");
-      document.getElementById(targetTab).classList.add("active");
-    });
-  });
-}
 
 /**
  * Initialize task management system
@@ -394,47 +369,71 @@ function initializeTimer() {
  * Uses Bored API for activity suggestions (no API key needed!)
  */
 function initializeQuotes() {
-  // Fallback motivational messages in case API is unavailable
-  const fallbackMessages = [
-    "You're crushing it! Keep going! 💪",
-    "Hell yeah! You're doing great! 🎉",
-    "Look at you being all productive! ✨",
-    "You're on fire today! 🔥",
-    "Keep up the awesome work! 🌟",
-    "You got this! Stay focused! 🎯",
-    "Productivity level: LEGENDARY! 👑",
-    "Nothing can stop you now! 🚀",
-    "You're making it happen! ⚡",
-    "Absolutely killing it! 💥",
+  const fallbackShitMode = [
+    "Do one thing now. Stop negotiating with yourself.",
+    "Small step. Right now. Momentum beats mood.",
+    "You started this for a reason. Keep going.",
+    "Pick the ugliest task and finish it first.",
+    "Progress counts more than perfection today.",
+  ];
+  const fallbackPgMode = [
+    "Fun fact: Tiny progress done daily compounds fast.",
+    "Fun fact: Focus is easier when tasks are specific.",
+    "Fun fact: Breaks help your brain retain more.",
+    "Fun fact: Checking off one task boosts motivation.",
+    "Fun fact: Consistency usually beats intensity.",
   ];
 
   const messageElement = document.getElementById("quote");
+  if (!messageElement) return;
 
-  /**
-   * Fetch activity suggestion from Bored API
-   */
-  async function fetchMessage() {
+  async function fetchShitModeAdvice() {
     try {
-      // Bored API - suggests random activities (no API key required!)
-      const response = await fetch("https://www.boredapi.com/api/activity");
-
+      // Advice Slip API (no key)
+      const response = await fetch(
+        `https://api.adviceslip.com/advice?ts=${Date.now()}`
+      );
       if (!response.ok) {
         throw new Error("API request failed");
       }
 
       const data = await response.json();
-
-      if (data && data.activity) {
-        displayMessage(`💡 Need a break? ${data.activity}`);
+      const advice = data?.slip?.advice;
+      if (advice) {
+        displayMessage(`Advice: ${advice}`);
         return;
       }
     } catch (error) {
-      console.log("Using fallback message due to API error:", error.message);
+      console.log("Using SHIT mode fallback message:", error.message);
     }
 
-    // Fallback to random message
     const randomMessage =
-      fallbackMessages[Math.floor(Math.random() * fallbackMessages.length)];
+      fallbackShitMode[Math.floor(Math.random() * fallbackShitMode.length)];
+    displayMessage(randomMessage);
+  }
+
+  async function fetchPgModeFact() {
+    try {
+      // Useless Facts API (no key)
+      const response = await fetch(
+        "https://uselessfacts.jsph.pl/api/v2/facts/random?language=en"
+      );
+      if (!response.ok) {
+        throw new Error("API request failed");
+      }
+
+      const data = await response.json();
+      const fact = data?.text;
+      if (fact) {
+        displayMessage(`Fun fact: ${fact}`);
+        return;
+      }
+    } catch (error) {
+      console.log("Using PG mode fallback message:", error.message);
+    }
+
+    const randomMessage =
+      fallbackPgMode[Math.floor(Math.random() * fallbackPgMode.length)];
     displayMessage(randomMessage);
   }
 
@@ -445,11 +444,20 @@ function initializeQuotes() {
     messageElement.textContent = text;
   }
 
-  // Fetch initial message
-  fetchMessage();
+  async function refreshQuoteByMode() {
+    if (isPgMode) {
+      await fetchPgModeFact();
+      return;
+    }
+    await fetchShitModeAdvice();
+  }
 
-  // Refresh message every 30 seconds
-  setInterval(fetchMessage, 30000);
+  // Expose refresh function so mode switch can update immediately
+  window.refreshQuoteGlobal = refreshQuoteByMode;
+
+  // Fetch initial message and refresh every 30 seconds
+  refreshQuoteByMode();
+  setInterval(refreshQuoteByMode, 30000);
 }
 
 /**
@@ -557,13 +565,6 @@ function updateStatsDisplay() {
   }
 }
 
-// Update stats display when stats tab is clicked
-document.addEventListener("DOMContentLoaded", () => {
-  const statsTab = document.querySelector('[data-tab="stats"]');
-  if (statsTab) {
-    statsTab.addEventListener("click", updateStatsDisplay);
-  }
-});
 
 /* =====================================================
    PG MODE TOGGLE FUNCTIONALITY
@@ -692,6 +693,9 @@ function setPgMode(pgMode) {
 
   applyThemeText(mode);
   localStorage.setItem(PG_MODE_KEY, pgMode ? "1" : "0");
+  if (window.refreshQuoteGlobal) {
+    window.refreshQuoteGlobal();
+  }
 
   // Clear and reload tasks for new mode
   tasks = [];
