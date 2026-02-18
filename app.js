@@ -9,6 +9,12 @@ let timerInterval = null;
 let timeLeft = 25 * 60; // 25 minutes in seconds
 let isRunning = false;
 let stats = { completedTasks: 0, timerSessions: 0 };
+let audioCtx = null;
+
+const CONFETTI_COLORS = {
+  pg: ["#ff6ad5", "#ffd93d", "#7bff8a", "#65b8ff", "#b28dff", "#ffffff"],
+  shit: ["#d61f1f", "#8f0f0f", "#5a5a5a", "#2f2f2f", "#151515", "#b3b3b3"],
+};
 
 // UI Text Constants
 const UI_TEXT = {
@@ -32,9 +38,12 @@ const UI_TEXT = {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadStats(); // Load stats first
+  loadTabs();
+  renderTaskTabs();
   initializeTasks();
   initializeTimer();
   initializeQuotes();
+  initializeTabRename();
   initializeUtilityModals();
 });
 
@@ -47,9 +56,6 @@ function initializeTasks() {
   const addTaskBtn = document.getElementById("add-task-btn");
   const taskList = document.getElementById("task-list");
 
-  // Load tasks from localStorage
-  loadTasks();
-
   // Add task on button click
   addTaskBtn.addEventListener("click", addTask);
 
@@ -60,6 +66,9 @@ function initializeTasks() {
     }
   });
 
+  // Load tasks from localStorage
+  loadTasks();
+
   /**
    * Add a new task to the list
    */
@@ -67,7 +76,6 @@ function initializeTasks() {
     const taskText = taskInput.value.trim();
 
     if (taskText === "") {
-      // Visual feedback for empty input
       const errorPlaceholder = isPgMode
         ? UI_TEXT.PG_MODE.TASK_PLACEHOLDER_ERROR
         : UI_TEXT.SHIT_MODE.TASK_PLACEHOLDER_ERROR;
@@ -81,22 +89,20 @@ function initializeTasks() {
         taskInput.classList.remove("input-error");
         taskInput.placeholder = normalPlaceholder;
       }, 2000);
-      return; // Don't add empty tasks
+      return;
     }
 
-    // Create task object
     const task = {
       id: Date.now(),
       text: taskText,
       completed: false,
+      tabId: activeTabId,
     };
 
     tasks.push(task);
-    renderTask(task);
-    saveTasks(); // Save to localStorage
-    updateTaskCount(); // Update task counter
+    saveTasks();
+    rerenderTaskList();
 
-    // Clear input
     taskInput.value = "";
     taskInput.focus();
   }
@@ -122,9 +128,12 @@ function initializeTasks() {
     // Create label
     const label = document.createElement("label");
     label.textContent = task.text;
-    label.addEventListener("click", () => {
-      checkbox.checked = !checkbox.checked;
-      toggleTask(task.id);
+    label.addEventListener("dblclick", () => {
+      const next = prompt("Edit task:", task.text);
+      if (!next) return;
+      task.text = next.trim() || task.text;
+      saveTasks();
+      rerenderTaskList();
     });
 
     // Create delete button
@@ -140,6 +149,15 @@ function initializeTasks() {
 
     taskList.appendChild(li);
   }
+
+  function rerenderTaskList() {
+    taskList.innerHTML = "";
+    tasks
+      .filter((t) => t.tabId === activeTabId)
+      .forEach((task) => renderTask(task));
+    updateTaskCount();
+  }
+  window.rerenderTaskList = rerenderTaskList;
 
   /**
    * Toggle task completion status
@@ -159,7 +177,8 @@ function initializeTasks() {
 
       // Trigger confetti when task is completed (not uncompleted)
       if (!wasCompleted && task.completed) {
-        confetti.celebrate(2000);
+        celebrateByMode(2000);
+        playModeSound("taskComplete");
         incrementCompletedTasks(); // Track stat
         showTaskCompletedNotification(); // Show quick notification
         updateTaskCount(); // Update task counter
@@ -184,28 +203,20 @@ function initializeTasks() {
    * @param {number} taskId - The ID of the task to delete
    */
   function deleteTask(taskId) {
-    // Remove from tasks array
     tasks = tasks.filter((t) => t.id !== taskId);
-    saveTasks(); // Save to localStorage
-    updateTaskCount(); // Update task counter
-
-    // Remove from DOM with animation
-    const taskElement = document.querySelector(`[data-id="${taskId}"]`);
-    if (taskElement) {
-      taskElement.style.animation = "slideOut 0.3s ease";
-      taskElement.addEventListener("animationend", () => {
-        taskElement.remove();
-      });
-    }
+    saveTasks();
+    rerenderTaskList();
   }
 
   /**
    * Update task count display
    */
   function updateTaskCount() {
-    const totalTasks = tasks.length;
-    const completedTasks = tasks.filter((t) => t.completed).length;
+    const currentTabTasks = tasks.filter((t) => t.tabId === activeTabId);
+    const totalTasks = currentTabTasks.length;
+    const completedTasks = currentTabTasks.filter((t) => t.completed).length;
     const taskCountEl = document.getElementById("taskCount");
+
     if (taskCountEl) {
       taskCountEl.textContent = `${completedTasks}/${totalTasks} completed`;
     }
@@ -220,14 +231,16 @@ function initializeTasks() {
     if (savedTasks) {
       try {
         tasks = JSON.parse(savedTasks);
-        // Render all saved tasks
-        tasks.forEach((task) => renderTask(task));
-        updateTaskCount(); // Update counter after loading
+        tasks = tasks.map((task) => ({
+          ...task,
+          tabId: task.tabId || DEFAULT_TABS[0].id,
+        }));
       } catch (error) {
         console.error("Error loading tasks:", error);
         tasks = [];
       }
     }
+    rerenderTaskList();
   }
 
   /**
@@ -346,7 +359,8 @@ function initializeTimer() {
     document.getElementById("timer-label").textContent = "Session Complete! 🎉";
 
     // Trigger confetti celebration
-    confetti.celebrate(3000);
+    celebrateByMode(3000);
+    playModeSound("timerDone");
 
     // Track completed session
     incrementTimerSessions();
@@ -363,6 +377,54 @@ function initializeTimer() {
 
   // Initialize display
   updateDisplay();
+}
+
+function celebrateByMode(duration = 2500) {
+  const mode = isPgMode ? "pg" : "shit";
+  confetti.celebrate(duration, CONFETTI_COLORS[mode]);
+}
+
+function playModeSound(type) {
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+
+    const isPg = isPgMode;
+    const soundMap = {
+      taskComplete: isPg ? [880, 1046] : [220, 165],
+      timerDone: isPg ? [988, 1318, 1760] : [180, 220, 140],
+      modeSwitch: isPg ? [740, 988] : [196, 147],
+    };
+
+    const sequence = soundMap[type] || (isPg ? [880] : [180]);
+    const now = audioCtx.currentTime;
+
+    sequence.forEach((freq, index) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = isPg ? "triangle" : "square";
+      osc.frequency.setValueAtTime(freq, now + index * 0.12);
+
+      gain.gain.setValueAtTime(0.0001, now + index * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.06, now + index * 0.12 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + index * 0.12 + 0.11,
+      );
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + index * 0.12);
+      osc.stop(now + index * 0.12 + 0.11);
+    });
+  } catch (error) {
+    console.log("Audio playback skipped:", error.message);
+  }
 }
 
 /**
@@ -412,48 +474,6 @@ function initializeQuotes() {
       fallbackShitMode[Math.floor(Math.random() * fallbackShitMode.length)];
     displayMessage(randomMessage);
   }
-  function initializeUtilityModals() {
-    const statsOverlay = document.getElementById("statsOverlay");
-    const aboutOverlay = document.getElementById("aboutOverlay");
-
-    const openStatsBtn = document.getElementById("openStatsBtn");
-    const openAboutBtn = document.getElementById("openAboutBtn");
-    const closeStatsBtn = document.getElementById("closeStatsBtn");
-    const closeAboutBtn = document.getElementById("closeAboutBtn");
-
-    if (openStatsBtn && statsOverlay) {
-      openStatsBtn.addEventListener("click", () => {
-        updateStatsDisplay();
-        statsOverlay.classList.remove("is-hidden");
-      });
-    }
-
-    if (openAboutBtn && aboutOverlay) {
-      openAboutBtn.addEventListener("click", () => {
-        aboutOverlay.classList.remove("is-hidden");
-      });
-    }
-
-    if (closeStatsBtn && statsOverlay) {
-      closeStatsBtn.addEventListener("click", () => {
-        statsOverlay.classList.add("is-hidden");
-      });
-    }
-
-    if (closeAboutBtn && aboutOverlay) {
-      closeAboutBtn.addEventListener("click", () => {
-        aboutOverlay.classList.add("is-hidden");
-      });
-    }
-
-    [statsOverlay, aboutOverlay].forEach((overlay) => {
-      if (!overlay) return;
-      overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) overlay.classList.add("is-hidden");
-      });
-    });
-  }
-
   async function fetchPgModeFact() {
     try {
       // Useless Facts API (no key)
@@ -618,8 +638,21 @@ function updateStatsDisplay() {
 const STORAGE_KEY_SHIT = "dsigdt_tasks_shit";
 const STORAGE_KEY_PG = "dsigdt_tasks_pg";
 const PG_MODE_KEY = "dsigdt_pg_mode";
+const TAB_KEY_SHIT = "dsigdt_tabs_shit";
+const TAB_KEY_PG = "dsigdt_tabs_pg";
+const ACTIVE_TAB_KEY_SHIT = "dsigdt_active_tab_shit";
+const ACTIVE_TAB_KEY_PG = "dsigdt_active_tab_pg";
+
+const DEFAULT_TABS = [
+  { id: "tab1", name: "DUE TODAY" },
+  { id: "tab2", name: "NEXT UP" },
+  { id: "tab3", name: "WHEN I CAN" },
+  { id: "tab4", name: "DON'T FORGET" },
+];
 
 let isPgMode = false;
+let tabs = [...DEFAULT_TABS];
+let activeTabId = DEFAULT_TABS[0].id;
 
 /**
  * Apply theme text for current mode
@@ -717,6 +750,68 @@ function getModeStorageKey() {
   return isPgMode ? STORAGE_KEY_PG : STORAGE_KEY_SHIT;
 }
 
+function getTabStorageKey() {
+  return isPgMode ? TAB_KEY_PG : TAB_KEY_SHIT;
+}
+
+function getActiveTabStorageKey() {
+  return isPgMode ? ACTIVE_TAB_KEY_PG : ACTIVE_TAB_KEY_SHIT;
+}
+
+function loadTabs() {
+  const savedTabs = localStorage.getItem(getTabStorageKey());
+  const savedActive = localStorage.getItem(getActiveTabStorageKey());
+  tabs = savedTabs ? JSON.parse(savedTabs) : [...DEFAULT_TABS];
+  activeTabId = savedActive || tabs[0].id;
+}
+
+function saveTabs() {
+  localStorage.setItem(getTabStorageKey(), JSON.stringify(tabs));
+  localStorage.setItem(getActiveTabStorageKey(), activeTabId);
+}
+
+function renderTaskTabs() {
+  const tabsEl = document.getElementById("task-tabs");
+  if (!tabsEl) return;
+
+  tabsEl.innerHTML = "";
+  tabs.forEach((tab) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = `task-tab-btn ${tab.id === activeTabId ? "active" : ""}`;
+    btn.textContent = tab.name;
+    btn.addEventListener("click", () => {
+      activeTabId = tab.id;
+      saveTabs();
+      renderTaskTabs();
+      if (typeof window.rerenderTaskList === "function") {
+        window.rerenderTaskList();
+      }
+    });
+    btn.addEventListener("dblclick", () => {
+      const next = prompt("Rename tab:", tab.name);
+      if (!next) return;
+      tab.name = next.trim() || tab.name;
+      saveTabs();
+      renderTaskTabs();
+    });
+    tabsEl.appendChild(btn);
+  });
+}
+function initializeTabRename() {
+  const btn = document.getElementById("rename-tab-btn");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const tab = tabs.find((t) => t.id === activeTabId);
+    if (!tab) return;
+    const next = prompt("Rename tab:", tab.name);
+    if (!next) return;
+    tab.name = next.trim() || tab.name;
+    saveTabs();
+    renderTaskTabs();
+  });
+}
+
 /**
  * Switch PG mode
  */
@@ -733,10 +828,13 @@ function setPgMode(pgMode) {
   if (toggle) toggle.checked = !pgMode;
 
   applyThemeText(mode);
+  playModeSound("modeSwitch");
   localStorage.setItem(PG_MODE_KEY, pgMode ? "1" : "0");
   if (window.refreshQuoteGlobal) {
     window.refreshQuoteGlobal();
   }
+  loadTabs();
+  renderTaskTabs();
 
   // Clear and reload tasks for new mode
   tasks = [];
@@ -747,8 +845,8 @@ function setPgMode(pgMode) {
   if (savedTasks) {
     try {
       tasks = JSON.parse(savedTasks);
-      if (window.renderTaskGlobal && window.tasksInitialized) {
-        tasks.forEach((task) => window.renderTaskGlobal(task));
+      if (typeof window.rerenderTaskList === "function") {
+        window.rerenderTaskList();
       }
     } catch (e) {
       tasks = [];
@@ -771,6 +869,48 @@ function initializePgMode() {
   }
 
   setPgMode(startInPgMode);
+}
+
+function initializeUtilityModals() {
+  const statsOverlay = document.getElementById("statsOverlay");
+  const aboutOverlay = document.getElementById("aboutOverlay");
+
+  const openStatsBtn = document.getElementById("openStatsBtn");
+  const openAboutBtn = document.getElementById("openAboutBtn");
+  const closeStatsBtn = document.getElementById("closeStatsBtn");
+  const closeAboutBtn = document.getElementById("closeAboutBtn");
+
+  if (openStatsBtn && statsOverlay) {
+    openStatsBtn.addEventListener("click", () => {
+      updateStatsDisplay();
+      statsOverlay.classList.remove("is-hidden");
+    });
+  }
+
+  if (openAboutBtn && aboutOverlay) {
+    openAboutBtn.addEventListener("click", () => {
+      aboutOverlay.classList.remove("is-hidden");
+    });
+  }
+
+  if (closeStatsBtn && statsOverlay) {
+    closeStatsBtn.addEventListener("click", () => {
+      statsOverlay.classList.add("is-hidden");
+    });
+  }
+
+  if (closeAboutBtn && aboutOverlay) {
+    closeAboutBtn.addEventListener("click", () => {
+      aboutOverlay.classList.add("is-hidden");
+    });
+  }
+
+  [statsOverlay, aboutOverlay].forEach((overlay) => {
+    if (!overlay) return;
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) overlay.classList.add("is-hidden");
+    });
+  });
 }
 
 // Initialize on load

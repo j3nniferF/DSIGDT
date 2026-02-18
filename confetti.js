@@ -15,9 +15,9 @@ class ConfettiGenerator {
      * Trigger confetti animation
      * @param {number} duration - Duration in milliseconds
      */
-    celebrate(duration = 3000) {
+    celebrate(duration = 3000, colors = null) {
         this.createCanvas();
-        this.generateParticles(50);
+        this.generateParticles(50, colors);
         this.animate();
 
         // Clean up after duration
@@ -52,8 +52,8 @@ class ConfettiGenerator {
      * Generate confetti particles
      * @param {number} count - Number of particles to generate
      */
-    generateParticles(count) {
-        const colors = ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b', '#fa709a'];
+    generateParticles(count, palette = null) {
+        const colors = palette || ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b', '#fa709a'];
         
         for (let i = 0; i < count; i++) {
             this.particles.push({

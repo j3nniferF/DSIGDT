@@ -40,6 +40,12 @@
             <h2>My Tasks</h2>
             <span id="taskCount" class="task-count">0/0 completed</span>
           </div>
+          <div class="task-lists-toolbar">
+            <div class="task-tabs" id="task-tabs" aria-label="Task tabs"></div>
+            <button id="rename-tab-btn" class="rename-tab-btn" type="button">
+              Rename Tab
+            </button>
+          </div>
 
           <div class="task-section">
             <div class="task-input-container">
@@ -82,6 +88,12 @@
             </div>
           </div>
         </div>
+      </main>
+
+      <footer>
+        <p id="quote" class="motivational-quote">Loading inspiration...</p>
+      </footer>
+    </div>
 
     <!-- Reward Modal -->
     <div
@@ -130,31 +142,44 @@
         </div>
       </div>
     </div>
-<div class="modal-overlay is-hidden" id="statsOverlay" role="dialog" aria-modal="true">
-  <div class="modal utility-modal">
-    <button class="modal-close-x" id="closeStatsBtn" type="button">✕</button>
-    <h2>Statistics</h2>
-    <div class="stats-section">
-      <div class="stat-card">
-        <div class="stat-number" id="statCompletedTasks">0</div>
-        <div class="stat-label">Tasks Completed</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="statTimerSessions">0</div>
-        <div class="stat-label">Focus Sessions</div>
+    <div
+      class="modal-overlay is-hidden"
+      id="statsOverlay"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal utility-modal">
+        <button class="modal-close-x" id="closeStatsBtn" type="button">✕</button>
+        <h2>Statistics</h2>
+        <div class="stats-section">
+          <div class="stat-card">
+            <div class="stat-number" id="statCompletedTasks">0</div>
+            <div class="stat-label">Tasks Completed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="statTimerSessions">0</div>
+            <div class="stat-label">Focus Sessions</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<div class="modal-overlay is-hidden" id="aboutOverlay" role="dialog" aria-modal="true">
-  <div class="modal utility-modal">
-    <button class="modal-close-x" id="closeAboutBtn" type="button">✕</button>
-    <h2>About</h2>
-    <p>DSIGDT helps you track tasks, run focus timers, and keep momentum with simple stats.</p>
-    <p>Want full details? <a href="about.html">Open full About page</a>.</p>
-  </div>
-</div>
+    <div
+      class="modal-overlay is-hidden"
+      id="aboutOverlay"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="modal utility-modal">
+        <button class="modal-close-x" id="closeAboutBtn" type="button">✕</button>
+        <h2>About</h2>
+        <p>
+          DSIGDT helps you track tasks, run focus timers, and keep momentum with
+          simple stats.
+        </p>
+        <p>Want full details? <a href="about.html">Open full About page</a>.</p>
+      </div>
+    </div>
 
     <script src="confetti.js"></script>
     <script src="config.js"></script>
