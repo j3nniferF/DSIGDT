@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeTasks();
   initializeTimer();
   initializeQuotes();
+  initializeUtilityModals();
 });
 
 /**
@@ -391,7 +392,7 @@ function initializeQuotes() {
     try {
       // Advice Slip API (no key)
       const response = await fetch(
-        `https://api.adviceslip.com/advice?ts=${Date.now()}`
+        `https://api.adviceslip.com/advice?ts=${Date.now()}`,
       );
       if (!response.ok) {
         throw new Error("API request failed");
@@ -411,12 +412,53 @@ function initializeQuotes() {
       fallbackShitMode[Math.floor(Math.random() * fallbackShitMode.length)];
     displayMessage(randomMessage);
   }
+  function initializeUtilityModals() {
+    const statsOverlay = document.getElementById("statsOverlay");
+    const aboutOverlay = document.getElementById("aboutOverlay");
+
+    const openStatsBtn = document.getElementById("openStatsBtn");
+    const openAboutBtn = document.getElementById("openAboutBtn");
+    const closeStatsBtn = document.getElementById("closeStatsBtn");
+    const closeAboutBtn = document.getElementById("closeAboutBtn");
+
+    if (openStatsBtn && statsOverlay) {
+      openStatsBtn.addEventListener("click", () => {
+        updateStatsDisplay();
+        statsOverlay.classList.remove("is-hidden");
+      });
+    }
+
+    if (openAboutBtn && aboutOverlay) {
+      openAboutBtn.addEventListener("click", () => {
+        aboutOverlay.classList.remove("is-hidden");
+      });
+    }
+
+    if (closeStatsBtn && statsOverlay) {
+      closeStatsBtn.addEventListener("click", () => {
+        statsOverlay.classList.add("is-hidden");
+      });
+    }
+
+    if (closeAboutBtn && aboutOverlay) {
+      closeAboutBtn.addEventListener("click", () => {
+        aboutOverlay.classList.add("is-hidden");
+      });
+    }
+
+    [statsOverlay, aboutOverlay].forEach((overlay) => {
+      if (!overlay) return;
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) overlay.classList.add("is-hidden");
+      });
+    });
+  }
 
   async function fetchPgModeFact() {
     try {
       // Useless Facts API (no key)
       const response = await fetch(
-        "https://uselessfacts.jsph.pl/api/v2/facts/random?language=en"
+        "https://uselessfacts.jsph.pl/api/v2/facts/random?language=en",
       );
       if (!response.ok) {
         throw new Error("API request failed");
@@ -564,7 +606,6 @@ function updateStatsDisplay() {
     timerSessionsEl.textContent = stats.timerSessions;
   }
 }
-
 
 /* =====================================================
    PG MODE TOGGLE FUNCTIONALITY
