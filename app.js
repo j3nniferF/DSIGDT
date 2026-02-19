@@ -21,18 +21,18 @@ const taskTimerState = {
 
 const CONFETTI_COLORS = {
   pg: ["#ff6ad5", "#ffd93d", "#7bff8a", "#65b8ff", "#b28dff", "#ffffff"],
-  shit: ["#d61f1f", "#8f0f0f", "#5a5a5a", "#2f2f2f", "#151515", "#b3b3b3"],
+  stuff: ["#d61f1f", "#8f0f0f", "#5a5a5a", "#2f2f2f", "#151515", "#b3b3b3"],
 };
 
 // UI Text Constants
 const UI_TEXT = {
-  SHIT_MODE: {
-    TASK_PLACEHOLDER: "+ ADD MORE SHIT",
-    TASK_PLACEHOLDER_ERROR: "⚠️ ADD SOME SHIT FIRST, DUH!",
-    TITLE_MAIN: "DUMB SHIT",
+  STUFF_MODE: {
+    TASK_PLACEHOLDER: "+ ADD MORE STUFF",
+    TASK_PLACEHOLDER_ERROR: "⚠️ ADD SOME STUFF FIRST, DUH!",
+    TITLE_MAIN: "DUMB STUFF",
     TITLE_SUB: "I GOTTA DO TODAY",
-    DOC_TITLE: "Dumb Shit I Gotta Do Today",
-    TAGLINE: "Stay focused, get shit done",
+    DOC_TITLE: "Dumb STUFF I Gotta Do Today",
+    TAGLINE: "Stay focused, get stuff done",
   },
   PG_MODE: {
     TASK_PLACEHOLDER: "+ Add a new task",
@@ -89,10 +89,10 @@ function initializeTasks() {
     if (taskText === "") {
       const errorPlaceholder = isPgMode
         ? UI_TEXT.PG_MODE.TASK_PLACEHOLDER_ERROR
-        : UI_TEXT.SHIT_MODE.TASK_PLACEHOLDER_ERROR;
+        : UI_TEXT.STUFF_MODE.TASK_PLACEHOLDER_ERROR;
       const normalPlaceholder = isPgMode
         ? UI_TEXT.PG_MODE.TASK_PLACEHOLDER
-        : UI_TEXT.SHIT_MODE.TASK_PLACEHOLDER;
+        : UI_TEXT.STUFF_MODE.TASK_PLACEHOLDER;
 
       taskInput.classList.add("input-error");
       taskInput.placeholder = errorPlaceholder;
@@ -438,7 +438,7 @@ function setCompletedTitleForMode() {
   if (!completedTitle) return;
   completedTitle.textContent = isPgMode
     ? "NEAT THINGS I GOT DONE TODAY"
-    : "SHIT I DID";
+    : "STUFF I DID";
 }
 
 function renderCompletedByTab() {
@@ -716,7 +716,7 @@ function initializeTaskTimer() {
 }
 
 function celebrateByMode(duration = 2500) {
-  const mode = isPgMode ? "pg" : "shit";
+  const mode = isPgMode ? "pg" : "stuff";
   confetti.celebrate(duration, CONFETTI_COLORS[mode]);
 }
 
@@ -765,7 +765,7 @@ function playModeSound(type) {
  * Uses Bored API for activity suggestions (no API key needed!)
  */
 function initializeQuotes() {
-  const fallbackShitMode = [
+  const fallbackSTUFFMode = [
     "Do one thing now. Stop negotiating with yourself.",
     "Small step. Right now. Momentum beats mood.",
     "You started this for a reason. Keep going.",
@@ -783,7 +783,7 @@ function initializeQuotes() {
   const messageElement = document.getElementById("quote");
   if (!messageElement) return;
 
-  async function fetchShitModeAdvice() {
+  async function fetchSTUFFModeAdvice() {
     try {
       // CoinGecko API (no key)
       const response = await fetch(
@@ -806,11 +806,11 @@ function initializeQuotes() {
         return;
       }
     } catch (error) {
-      console.log("Using SHIT mode fallback message:", error.message);
+      console.log("Using STUFF mode fallback message:", error.message);
     }
 
     const randomMessage =
-      fallbackShitMode[Math.floor(Math.random() * fallbackShitMode.length)];
+      fallbackSTUFFMode[Math.floor(Math.random() * fallbackSTUFFMode.length)];
     displayMessage(randomMessage);
   }
   async function fetchPgModeFact() {
@@ -850,7 +850,7 @@ function initializeQuotes() {
       await fetchPgModeFact();
       return;
     }
-    await fetchShitModeAdvice();
+    await fetchSTUFFModeAdvice();
   }
 
   // Expose refresh function so mode switch can update immediately
@@ -974,12 +974,12 @@ function updateStatsDisplay() {
    - Visual theme changes
 ===================================================== */
 
-const STORAGE_KEY_SHIT = "dsigdt_tasks_shit";
+const STORAGE_KEY_STUFF = "dsigdt_tasks_stuff";
 const STORAGE_KEY_PG = "dsigdt_tasks_pg";
 const PG_MODE_KEY = "dsigdt_pg_mode";
-const TAB_KEY_SHIT = "dsigdt_tabs_shit";
+const TAB_KEY_STUFF = "dsigdt_tabs_stuff";
 const TAB_KEY_PG = "dsigdt_tabs_pg";
-const ACTIVE_TAB_KEY_SHIT = "dsigdt_active_tab_shit";
+const ACTIVE_TAB_KEY_STUFF = "dsigdt_active_tab_stuff";
 const ACTIVE_TAB_KEY_PG = "dsigdt_active_tab_pg";
 
 const DEFAULT_TABS = [
@@ -995,11 +995,11 @@ let activeTabId = DEFAULT_TABS[0].id;
 
 /**
  * Apply theme text for current mode
- * Updates UI text elements based on PG/Shit mode
+ * Updates UI text elements based on PG/STUFF mode
  * Async because it fetches a fresh GIF from GIPHY API for the reward modal
  */
 async function applyThemeText(mode) {
-  const modeText = mode === "pg" ? UI_TEXT.PG_MODE : UI_TEXT.SHIT_MODE;
+  const modeText = mode === "pg" ? UI_TEXT.PG_MODE : UI_TEXT.STUFF_MODE;
 
   const titleMain = document.getElementById("titleMain");
   if (titleMain) {
@@ -1086,15 +1086,15 @@ async function applyThemeText(mode) {
  * Get storage key for current mode
  */
 function getModeStorageKey() {
-  return isPgMode ? STORAGE_KEY_PG : STORAGE_KEY_SHIT;
+  return isPgMode ? STORAGE_KEY_PG : STORAGE_KEY_STUFF;
 }
 
 function getTabStorageKey() {
-  return isPgMode ? TAB_KEY_PG : TAB_KEY_SHIT;
+  return isPgMode ? TAB_KEY_PG : TAB_KEY_STUFF;
 }
 
 function getActiveTabStorageKey() {
-  return isPgMode ? ACTIVE_TAB_KEY_PG : ACTIVE_TAB_KEY_SHIT;
+  return isPgMode ? ACTIVE_TAB_KEY_PG : ACTIVE_TAB_KEY_STUFF;
 }
 
 function loadTabs() {
@@ -1161,12 +1161,12 @@ function initializeTabRename() {
  */
 function setPgMode(pgMode) {
   isPgMode = pgMode;
-  const mode = pgMode ? "pg" : "shit";
+  const mode = pgMode ? "pg" : "stuff";
 
   document.body.classList.toggle("pg-mode", pgMode);
 
   const label = document.getElementById("pgLabel");
-  if (label) label.textContent = pgMode ? "PG MODE" : "$H!T MODE";
+  if (label) label.textContent = pgMode ? "PG MODE" : "STUFF MODE";
 
   const toggle = document.getElementById("pgToggle");
   if (toggle) toggle.checked = !pgMode;
@@ -1295,7 +1295,7 @@ function showTaskCompletedNotification() {
  */
 async function showRewardModal() {
   // Load a fresh GIF based on current mode
-  const mode = isPgMode ? "pg" : "shit";
+  const mode = isPgMode ? "pg" : "stuff";
   await loadFreshRewardGif(mode);
 
   // Open the modal
@@ -1342,7 +1342,7 @@ async function loadFreshRewardGif(mode) {
       gifUrl ||
       "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHBybnhveG4wdnRodGg2MnJ1NWhxNmxzcWV5Zm4weDcyZGFqMDV1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/75mBr8CLHect4tHlMb/giphy.gif";
   } else {
-    // Update text for Shit mode
+    // Update text for STUFF mode
     if (prizeLine1) prizeLine1.textContent = "GOOD JOB";
     if (prizeLine2) prizeLine2.textContent = "DUMMY!";
     if (prizeSubtitle) prizeSubtitle.textContent = "PICK A PRIZE";
@@ -1350,7 +1350,7 @@ async function loadFreshRewardGif(mode) {
       prizeNote.textContent = "or you can stare at this cute dumb cat";
     if (backToItBtn) backToItBtn.textContent = "NOW GET BACK TO WORK!";
 
-    // Update prize list for Shit mode
+    // Update prize list for STUFF mode
     if (prizeList) {
       prizeList.innerHTML = `
                 <li>GO FOR A WALK.</li>
@@ -1359,7 +1359,7 @@ async function loadFreshRewardGif(mode) {
             `;
     }
 
-    // Fetch fresh cat GIF for Shit mode
+    // Fetch fresh cat GIF for STUFF mode
     const gifUrl = await fetchRewardGif("hell yeah you did it cat");
     prizeGif.src =
       gifUrl || "https://media.giphy.com/media/uF4QwYRpMDuGuMXL1G/giphy.gif";

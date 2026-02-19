@@ -1,8 +1,8 @@
-DSIGDT (Dumb Shit I Gotta Do Today)
+DSIGDT (Dumb Stuff I Gotta Do Today)
 
 Project Description
 
-DSIGDT is a daily productivity dashboard designed to make overwhelming tasks feel smaller and more doable. It is built with vanilla JavaScript, HTML, and CSS (no frameworks). The app includes a dual-mode design system with a punk/grunge “Shit Mode” and a cleaner “PG Mode.” It supports task and subtask tracking with visual feedback, a simple focus timer, progress stats, and small reward moments. Tasks and progress persist using localStorage so data remains after refresh or closing the browser.
+DSIGDT is a daily productivity dashboard designed to make overwhelming tasks feel smaller and more doable. It is built with vanilla JavaScript, HTML, and CSS (no frameworks). The app includes a dual-mode design system with a punk/grunge “STUFF Mode” and a cleaner “PG Mode.” It supports task and subtask tracking with visual feedback, a simple focus timer, progress stats, and small reward moments. Tasks and progress persist using localStorage so data remains after refresh or closing the browser.
 
 Capstone Requirements and Features
 

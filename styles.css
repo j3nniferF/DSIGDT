@@ -1,4 +1,4 @@
-/* Font Faces for Shit Mode */
+/* Font Faces for STUFF Mode */
 @font-face {
   font-family: "anarchy";
   src: url("./assets/fonts/anarchy.woff2") format("truetype");
@@ -190,7 +190,7 @@ body.pg-mode * {
   transition: transform 0.3s ease;
 }
 
-/* Checked state (PG mode OFF = shit mode ON) */
+/* Checked state (PG mode OFF = stuff mode ON) */
 .pg-switch input:checked + .pg-switch__slider {
   background: rgba(255, 100, 100, 0.5);
 }
@@ -766,7 +766,7 @@ body:not(.pg-mode) #timer .time-left {
   color: #f1f1f1;
 }
 
-/* SHIT mode: apply timer treatment to all key cards + titles in anarchy */
+/* stuff mode: apply timer treatment to all key cards + titles in anarchy */
 body:not(.pg-mode) #tasks,
 body:not(.pg-mode) #stats,
 body:not(.pg-mode) #completedSection {
