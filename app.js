@@ -11,37 +11,20 @@ let isRunning = false;
 let stats = { completedTasks: 0, timerSessions: 0 };
 let audioCtx = null;
 let selectedTaskId = null;
-const taskTimerState = {
-  intervalId: null,
-  remainingSeconds: 0,
-  initialSeconds: 0,
-  running: false,
-  taskId: null,
-};
+let setFocusDialValues = null;
 
 const CONFETTI_COLORS = {
-  pg: ["#ff6ad5", "#ffd93d", "#7bff8a", "#65b8ff", "#b28dff", "#ffffff"],
-  stuff: ["#d61f1f", "#8f0f0f", "#5a5a5a", "#2f2f2f", "#151515", "#b3b3b3"],
+  pg: ["#ff6ad5", "#caa7ff", "#65b8ff", "#ff9bde", "#9de8ff", "#ffffff"],
 };
 
 // UI Text Constants
 const UI_TEXT = {
-  STUFF_MODE: {
-    TASK_PLACEHOLDER: "+ ADD MORE STUFF",
-    TASK_PLACEHOLDER_ERROR: "⚠️ ADD SOME STUFF FIRST, DUH!",
-    TITLE_MAIN: "DUMB STUFF",
-    TITLE_SUB: "I GOTTA DO TODAY",
-    DOC_TITLE: "Dumb STUFF I Gotta Do Today",
-    TAGLINE: "Stay focused, get stuff done",
-  },
-  PG_MODE: {
-    TASK_PLACEHOLDER: "+ Add a new task",
-    TASK_PLACEHOLDER_ERROR: "⚠️ Please enter a task",
-    TITLE_MAIN: "SILLY STUFF",
-    TITLE_SUB: "I GOTTA DO TODAY",
-    DOC_TITLE: "Silly Stuff I Gotta Do Today",
-    TAGLINE: "Stay organized, be productive, you got this!",
-  },
+  TASK_PLACEHOLDER: "+ Add a new task",
+  TASK_PLACEHOLDER_ERROR: "⚠️ Please enter a task",
+  TITLE_MAIN: "DUMB STUFF",
+  TITLE_SUB: "I GOTTA DO TODAY",
+  DOC_TITLE: "Dumb Stuff I Gotta Do Today",
+  TAGLINE: "Stay organized, be productive, you got this!",
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -51,9 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeTasks();
   initializeTimer();
   initializeQuotes();
-  initializeTabRename();
   initializeUtilityModals();
-  initializeTaskTimer();
+  initializeResetAll();
   initializePgMode();
   initializePrizeModal();
 });
@@ -87,18 +69,11 @@ function initializeTasks() {
     const taskText = taskInput.value.trim();
 
     if (taskText === "") {
-      const errorPlaceholder = isPgMode
-        ? UI_TEXT.PG_MODE.TASK_PLACEHOLDER_ERROR
-        : UI_TEXT.STUFF_MODE.TASK_PLACEHOLDER_ERROR;
-      const normalPlaceholder = isPgMode
-        ? UI_TEXT.PG_MODE.TASK_PLACEHOLDER
-        : UI_TEXT.STUFF_MODE.TASK_PLACEHOLDER;
-
       taskInput.classList.add("input-error");
-      taskInput.placeholder = errorPlaceholder;
+      taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER_ERROR;
       setTimeout(() => {
         taskInput.classList.remove("input-error");
-        taskInput.placeholder = normalPlaceholder;
+        taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER;
       }, 2000);
       return;
     }
@@ -298,10 +273,41 @@ function initializeTimer() {
   const startBtn = document.getElementById("start-btn");
   const pauseBtn = document.getElementById("pause-btn");
   const resetBtn = document.getElementById("reset-btn");
-  const presetBtns = document.querySelectorAll(".preset-btn");
   const timerSection = document.querySelector(".timer-section");
-  const floatingClock = document.getElementById("focusFloatingClock");
-  const floatingClockTime = document.getElementById("focusFloatingClockTime");
+  const hoursValueEl = document.getElementById("focusHoursValue");
+  const minutesValueEl = document.getElementById("focusMinutesValue");
+  const secondsValueEl = document.getElementById("focusSecondsValue");
+  const hoursDecBtn = document.getElementById("focusHoursDec");
+  const hoursIncBtn = document.getElementById("focusHoursInc");
+  const minutesDecBtn = document.getElementById("focusMinutesDec");
+  const minutesIncBtn = document.getElementById("focusMinutesInc");
+  const secondsDecBtn = document.getElementById("focusSecondsDec");
+  const secondsIncBtn = document.getElementById("focusSecondsInc");
+  const steppers = document.querySelectorAll(".time-stepper");
+
+  if (
+    !startBtn ||
+    !pauseBtn ||
+    !resetBtn ||
+    !timerSection ||
+    !hoursValueEl ||
+    !minutesValueEl ||
+    !secondsValueEl ||
+    !hoursDecBtn ||
+    !hoursIncBtn ||
+    !minutesDecBtn ||
+    !minutesIncBtn ||
+    !secondsDecBtn ||
+    !secondsIncBtn
+  ) {
+    return;
+  }
+
+  const dialState = {
+    hours: 0,
+    minutes: 25,
+    seconds: 0,
+  };
 
   // Start button
   startBtn.addEventListener("click", startTimer);
@@ -312,15 +318,45 @@ function initializeTimer() {
   // Reset button
   resetBtn.addEventListener("click", resetTimer);
 
-  // Preset buttons
-  presetBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      if (!isRunning) {
-        const minutes = parseInt(btn.dataset.minutes);
-        setTimer(minutes);
-      }
-    });
-  });
+  function clampWithWrap(value, max) {
+    if (value < 0) return max;
+    if (value > max) return 0;
+    return value;
+  }
+
+  function renderDials() {
+    hoursValueEl.textContent = `${dialState.hours}`.padStart(2, "0");
+    minutesValueEl.textContent = `${dialState.minutes}`.padStart(2, "0");
+    secondsValueEl.textContent = `${dialState.seconds}`.padStart(2, "0");
+  }
+
+  function readDialSeconds() {
+    const hrs = dialState.hours || 0;
+    const mins = dialState.minutes || 0;
+    const secs = dialState.seconds || 0;
+    return hrs * 3600 + mins * 60 + secs;
+  }
+
+  function setFromDials() {
+    const next = readDialSeconds();
+    timeLeft = next > 0 ? next : 25 * 60;
+    updateDisplay();
+  }
+
+  function adjustDial(unit, delta) {
+    const limits = { hours: 23, minutes: 59, seconds: 59 };
+    dialState[unit] = clampWithWrap(dialState[unit] + delta, limits[unit]);
+    renderDials();
+    if (!isRunning) setFromDials();
+  }
+
+  function applyDialValues(hours, minutes, seconds) {
+    dialState.hours = Math.min(23, Math.max(0, Number(hours) || 0));
+    dialState.minutes = Math.min(59, Math.max(0, Number(minutes) || 0));
+    dialState.seconds = Math.min(59, Math.max(0, Number(seconds) || 0));
+    renderDials();
+    if (!isRunning) setFromDials();
+  }
 
   /**
    * Start the timer countdown
@@ -331,10 +367,6 @@ function initializeTimer() {
       timerSection.classList.add("timer-running");
       startBtn.disabled = true;
       pauseBtn.disabled = false;
-      if (floatingClock) floatingClock.classList.remove("is-hidden");
-      if (floatingClockTime)
-        floatingClockTime.textContent =
-          document.getElementById("time-left").textContent;
 
       timerInterval = setInterval(() => {
         timeLeft--;
@@ -357,7 +389,6 @@ function initializeTimer() {
       clearInterval(timerInterval);
       startBtn.disabled = false;
       pauseBtn.disabled = true;
-      if (floatingClock) floatingClock.classList.add("is-hidden");
     }
   }
 
@@ -366,29 +397,21 @@ function initializeTimer() {
    */
   function resetTimer() {
     pauseTimer();
-    setTimer(25);
-  }
-
-  /**
-   * Set timer to specific number of minutes
-   * @param {number} minutes - Number of minutes to set
-   */
-  function setTimer(minutes) {
-    timeLeft = minutes * 60;
-    updateDisplay();
+    setFromDials();
   }
 
   /**
    * Update the timer display
    */
   function updateDisplay() {
-    const minutes = Math.floor(timeLeft / 60);
+    const hrs = Math.floor(timeLeft / 3600);
+    const minutes = Math.floor((timeLeft % 3600) / 60);
     const seconds = timeLeft % 60;
-    const display = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    const display =
+      hrs > 0
+        ? `${hrs.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+        : `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     document.getElementById("time-left").textContent = display;
-    if (floatingClockTime && isRunning) {
-      floatingClockTime.textContent = display;
-    }
   }
 
   /**
@@ -407,30 +430,53 @@ function initializeTimer() {
 
     // Show reward modal
     showRewardModal();
-
-    // Play completion notification (browser notification API could be added here)
-    setTimeout(() => {
-      document.getElementById("timer-label").textContent = "Focus Session";
-      setTimer(25);
-      if (floatingClock) floatingClock.classList.add("is-hidden");
-    }, 3000);
   }
 
+  hoursDecBtn.addEventListener("click", () => adjustDial("hours", -1));
+  hoursIncBtn.addEventListener("click", () => adjustDial("hours", 1));
+  minutesDecBtn.addEventListener("click", () => adjustDial("minutes", -1));
+  minutesIncBtn.addEventListener("click", () => adjustDial("minutes", 1));
+  secondsDecBtn.addEventListener("click", () => adjustDial("seconds", -1));
+  secondsIncBtn.addEventListener("click", () => adjustDial("seconds", 1));
+
+  steppers.forEach((stepper) => {
+    stepper.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+        const unit = stepper.getAttribute("data-unit");
+        if (!unit) return;
+        adjustDial(unit, event.deltaY > 0 ? -1 : 1);
+      },
+      { passive: false },
+    );
+  });
+
+  setFocusDialValues = applyDialValues;
+
   // Initialize display
-  updateDisplay();
+  applyDialValues(0, 25, 0);
+}
+
+function formatFocusTimeDisplay(totalSeconds) {
+  const seconds = Math.max(0, totalSeconds);
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  return hrs > 0
+    ? `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+    : `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+}
+
+function refreshFocusTimerDisplay() {
+  const timeLeftEl = document.getElementById("time-left");
+  if (timeLeftEl) {
+    timeLeftEl.textContent = formatFocusTimeDisplay(timeLeft);
+  }
 }
 
 function getSelectedTask() {
   return tasks.find((task) => task.id === selectedTaskId) || null;
-}
-
-function getTabNameById(tabId) {
-  const tab = tabs.find((item) => item.id === tabId);
-  return tab ? tab.name : "UNKNOWN";
-}
-
-function saveTasksForCurrentMode() {
-  localStorage.setItem(getModeStorageKey(), JSON.stringify(tasks));
 }
 
 function setCompletedTitleForMode() {
@@ -475,247 +521,18 @@ function renderCompletedByTab() {
   });
 }
 
-function formatSecondsToHms(totalSeconds) {
-  const seconds = Math.max(0, totalSeconds);
-  const hrs = Math.floor(seconds / 3600);
-  const mins = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-  return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-}
-
 function syncTaskTimerSelectionUI() {
-  const taskNameEl = document.getElementById("currentTaskName");
-  const tabNameEl = document.getElementById("currentTabName");
-  const floatingTaskEl = document.getElementById("floatingTimerTask");
-  const doneTaskEl = document.getElementById("timerDoneTaskName");
+  const focusTaskLineEl = document.getElementById("focusTaskLine");
   const task = getSelectedTask();
 
-  if (tabNameEl) {
-    tabNameEl.textContent = getTabNameById(activeTabId);
-  }
-
-  const selectedTaskText = task ? task.text : "Select a task first";
-  if (taskNameEl) taskNameEl.textContent = selectedTaskText;
-  if (floatingTaskEl) floatingTaskEl.textContent = selectedTaskText;
-  if (doneTaskEl) doneTaskEl.textContent = selectedTaskText;
-}
-
-function initializeTaskTimer() {
-  const overlay = document.getElementById("taskTimerOverlay");
-  const closeBtn = document.getElementById("closeTaskTimerBtn");
-  const openBtn = document.getElementById("openTaskTimerBtn");
-  const doneOverlay = document.getElementById("timerCompleteOverlay");
-  const doneYesBtn = document.getElementById("timerDoneYesBtn");
-  const plusFiveBtn = document.getElementById("timerPlusFiveBtn");
-  const floating = document.getElementById("floatingTimer");
-  const floatingTime = document.getElementById("floatingTimerTime");
-
-  const dialHours = document.getElementById("dialHours");
-  const dialMinutes = document.getElementById("dialMinutes");
-  const dialSeconds = document.getElementById("dialSeconds");
-
-  const startBtn = document.getElementById("taskTimerStartBtn");
-  const pauseBtn = document.getElementById("taskTimerPauseBtn");
-  const resetBtn = document.getElementById("taskTimerResetBtn");
-
-  if (
-    !overlay ||
-    !openBtn ||
-    !closeBtn ||
-    !doneOverlay ||
-    !doneYesBtn ||
-    !plusFiveBtn ||
-    !floating ||
-    !floatingTime ||
-    !dialHours ||
-    !dialMinutes ||
-    !dialSeconds ||
-    !startBtn ||
-    !pauseBtn ||
-    !resetBtn
-  ) {
-    return;
-  }
-
-  function setDialOptions(selectEl) {
-    if (selectEl.options.length > 0) return;
-    for (let i = 0; i <= 9; i += 1) {
-      const option = document.createElement("option");
-      option.value = `${i}`;
-      option.textContent = `${i}`;
-      selectEl.appendChild(option);
-    }
-  }
-
-  function readDialSeconds() {
-    const hrs = Number.parseInt(dialHours.value, 10) || 0;
-    const mins = Number.parseInt(dialMinutes.value, 10) || 0;
-    const secs = Number.parseInt(dialSeconds.value, 10) || 0;
-    return hrs * 3600 + mins * 60 + secs;
-  }
-
-  function updateFloating() {
-    floatingTime.textContent = formatSecondsToHms(
-      taskTimerState.remainingSeconds,
-    );
-    syncTaskTimerSelectionUI();
-  }
-
-  function stopInterval() {
-    if (taskTimerState.intervalId) {
-      clearInterval(taskTimerState.intervalId);
-    }
-    taskTimerState.intervalId = null;
-    taskTimerState.running = false;
-    startBtn.textContent = "Start";
-    pauseBtn.disabled = true;
-  }
-
-  function beginCountdown() {
-    if (taskTimerState.remainingSeconds <= 0) {
-      const fromDial = readDialSeconds();
-      taskTimerState.remainingSeconds = fromDial;
-      taskTimerState.initialSeconds = fromDial;
-    }
-    if (taskTimerState.remainingSeconds <= 0) {
-      alert("Set the timer above zero.");
-      return;
-    }
-
-    if (!taskTimerState.taskId) {
-      alert("Select a task first.");
-      return;
-    }
-
-    taskTimerState.running = true;
-    startBtn.textContent = "Stop";
-    pauseBtn.disabled = false;
-    floating.classList.remove("is-hidden");
-    updateFloating();
-
-    taskTimerState.intervalId = setInterval(() => {
-      taskTimerState.remainingSeconds -= 1;
-      updateFloating();
-
-      if (taskTimerState.remainingSeconds <= 0) {
-        stopInterval();
-        incrementTimerSessions();
-        celebrateByMode(2500);
-        playModeSound("timerDone");
-        doneOverlay.classList.remove("is-hidden");
-      }
-    }, 1000);
-  }
-
-  function resetToInitial() {
-    stopInterval();
-    taskTimerState.remainingSeconds = taskTimerState.initialSeconds;
-    updateFloating();
-  }
-
-  function markCurrentTaskDone() {
-    const task = tasks.find((item) => item.id === taskTimerState.taskId);
-    if (!task) return;
-    if (!task.completed) {
-      task.completed = true;
-      incrementCompletedTasks();
-      playModeSound("taskComplete");
-      celebrateByMode(1800);
-    }
-    saveTasksForCurrentMode();
-    if (typeof window.rerenderTaskList === "function") {
-      window.rerenderTaskList();
-    }
-    renderCompletedByTab();
-    selectedTaskId = null;
-    syncTaskTimerSelectionUI();
-    if (areAllTasksComplete()) {
-      showRewardModal();
-    }
-  }
-
-  setDialOptions(dialHours);
-  setDialOptions(dialMinutes);
-  setDialOptions(dialSeconds);
-  dialHours.value = "0";
-  dialMinutes.value = "2";
-  dialSeconds.value = "5";
-  taskTimerState.remainingSeconds = readDialSeconds();
-  taskTimerState.initialSeconds = taskTimerState.remainingSeconds;
-  updateFloating();
-
-  openBtn.addEventListener("click", () => {
-    const selected = getSelectedTask();
-    if (!selected) {
-      alert("Select a task first by clicking its text.");
-      return;
-    }
-    taskTimerState.taskId = selected.id;
-    syncTaskTimerSelectionUI();
-    overlay.classList.remove("is-hidden");
-  });
-
-  closeBtn.addEventListener("click", () => {
-    overlay.classList.add("is-hidden");
-  });
-
-  overlay.addEventListener("click", (event) => {
-    if (event.target === overlay) overlay.classList.add("is-hidden");
-  });
-
-  startBtn.addEventListener("click", () => {
-    if (taskTimerState.running) {
-      stopInterval();
-      taskTimerState.remainingSeconds = taskTimerState.initialSeconds;
-      updateFloating();
-      floating.classList.add("is-hidden");
-      return;
-    }
-    beginCountdown();
-  });
-
-  pauseBtn.addEventListener("click", () => {
-    stopInterval();
-  });
-
-  resetBtn.addEventListener("click", () => {
-    taskTimerState.initialSeconds = readDialSeconds();
-    resetToInitial();
-  });
-
-  [dialHours, dialMinutes, dialSeconds].forEach((selectEl) => {
-    selectEl.addEventListener("change", () => {
-      if (taskTimerState.running) return;
-      taskTimerState.initialSeconds = readDialSeconds();
-      taskTimerState.remainingSeconds = taskTimerState.initialSeconds;
-      updateFloating();
-    });
-  });
-
-  doneYesBtn.addEventListener("click", () => {
-    doneOverlay.classList.add("is-hidden");
-    markCurrentTaskDone();
-    stopInterval();
-    floating.classList.add("is-hidden");
-    overlay.classList.add("is-hidden");
-  });
-
-  plusFiveBtn.addEventListener("click", () => {
-    doneOverlay.classList.add("is-hidden");
-    taskTimerState.remainingSeconds += 5 * 60;
-    taskTimerState.initialSeconds = taskTimerState.remainingSeconds;
-    updateFloating();
-    beginCountdown();
-  });
-
-  doneOverlay.addEventListener("click", (event) => {
-    if (event.target === doneOverlay) doneOverlay.classList.add("is-hidden");
-  });
+  const focusClockText = task
+    ? `left to work on ${task.text}`
+    : "left to work on your task";
+  if (focusTaskLineEl) focusTaskLineEl.textContent = focusClockText;
 }
 
 function celebrateByMode(duration = 2500) {
-  const mode = isPgMode ? "pg" : "stuff";
-  confetti.celebrate(duration, CONFETTI_COLORS[mode]);
+  confetti.celebrate(duration, CONFETTI_COLORS.pg);
 }
 
 function playModeSound(type) {
@@ -727,21 +544,19 @@ function playModeSound(type) {
       audioCtx.resume();
     }
 
-    const isPg = isPgMode;
     const soundMap = {
-      taskComplete: isPg ? [880, 1046] : [220, 165],
-      timerDone: isPg ? [988, 1318, 1760] : [180, 220, 140],
-      modeSwitch: isPg ? [740, 988] : [196, 147],
+      taskComplete: [880, 1046],
+      timerDone: [988, 1318, 1760],
     };
 
-    const sequence = soundMap[type] || (isPg ? [880] : [180]);
+    const sequence = soundMap[type] || [880];
     const now = audioCtx.currentTime;
 
     sequence.forEach((freq, index) => {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
 
-      osc.type = isPg ? "triangle" : "square";
+      osc.type = "triangle";
       osc.frequency.setValueAtTime(freq, now + index * 0.12);
 
       gain.gain.setValueAtTime(0.0001, now + index * 0.12);
@@ -763,57 +578,38 @@ function playModeSound(type) {
  * Uses Bored API for activity suggestions (no API key needed!)
  */
 function initializeQuotes() {
-  const fallbackSTUFFMode = [
-    "Do one thing now. Stop negotiating with yourself.",
-    "Small step. Right now. Momentum beats mood.",
-    "You started this for a reason. Keep going.",
-    "Pick the ugliest task and finish it first.",
-    "Progress counts more than perfection today.",
-  ];
-  const fallbackPgMode = [
-    "Fun fact: Tiny progress done daily compounds fast.",
-    "Fun fact: Focus is easier when tasks are specific.",
-    "Fun fact: Breaks help your brain retain more.",
-    "Fun fact: Checking off one task boosts motivation.",
-    "Fun fact: Consistency usually beats intensity.",
+  const fallbackMessages = [
+    "Unicorn mission: finish one tiny task right now.",
+    "Rainbow progress beats perfect plans every time.",
+    "Small sparkle steps still count as big wins.",
+    "Pick one task, finish it, then celebrate it.",
+    "Gentle focus now gives future-you a gift.",
   ];
 
   const messageElement = document.getElementById("quote");
   if (!messageElement) return;
 
-  async function fetchSTUFFModeAdvice() {
+  async function fetchAffirmation() {
     try {
-      // CoinGecko API (no key)
-      const response = await fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true",
-      );
+      const response = await fetch("https://www.affirmations.dev/");
       if (!response.ok) {
         throw new Error("API request failed");
       }
 
       const data = await response.json();
-      const btc = data?.bitcoin?.usd;
-      const eth = data?.ethereum?.usd;
-      const btcChange = data?.bitcoin?.usd_24h_change;
-
-      if (typeof btc === "number" && typeof eth === "number") {
-        const vibe = btcChange >= 0 ? "up" : "down";
-        displayMessage(
-          `PUNK ECONOMY ${vibe}: BTC $${Math.round(btc).toLocaleString()} | ETH $${Math.round(eth).toLocaleString()} | Get your tasks done anyway.`,
-        );
+      const affirmation = data?.affirmation;
+      if (affirmation) {
+        displayMessage(`Rainbow pep talk: ${affirmation}`);
         return;
       }
     } catch (error) {
-      console.log("Using STUFF mode fallback message:", error.message);
+      console.log("Affirmation API unavailable:", error.message);
     }
-
-    const randomMessage =
-      fallbackSTUFFMode[Math.floor(Math.random() * fallbackSTUFFMode.length)];
-    displayMessage(randomMessage);
+    throw new Error("No affirmation result");
   }
-  async function fetchPgModeFact() {
+
+  async function fetchFunFact() {
     try {
-      // Useless Facts API (no key)
       const response = await fetch(
         "https://uselessfacts.jsph.pl/api/v2/facts/random?language=en",
       );
@@ -828,12 +624,9 @@ function initializeQuotes() {
         return;
       }
     } catch (error) {
-      console.log("Using PG mode fallback message:", error.message);
+      console.log("Fun fact API unavailable:", error.message);
     }
-
-    const randomMessage =
-      fallbackPgMode[Math.floor(Math.random() * fallbackPgMode.length)];
-    displayMessage(randomMessage);
+    throw new Error("No fact result");
   }
 
   /**
@@ -843,20 +636,27 @@ function initializeQuotes() {
     messageElement.textContent = text;
   }
 
-  async function refreshQuoteByMode() {
-    if (isPgMode) {
-      await fetchPgModeFact();
+  async function refreshQuote() {
+    try {
+      await fetchAffirmation();
       return;
+    } catch (_) {
+      // Fallback to another source
     }
-    await fetchSTUFFModeAdvice();
+    try {
+      await fetchFunFact();
+      return;
+    } catch (_) {
+      // Final local fallback
+    }
+    const randomMessage =
+      fallbackMessages[Math.floor(Math.random() * fallbackMessages.length)];
+    displayMessage(randomMessage);
   }
 
-  // Expose refresh function so mode switch can update immediately
-  window.refreshQuoteGlobal = refreshQuoteByMode;
-
   // Fetch initial message and refresh every 30 seconds
-  refreshQuoteByMode();
-  setInterval(refreshQuoteByMode, 30000);
+  refreshQuote();
+  setInterval(refreshQuote, 30000);
 }
 
 /**
@@ -979,96 +779,66 @@ const DEFAULT_TABS = [
   { id: "tab4", name: "DON'T FORGET" },
 ];
 
-let isPgMode = true;
 let tabs = [...DEFAULT_TABS];
 let activeTabId = DEFAULT_TABS[0].id;
 
 /**
- * Apply theme text for current mode
- * Updates UI text elements based on PG/STUFF mode
+ * Apply PG theme text
  * Async because it fetches a fresh GIF from GIPHY API for the reward modal
  */
-async function applyThemeText(mode) {
-  const modeText = mode === "pg" ? UI_TEXT.PG_MODE : UI_TEXT.STUFF_MODE;
-
+async function applyThemeText() {
   const titleMain = document.getElementById("titleMain");
   if (titleMain) {
-    titleMain.textContent = modeText.TITLE_MAIN;
+    titleMain.textContent = UI_TEXT.TITLE_MAIN;
   }
 
   const titleSub = document.getElementById("titleSub");
   if (titleSub) {
-    titleSub.textContent = modeText.TITLE_SUB;
+    titleSub.textContent = UI_TEXT.TITLE_SUB;
   }
 
   const tagline = document.getElementById("tagline");
   if (tagline) {
-    tagline.textContent = modeText.TAGLINE;
+    tagline.textContent = UI_TEXT.TAGLINE;
   }
 
   const taskInput = document.getElementById("task-input");
   if (taskInput) {
-    taskInput.placeholder = modeText.TASK_PLACEHOLDER;
+    taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER;
   }
 
-  document.title = modeText.DOC_TITLE;
+  document.title = UI_TEXT.DOC_TITLE;
 
   // Update prize modal content
   const prizeLine1 = document.getElementById("prizeLine1");
   const prizeLine2 = document.getElementById("prizeLine2");
   const prizeSubtitle = document.getElementById("prizeSubtitle");
   const prizeNote = document.getElementById("prizeNote");
-  const backToItBtn = document.getElementById("backToItBtn");
+  const nextTaskBtn = document.getElementById("nextTaskBtn");
+  const addFiveMinBtn = document.getElementById("addFiveMinBtn");
   const prizeGif = document.getElementById("prizeGif");
 
-  if (mode === "pg") {
-    if (prizeLine1) prizeLine1.textContent = "GREAT JOB";
-    if (prizeLine2) prizeLine2.textContent = "SUPERSTAR!";
-    if (prizeSubtitle) prizeSubtitle.textContent = "You earned a reward!";
-    if (prizeNote) prizeNote.textContent = "or you can enjoy this cute cat!";
-    if (backToItBtn) backToItBtn.textContent = "KEEP GOING, YOU'RE AMAZING!";
+  if (prizeLine1) prizeLine1.textContent = "GREAT JOB";
+  if (prizeLine2) prizeLine2.textContent = "YOU'RE AMAZING!";
+  if (prizeSubtitle) prizeSubtitle.textContent = "You earned a reward!";
+  if (prizeNote) prizeNote.textContent = "or you can enjoy this cute cat!";
+  if (nextTaskBtn) nextTaskBtn.textContent = "Next Task!";
+  if (addFiveMinBtn) addFiveMinBtn.textContent = "Add 5 Min";
 
-    // Try to fetch a GIF from GIPHY, fallback to static if unavailable
-    const gifUrl = await fetchRewardGif("happy celebration cat");
-    if (prizeGif) {
-      prizeGif.src =
-        gifUrl ||
-        "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHBybnhveG4wdnRodGg2MnJ1NWhxNmxzcWV5Zm4weDcyZGFqMDV1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/75mBr8CLHect4tHlMb/giphy.gif";
-    }
+  const gifUrl = await fetchRewardGif("happy celebration cat");
+  if (prizeGif) {
+    prizeGif.src =
+      gifUrl ||
+      "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHBybnhveG4wdnRodGg2MnJ1NWhxNmxzcWV5Zm4weDcyZGFqMDV1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/75mBr8CLHect4tHlMb/giphy.gif";
+  }
 
-    // Update prize list
-    const prizeList = document.getElementById("prizeList");
-    if (prizeList) {
-      prizeList.innerHTML = `
-                <li>Go for a nice walk.</li>
-                <li>Take a quick nap.</li>
-                <li>Treat yourself to a snack!</li>
-            `;
-    }
-  } else {
-    if (prizeLine1) prizeLine1.textContent = "GOOD JOB";
-    if (prizeLine2) prizeLine2.textContent = "DUMMY!";
-    if (prizeSubtitle) prizeSubtitle.textContent = "PICK A PRIZE";
-    if (prizeNote)
-      prizeNote.textContent = "or you can stare at this cute dumb cat";
-    if (backToItBtn) backToItBtn.textContent = "NOW GET BACK TO WORK!";
-
-    // Try to fetch a GIF from GIPHY, fallback to static if unavailable
-    const gifUrl = await fetchRewardGif("hell yeah you did it");
-    if (prizeGif) {
-      prizeGif.src =
-        gifUrl || "https://media.giphy.com/media/uF4QwYRpMDuGuMXL1G/giphy.gif";
-    }
-
-    // Update prize list
-    const prizeList = document.getElementById("prizeList");
-    if (prizeList) {
-      prizeList.innerHTML = `
-                <li>GO FOR A WALK.</li>
-                <li>TAKE A QUICK NAP.</li>
-                <li>GO GET YOUR PRODUCTIVE ASS SOME SKITTLES.</li>
-            `;
-    }
+  const prizeList = document.getElementById("prizeList");
+  if (prizeList) {
+    prizeList.innerHTML = `
+              <li>Go for a nice walk.</li>
+              <li>Take a quick nap.</li>
+              <li>Treat yourself to a snack!</li>
+          `;
   }
 }
 
@@ -1110,6 +880,17 @@ function renderTaskTabs() {
     btn.className = `task-tab-btn ${tab.id === activeTabId ? "active" : ""}`;
     btn.textContent = tab.name;
     btn.addEventListener("click", () => {
+      if (tab.id === activeTabId) {
+        const next = prompt("Rename tab:", tab.name);
+        if (!next) return;
+        tab.name = next.trim() || tab.name;
+        saveTabs();
+        renderTaskTabs();
+        renderCompletedByTab();
+        syncTaskTimerSelectionUI();
+        return;
+      }
+
       activeTabId = tab.id;
       saveTabs();
       renderTaskTabs();
@@ -1118,31 +899,7 @@ function renderTaskTabs() {
       }
       syncTaskTimerSelectionUI();
     });
-    btn.addEventListener("dblclick", () => {
-      const next = prompt("Rename tab:", tab.name);
-      if (!next) return;
-      tab.name = next.trim() || tab.name;
-      saveTabs();
-      renderTaskTabs();
-      renderCompletedByTab();
-      syncTaskTimerSelectionUI();
-    });
     tabsEl.appendChild(btn);
-  });
-}
-function initializeTabRename() {
-  const btn = document.getElementById("rename-tab-btn");
-  if (!btn) return;
-  btn.addEventListener("click", () => {
-    const tab = tabs.find((t) => t.id === activeTabId);
-    if (!tab) return;
-    const next = prompt("Rename tab:", tab.name);
-    if (!next) return;
-    tab.name = next.trim() || tab.name;
-    saveTabs();
-    renderTaskTabs();
-    renderCompletedByTab();
-    syncTaskTimerSelectionUI();
   });
 }
 
@@ -1150,14 +907,10 @@ function initializeTabRename() {
  * Switch PG mode
  */
 function setPgMode() {
-  isPgMode = true;
   document.body.classList.add("pg-mode");
 
-  applyThemeText("pg");
+  applyThemeText();
   setCompletedTitleForMode();
-  if (window.refreshQuoteGlobal) {
-    window.refreshQuoteGlobal();
-  }
   loadTabs();
   renderTaskTabs();
 
@@ -1218,6 +971,90 @@ function initializeUtilityModals() {
   }
 }
 
+function initializeResetAll() {
+  const openBtn = document.getElementById("resetAllBtn");
+  const overlay = document.getElementById("resetConfirmOverlay");
+  const closeBtn = document.getElementById("closeResetConfirmBtn");
+  const cancelBtn = document.getElementById("cancelResetBtn");
+  const confirmBtn = document.getElementById("confirmResetBtn");
+  const taskInput = document.getElementById("task-input");
+  const taskList = document.getElementById("task-list");
+  const timerSection = document.querySelector(".timer-section");
+  const startBtn = document.getElementById("start-btn");
+  const pauseBtn = document.getElementById("pause-btn");
+  const timerLabel = document.getElementById("timer-label");
+  const focusTaskLine = document.getElementById("focusTaskLine");
+  const timeLeftEl = document.getElementById("time-left");
+
+  if (!openBtn || !overlay || !confirmBtn) return;
+
+  function closeModal() {
+    overlay.classList.add("is-hidden");
+  }
+
+  function openModal() {
+    overlay.classList.remove("is-hidden");
+  }
+
+  function resetEverything() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    isRunning = false;
+    timeLeft = 25 * 60;
+    if (timerSection) timerSection.classList.remove("timer-running");
+    if (startBtn) startBtn.disabled = false;
+    if (pauseBtn) pauseBtn.disabled = true;
+    if (timerLabel) timerLabel.textContent = "TIME";
+    if (focusTaskLine) focusTaskLine.textContent = "left to work on your task";
+    if (timeLeftEl) timeLeftEl.textContent = "25:00";
+    if (typeof setFocusDialValues === "function") {
+      setFocusDialValues(0, 25, 0);
+    }
+
+    tasks = [];
+    selectedTaskId = null;
+    tabs = [...DEFAULT_TABS];
+    activeTabId = tabs[0].id;
+    stats = { completedTasks: 0, timerSessions: 0 };
+
+    localStorage.removeItem(STORAGE_KEY_PG);
+    localStorage.removeItem(TAB_KEY_PG);
+    localStorage.removeItem(ACTIVE_TAB_KEY_PG);
+    localStorage.removeItem("dumbit_stats");
+
+    renderTaskTabs();
+    if (taskList) {
+      taskList.innerHTML = "";
+    }
+    if (typeof window.rerenderTaskList === "function") {
+      window.rerenderTaskList();
+    }
+    renderCompletedByTab();
+    syncTaskTimerSelectionUI();
+    updateStatsDisplay();
+
+    if (taskInput) {
+      taskInput.value = "";
+      taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER;
+    }
+
+    closeModal();
+    celebrateByMode(1400);
+  }
+
+  openBtn.addEventListener("click", openModal);
+  confirmBtn.addEventListener("click", resetEverything);
+
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
+  if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) closeModal();
+  });
+}
+
 /* =====================================================
    REWARD MODAL FUNCTIONALITY
 ===================================================== */
@@ -1264,24 +1101,23 @@ function showTaskCompletedNotification() {
  * Show reward modal with fresh GIF
  */
 async function showRewardModal() {
-  // Load a fresh GIF based on current mode
-  const mode = isPgMode ? "pg" : "stuff";
-  await loadFreshRewardGif(mode);
+  await loadFreshRewardGif();
 
   // Open the modal
   openPrizeModal();
 }
 
 /**
- * Load a fresh reward GIF and update modal content for the current mode
+ * Load a fresh reward GIF and update modal content
  */
-async function loadFreshRewardGif(mode) {
+async function loadFreshRewardGif() {
   const prizeGif = document.getElementById("prizeGif");
   const prizeLine1 = document.getElementById("prizeLine1");
   const prizeLine2 = document.getElementById("prizeLine2");
   const prizeSubtitle = document.getElementById("prizeSubtitle");
   const prizeNote = document.getElementById("prizeNote");
-  const backToItBtn = document.getElementById("backToItBtn");
+  const nextTaskBtn = document.getElementById("nextTaskBtn");
+  const addFiveMinBtn = document.getElementById("addFiveMinBtn");
   const prizeList = document.getElementById("prizeList");
 
   if (!prizeGif) return;
@@ -1289,51 +1125,25 @@ async function loadFreshRewardGif(mode) {
   // Show loading state
   prizeGif.style.opacity = "0.5";
 
-  if (mode === "pg") {
-    // Update text for PG mode
-    if (prizeLine1) prizeLine1.textContent = "GREAT JOB";
-    if (prizeLine2) prizeLine2.textContent = "SUPERSTAR!";
-    if (prizeSubtitle) prizeSubtitle.textContent = "You earned a reward!";
-    if (prizeNote) prizeNote.textContent = "or you can enjoy this cute cat!";
-    if (backToItBtn) backToItBtn.textContent = "KEEP GOING, YOU'RE AMAZING!";
+  if (prizeLine1) prizeLine1.textContent = "GREAT JOB";
+  // if (prizeLine2) prizeLine2.textContent = "YOU'RE AMAZING!";
+  if (prizeSubtitle) prizeSubtitle.textContent = "You earned a reward!";
+  if (prizeNote) prizeNote.textContent = "or you can enjoy this cute cat!";
+  if (nextTaskBtn) nextTaskBtn.textContent = "Next Task!";
+  if (addFiveMinBtn) addFiveMinBtn.textContent = "Add 5 Min";
 
-    // Update prize list for PG mode
-    if (prizeList) {
-      prizeList.innerHTML = `
-                <li>Go for a nice walk.</li>
-                <li>Take a quick nap.</li>
-                <li>Treat yourself to a snack!</li>
-            `;
-    }
-
-    // Fetch fresh cat GIF for PG mode
-    const gifUrl = await fetchRewardGif("happy celebration cat cute");
-    prizeGif.src =
-      gifUrl ||
-      "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHBybnhveG4wdnRodGg2MnJ1NWhxNmxzcWV5Zm4weDcyZGFqMDV1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/75mBr8CLHect4tHlMb/giphy.gif";
-  } else {
-    // Update text for STUFF mode
-    if (prizeLine1) prizeLine1.textContent = "GOOD JOB";
-    if (prizeLine2) prizeLine2.textContent = "DUMMY!";
-    if (prizeSubtitle) prizeSubtitle.textContent = "PICK A PRIZE";
-    if (prizeNote)
-      prizeNote.textContent = "or you can stare at this cute dumb cat";
-    if (backToItBtn) backToItBtn.textContent = "NOW GET BACK TO WORK!";
-
-    // Update prize list for STUFF mode
-    if (prizeList) {
-      prizeList.innerHTML = `
-                <li>GO FOR A WALK.</li>
-                <li>TAKE A QUICK NAP.</li>
-                <li>GO GET YOUR PRODUCTIVE ASS SOME SKITTLES.</li>
-            `;
-    }
-
-    // Fetch fresh cat GIF for STUFF mode
-    const gifUrl = await fetchRewardGif("hell yeah you did it cat");
-    prizeGif.src =
-      gifUrl || "https://media.giphy.com/media/uF4QwYRpMDuGuMXL1G/giphy.gif";
+  if (prizeList) {
+    prizeList.innerHTML = `
+              <li>Go for a nice walk.</li>
+              <li>Take a quick nap.</li>
+              <li>Treat yourself to a snack!</li>
+          `;
   }
+
+  const gifUrl = await fetchRewardGif("happy celebration cat cute");
+  prizeGif.src =
+    gifUrl ||
+    "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHBybnhveG4wdnRodGg2MnJ1NWhxNmxzcWV5Zm4weDcyZGFqMDV1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/75mBr8CLHect4tHlMb/giphy.gif";
 
   // Wait for image to load
   prizeGif.onload = () => {
@@ -1365,14 +1175,38 @@ function closePrizeModal() {
 function initializePrizeModal() {
   const overlay = document.getElementById("prizeOverlay");
   const closeBtn = document.getElementById("closePrizeX");
-  const backBtn = document.getElementById("backToItBtn");
+  const nextTaskBtn = document.getElementById("nextTaskBtn");
+  const addFiveMinBtn = document.getElementById("addFiveMinBtn");
 
   if (closeBtn) {
     closeBtn.addEventListener("click", closePrizeModal);
   }
 
-  if (backBtn) {
-    backBtn.addEventListener("click", closePrizeModal);
+  if (nextTaskBtn) {
+    nextTaskBtn.addEventListener("click", () => {
+      closePrizeModal();
+      const timerLabel = document.getElementById("timer-label");
+      if (timerLabel) timerLabel.textContent = "TIME";
+      const input = document.getElementById("task-input");
+      if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  }
+
+  if (addFiveMinBtn) {
+    addFiveMinBtn.addEventListener("click", () => {
+      closePrizeModal();
+      timeLeft = Math.max(0, timeLeft) + 5 * 60;
+      refreshFocusTimerDisplay();
+      const timerLabel = document.getElementById("timer-label");
+      if (timerLabel) timerLabel.textContent = "TIME";
+      if (!isRunning) {
+        const startBtn = document.getElementById("start-btn");
+        if (startBtn) startBtn.click();
+      }
+    });
   }
 
   // Click outside modal to close

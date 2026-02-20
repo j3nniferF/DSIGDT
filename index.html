@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Silly Stuff I Gotta Do Today</title>
+    <title>Dumb Stuff I Gotta Do Today</title>
 
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -11,7 +11,7 @@
     <div class="container">
       <header>
         <h1 class="app-title" id="appTitle">
-          <span id="titleMain">SILLY STUFF</span>
+          <span id="titleMain">DUMB STUFF</span>
           <span id="titleSub">I GOTTA DO TODAY</span>
         </h1>
         <p class="tagline" id="tagline">
@@ -36,13 +36,15 @@
         <div id="tasks" class="tab-content">
           <div class="task-header">
             <h2>My Tasks</h2>
-            <span id="taskCount" class="task-count">0/0 completed</span>
+            <div class="task-header-controls">
+              <span id="taskCount" class="task-count">0/0 completed</span>
+              <button id="resetAllBtn" class="reset-all-btn" type="button">
+                Reset All
+              </button>
+            </div>
           </div>
           <div class="task-lists-toolbar">
             <div class="task-tabs" id="task-tabs" aria-label="Task tabs"></div>
-            <button id="rename-tab-btn" class="rename-tab-btn" type="button">
-              Rename Tab
-            </button>
           </div>
 
           <div class="task-section">
@@ -71,7 +73,10 @@
             <div class="timer-section">
               <div class="timer-display">
                 <div id="time-left" class="time-left">25:00</div>
-                <div id="timer-label" class="timer-label">Focus Session</div>
+                <div id="timer-label" class="timer-label">TIME</div>
+                <div id="focusTaskLine" class="focus-task-line">
+                  left to work on your task
+                </div>
               </div>
               <div class="timer-controls">
                 <button id="start-btn" class="timer-btn primary">Start</button>
@@ -82,18 +87,74 @@
                   Reset
                 </button>
               </div>
-              <div class="timer-presets">
-                <button class="preset-btn" data-minutes="25">25 min</button>
-                <button class="preset-btn" data-minutes="15">15 min</button>
-                <button class="preset-btn" data-minutes="5">5 min</button>
+              <div class="timer-dials focus-dials">
+                <div class="time-stepper" data-unit="hours">
+                  <span class="stepper-label">HRS</span>
+                  <div class="stepper-controls">
+                    <button
+                      id="focusHoursDec"
+                      class="stepper-btn"
+                      type="button"
+                      aria-label="Decrease hours"
+                    >
+                      -
+                    </button>
+                    <span id="focusHoursValue" class="stepper-value">00</span>
+                    <button
+                      id="focusHoursInc"
+                      class="stepper-btn"
+                      type="button"
+                      aria-label="Increase hours"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div class="time-stepper" data-unit="minutes">
+                  <span class="stepper-label">MIN</span>
+                  <div class="stepper-controls">
+                    <button
+                      id="focusMinutesDec"
+                      class="stepper-btn"
+                      type="button"
+                      aria-label="Decrease minutes"
+                    >
+                      -
+                    </button>
+                    <span id="focusMinutesValue" class="stepper-value">25</span>
+                    <button
+                      id="focusMinutesInc"
+                      class="stepper-btn"
+                      type="button"
+                      aria-label="Increase minutes"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div class="time-stepper" data-unit="seconds">
+                  <span class="stepper-label">SEC</span>
+                  <div class="stepper-controls">
+                    <button
+                      id="focusSecondsDec"
+                      class="stepper-btn"
+                      type="button"
+                      aria-label="Decrease seconds"
+                    >
+                      -
+                    </button>
+                    <span id="focusSecondsValue" class="stepper-value">00</span>
+                    <button
+                      id="focusSecondsInc"
+                      class="stepper-btn"
+                      type="button"
+                      aria-label="Increase seconds"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
               </div>
-              <button
-                id="openTaskTimerBtn"
-                class="timer-btn primary timer-btn--task"
-                type="button"
-              >
-                Open Task Timer
-              </button>
             </div>
           </div>
 
@@ -123,105 +184,34 @@
       </footer>
     </div>
 
-    <!-- Task Timer Modal -->
+    <!-- Reset Confirmation Modal -->
     <div
       class="modal-overlay is-hidden"
-      id="taskTimerOverlay"
+      id="resetConfirmOverlay"
       role="dialog"
       aria-modal="true"
     >
-      <div class="modal task-timer-modal" id="taskTimerModal">
-        <button class="modal-close-x" id="closeTaskTimerBtn" type="button">
+      <div class="modal reset-confirm-modal" id="resetConfirmModal">
+        <button class="modal-close-x" id="closeResetConfirmBtn" type="button">
           ✕
         </button>
-        <h2 class="modal-title">TASK TIMER</h2>
-        <p class="timer-current-tab">
-          IN PROGRESS TAB: <strong id="currentTabName">DUE TODAY</strong>
+        <h2 class="modal-title">🦄 Rainbow Reset?</h2>
+        <p class="modal-subtitle">
+          Are you sure you want to reset everything?
         </p>
-        <p class="timer-current-task">
-          TASK: <strong id="currentTaskName">Select a task first</strong>
-        </p>
-
-        <div class="timer-dials">
-          <label
-            >HRS
-            <select id="dialHours"></select>
-          </label>
-          <label
-            >MIN
-            <select id="dialMinutes"></select>
-          </label>
-          <label
-            >SEC
-            <select id="dialSeconds"></select>
-          </label>
-        </div>
-
-        <div class="timer-controls">
-          <button
-            id="taskTimerStartBtn"
-            class="timer-btn primary"
-            type="button"
-          >
-            Start
-          </button>
-          <button
-            id="taskTimerPauseBtn"
-            class="timer-btn secondary"
-            type="button"
-            disabled
-          >
-            Pause
-          </button>
-          <button
-            id="taskTimerResetBtn"
-            class="timer-btn secondary"
-            type="button"
-          >
-            Reset
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Floating Timer -->
-    <div class="floating-timer is-hidden" id="floatingTimer">
-      <div class="floating-timer__time" id="floatingTimerTime">00:00:00</div>
-      <div class="floating-timer__task" id="floatingTimerTask">
-        No task selected
-      </div>
-    </div>
-
-    <!-- Focus Floating Clock -->
-    <div class="focus-floating-clock is-hidden" id="focusFloatingClock">
-      <div class="focus-floating-clock__label">FOCUS TIMER</div>
-      <div class="focus-floating-clock__time" id="focusFloatingClockTime">
-        25:00
-      </div>
-    </div>
-
-    <!-- Timer Complete Modal -->
-    <div
-      class="modal-overlay is-hidden"
-      id="timerCompleteOverlay"
-      role="dialog"
-      aria-modal="true"
-    >
-      <div class="modal task-timer-modal">
-        <h2 class="modal-title">TIME UP</h2>
-        <p class="timer-current-task">
-          Done with <strong id="timerDoneTaskName">this task</strong>?
+        <p class="reset-warning">
+          This will clear all tasks, tab names, completed lists, and stats.
         </p>
         <div class="timer-controls">
-          <button id="timerDoneYesBtn" class="timer-btn primary" type="button">
-            Yes, Done
+          <button id="confirmResetBtn" class="btn btn--primary" type="button">
+            Yes, Reset All
           </button>
           <button
-            id="timerPlusFiveBtn"
+            id="cancelResetBtn"
             class="timer-btn secondary"
             type="button"
           >
-            +5 Minutes
+            Cancel
           </button>
         </div>
       </div>
@@ -246,7 +236,7 @@
 
         <h2 class="modal-title" id="prizeTitle">
           <span class="modal-title-line1" id="prizeLine1">GREAT JOB</span>
-          <span class="modal-title-line2" id="prizeLine2">SUPERSTAR!</span>
+          <span class="modal-title-line2" id="prizeLine2">YOU'RE AMAZING!</span>
         </h2>
 
         <p class="modal-subtitle" id="prizeSubtitle">You earned a reward!</p>
@@ -266,8 +256,11 @@
         <p class="prize-note" id="prizeNote">or you can enjoy this cute cat!</p>
 
         <div class="prize-actions">
-          <button class="btn btn--primary" id="backToItBtn" type="button">
-            KEEP GOING, YOU'RE AMAZING!
+          <button class="btn btn--primary" id="nextTaskBtn" type="button">
+            Next Task!
+          </button>
+          <button class="btn btn--secondary" id="addFiveMinBtn" type="button">
+            Add 5 Min
           </button>
         </div>
       </div>
@@ -296,6 +289,7 @@
               <li>Add tasks per tab</li>
               <li>Rename tasks (double-click)</li>
               <li>Track completed vs total</li>
+              <li>Reset everything with one button + confirmation</li>
             </ul>
           </section>
           <section>
@@ -309,9 +303,9 @@
           <section>
             <h3>Timer</h3>
             <ul>
-              <li>Quick focus timer + presets</li>
-              <li>Task timer with H/M/S dials</li>
-              <li>Done or +5 min flow when timer ends</li>
+              <li>Focus timer with H/M/S stepper controls</li>
+              <li>Scroll or tap +/- to set time quickly</li>
+              <li>Reward modal with Next Task or Add 5 Min</li>
             </ul>
           </section>
           <section>

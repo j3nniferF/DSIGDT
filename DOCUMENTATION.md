@@ -1,4 +1,4 @@
-# DSIGDT (Silly Stuff I Gotta Do Today)
+# DSIGDT (Dumb Stuff I Gotta Do Today)
 
 ## Project Description
 
