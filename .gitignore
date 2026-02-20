@@ -17,5 +17,7 @@ Thumbs.db
 
 # Environment files
 .env
+
+# Ignore config.js if you want to keep API keys private
 config.js
 .DS_Store

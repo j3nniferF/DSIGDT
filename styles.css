@@ -1,43 +1,21 @@
-/* Font Faces for STUFF Mode */
-@font-face {
-  font-family: "anarchy";
-  src: url("./assets/fonts/anarchy.woff2") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Punk2";
-  src: url("./assets/fonts/punk.woff2") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-/* fix background */
+
 body {
-  font-family: "Punk2", "Segoe UI", sans-serif;
-  background:
-    linear-gradient(rgba(18, 18, 18, 0.35), rgba(18, 18, 18, 0.35)),
-    url("./assets/textures/grime.png") center/cover fixed;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #f8f9fa url("./assets/textures/pretty.png") center/cover fixed;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
+  font-weight: 100;
 }
 
-/* Helvetica for PG mode */
-body.pg-mode {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background: #f8f9fa url("./assets/textures/pretty.png") center/cover fixed !important;
-}
-
-body.pg-mode header {
+header {
   background:
     linear-gradient(
       135deg,
@@ -52,24 +30,21 @@ body.pg-mode header {
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.7),
     0 0 0 4px rgba(255, 124, 203, 0.35);
+  color: #333;
+  padding: 30px;
+  text-align: center;
 }
 
-body.pg-mode header h1,
-body.pg-mode .tab-content h2,
-body.pg-mode .modal-title {
+header h1,
+.tab-content h2,
+.modal-title,
+.task-tab-btn {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   letter-spacing: 1px;
+  font-weight: 100;
 }
 
-body.pg-mode .tagline {
-  color: #333;
-}
-
-body.pg-mode header {
-  border-color: #78ca8f;
-}
-
-body.pg-mode .app-title {
+.app-title {
   padding: 8px 14px;
   border-radius: 14px;
   border: 2px solid #78ca8f;
@@ -80,9 +55,15 @@ body.pg-mode .app-title {
     rgba(157, 232, 107, 0.24)
   );
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.72);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.05;
+  margin-bottom: 8px;
 }
 
-body.pg-mode .tagline {
+.tagline {
+  color: #333;
   margin-top: 10px;
   padding: 8px 14px;
   border-radius: 12px;
@@ -94,248 +75,10 @@ body.pg-mode .tagline {
     rgba(157, 232, 107, 0.2)
   );
   display: inline-block;
-}
-
-.container {
-  background: rgba(255, 255, 255, 0.72);
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 1100px;
-  width: 100%;
-  overflow: hidden;
-}
-
-header {
-  background:
-    linear-gradient(rgba(58, 11, 11, 0.86), rgba(58, 11, 11, 0.86)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  border: 2px solid #0d0d0d;
-  color: lch(0% 0 0);
-  padding: 30px;
-  text-align: center;
-}
-
-/* Two-line app title */
-.app-title {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1.05;
-  margin-bottom: 8px;
-}
-
-body:not(.pg-mode) .app-title {
-  padding: 8px 14px;
-  border-radius: 14px;
-  border: 2px solid #0d0d0d;
-  background:
-    linear-gradient(rgba(245, 245, 245, 0.88), rgba(245, 245, 245, 0.88)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-}
-
-#titleMain {
-  font-family: "anarchy";
-  font-size: clamp(2.8rem, 8vw, 5rem);
-  letter-spacing: 1px;
-}
-
-#titleSub {
-  font-family: "anarchy";
-  font-size: clamp(1.2rem, 3.2vw, 2rem);
-  margin-top: 6px;
-  letter-spacing: 1px;
-}
-
-/* PG mode font lock: Helvetica only */
-body.pg-mode,
-body.pg-mode * {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-weight: 300;
-}
-
-/* PG Mode Toggle Switch */
-.pg-switch {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  margin-top: 0;
-  user-select: none;
-  min-height: 42px;
-}
-
-.pg-switch input[type="checkbox"] {
-  display: none;
-}
-
-.pg-switch__slider {
-  position: relative;
-  width: 60px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 30px;
-  transition: background 0.3s ease;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-}
-
-.pg-switch__slider::before {
-  content: "";
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  background: white;
-  border-radius: 50%;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.3s ease;
-}
-
-/* Checked state (PG mode OFF = stuff mode ON) */
-.pg-switch input:checked + .pg-switch__slider {
-  background: rgba(255, 100, 100, 0.5);
-}
-
-.pg-switch input:checked + .pg-switch__slider::before {
-  transform: translateX(30px);
-}
-
-.pg-switch__label {
-  font-weight: 700;
-  font-size: 1em;
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  font-family: "Bangers", cursive;
-  letter-spacing: 1px;
-}
-
-body:not(.pg-mode) .pg-switch {
-  padding: 6px 10px;
-  border-radius: 12px;
-  border: 2px solid rgba(0, 0, 0, 0.65);
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.84)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.65);
-}
-
-body:not(.pg-mode) .pg-switch__label {
-  color: #181818;
-  text-shadow: none;
-  font-family: "Punk2", "Segoe UI", sans-serif;
-  font-style: normal;
-  font-weight: 400;
-}
-
-body.pg-mode .pg-switch {
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 2px solid #ff89cf;
-  background: linear-gradient(135deg, #ffd2ee, #fff0fa);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
-}
-
-body.pg-mode .pg-switch__label {
-  color: #cf2c8f;
-  text-shadow: none;
-}
-
-body.pg-mode .pg-switch__label::before {
-  content: "♡ ";
-}
-
-.utility-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.utility-btn {
-  border: 2px solid #1f1f1f;
-  border-radius: 12px;
-  padding: 9px 14px;
-  min-height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  cursor: pointer;
-  background:
-    linear-gradient(rgba(245, 245, 245, 0.9), rgba(245, 245, 245, 0.9)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  color: #161616;
-  box-shadow: 0 3px 0 #101010;
-}
-
-body:not(.pg-mode) .utility-btn {
-  font-family: "Punk2", "Segoe UI", sans-serif;
-  font-style: normal;
-  font-weight: 400;
-}
-
-body.pg-mode .utility-btn {
-  border-color: #ff89cf;
-  border-radius: 999px;
-  color: #c43188;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 179, 224, 0.95),
-    rgba(255, 221, 241, 0.95)
-  );
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
-}
-
-body.pg-mode .utility-btn::before {
-  content: "♡ ";
-}
-
-.utility-modal {
-  max-width: 620px;
-}
-
-/* PG Mode Additional Styling */
-body.pg-mode #add-task-btn {
-  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
-  color: #17350f;
-}
-
-body.pg-mode #add-task-btn:hover {
-  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
-}
-
-body.pg-mode .timer-btn.primary {
-  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
-  color: #17350f;
-}
-
-body.pg-mode .timer-btn.primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ff89cf, #71d8ff, #feeaf8);
-}
-
-body.pg-mode .stat-card {
-  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
-  border-color: #3b0be873;
-}
-
-.tagline {
   font-size: 1em;
   opacity: 0.9;
 }
 
-body:not(.pg-mode) .tagline {
-  margin-top: 10px;
-  padding: 8px 14px;
-  border-radius: 12px;
-  border: 2px solid #0d0d0d;
-  background:
-    linear-gradient(rgba(245, 245, 245, 0.86), rgba(245, 245, 245, 0.86)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  display: inline-block;
-}
-
-/* Card layout (no tab bar) */
 main {
   padding: 20px;
   display: grid;
@@ -373,13 +116,6 @@ main {
   border-radius: 12px;
   padding: 18px;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.86)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
-}
-
-body.pg-mode .tab-content {
-  background:
     linear-gradient(
       135deg,
       rgba(255, 107, 107, 0.22),
@@ -412,7 +148,6 @@ body.pg-mode .tab-content {
   font-size: 1.8em;
 }
 
-/* Task header with counter */
 .task-header {
   display: flex;
   justify-content: space-between;
@@ -422,17 +157,13 @@ body.pg-mode .tab-content {
 
 .task-count {
   font-size: 0.9em;
-  color: #666;
+  color: #2e7d32;
   font-weight: 600;
-  background: #f0f0f0;
+  background: #e8f5e9;
   padding: 5px 15px;
   border-radius: 20px;
 }
 
-body.pg-mode .task-count {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
 .task-lists-toolbar {
   display: flex;
   justify-content: space-between;
@@ -463,29 +194,20 @@ body.pg-mode .task-count {
 }
 
 .rename-tab-btn {
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(36, 86, 204, 0.35);
   border-radius: 8px;
   padding: 6px 10px;
   background: rgba(255, 255, 255, 0.85);
   cursor: pointer;
   font-weight: 600;
-}
-
-body.pg-mode .rename-tab-btn {
-  border-color: rgba(36, 86, 204, 0.35);
   color: #2456cc;
 }
 
 .task-item.selected {
-  outline: 2px dashed #8b1111;
+  outline: 2px dashed #ff66bf;
   outline-offset: 2px;
 }
 
-body.pg-mode .task-item.selected {
-  outline-color: #ff66bf;
-}
-
-/* Input validation error */
 .input-error {
   border: 2px solid #ff4444 !important;
   animation: shake 0.3s ease;
@@ -504,7 +226,6 @@ body.pg-mode .task-item.selected {
   }
 }
 
-/* Footer */
 footer {
   background-color: #f9f9f9;
   padding: 20px 30px;
@@ -513,12 +234,10 @@ footer {
 
 .motivational-quote {
   color: #000000;
-  font-family: "punk2";
   text-align: center;
   font-size: 2.5em;
 }
 
-/* Task Section */
 .task-input-container {
   display: flex;
   gap: 10px;
@@ -541,8 +260,8 @@ footer {
 
 #add-task-btn {
   padding: 12px 20px;
-  background: #782a2a;
-  color: white;
+  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
+  color: #17350f;
   border: none;
   border-radius: 8px;
   font-size: 1em;
@@ -555,7 +274,7 @@ footer {
 }
 
 #add-task-btn:hover {
-  background: #5568d3;
+  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
 }
 
 #add-task-btn:active {
@@ -659,7 +378,6 @@ footer {
 .time-left {
   font-size: clamp(2.6rem, 11vw, 5rem);
   line-height: 1;
-  /* font-weight: 700; */
   color: #333;
   margin-bottom: 10px;
   font-variant-numeric: tabular-nums;
@@ -691,13 +409,12 @@ footer {
 }
 
 .timer-btn.primary {
-  background: #667eea;
-  color: white;
+  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
+  color: #17350f;
 }
 
 .timer-btn.primary:hover:not(:disabled) {
-  background: #5568d3;
-  transform: scale(1.05);
+  background: linear-gradient(135deg, #ff89cf, #71d8ff, #feeaf8);
 }
 
 .timer-btn.secondary {
@@ -752,117 +469,6 @@ footer {
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* Timer vibes by mode */
-body:not(.pg-mode) #timer {
-  background:
-    linear-gradient(rgba(34, 34, 34, 0.62), rgba(34, 34, 34, 0.62)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  border-color: rgba(180, 30, 30, 0.35);
-}
-
-body:not(.pg-mode) #timer h2,
-body:not(.pg-mode) #timer .timer-label,
-body:not(.pg-mode) #timer .time-left {
-  color: #f1f1f1;
-}
-
-/* stuff mode: apply timer treatment to all key cards + titles in anarchy */
-body:not(.pg-mode) #tasks,
-body:not(.pg-mode) #stats,
-body:not(.pg-mode) #completedSection {
-  background:
-    linear-gradient(rgba(34, 34, 34, 0.62), rgba(34, 34, 34, 0.62)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  border-color: rgba(180, 30, 30, 0.35);
-}
-
-body:not(.pg-mode) #tasks h2,
-body:not(.pg-mode) #stats h2,
-body:not(.pg-mode) #completedTitle,
-body:not(.pg-mode) #timer h2,
-body:not(.pg-mode) #taskTimerModal .modal-title {
-  font-family: "anarchy", "Punk2", sans-serif;
-  font-weight: 400;
-  font-size: clamp(2rem, 4.5vw, 3rem);
-  color: #f1f1f1;
-  letter-spacing: 1px;
-}
-
-body:not(.pg-mode) #tasks .task-count,
-body:not(.pg-mode) #stats .stat-label,
-body:not(.pg-mode) #stats .stat-number,
-body:not(.pg-mode) #completedSection {
-  color: #f1f1f1;
-}
-
-body:not(.pg-mode) #aboutOverlay h2 {
-  font-family: "anarchy", "Punk2", sans-serif;
-  color: #1f1f1f;
-}
-
-body:not(.pg-mode) .task-tab-btn,
-body:not(.pg-mode) .rename-tab-btn {
-  font-family: "Punk2";
-  font-weight: 400;
-  font-size: 1.1rem;
-}
-
-body:not(.pg-mode) .task-tab-btn.active {
-  border-color: #8b1111;
-  box-shadow: inset 0 -2px 0 #8b1111;
-}
-
-body:not(.pg-mode) .timer-running .time-left {
-  font-size: clamp(4.4rem, 15vw, 8rem);
-  font-family: "anarchy", "Punk2", sans-serif;
-  color: #ffffff;
-}
-
-body:not(.pg-mode) .completed-tab-group li {
-  font-size: 1.12rem;
-  line-height: 1.5;
-}
-
-body:not(.pg-mode) .stat-card {
-  background:
-    linear-gradient(rgba(34, 34, 34, 0.62), rgba(34, 34, 34, 0.62)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  border-color: rgba(180, 30, 30, 0.35);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-body:not(.pg-mode) .stat-number,
-body:not(.pg-mode) .stat-label {
-  color: #f1f1f1;
-}
-
-body:not(.pg-mode) .timer-btn.primary {
-  background: #8b1111;
-}
-
-body:not(.pg-mode) .timer-btn.primary:hover:not(:disabled) {
-  background: #6f0e0e;
-}
-
-body:not(.pg-mode) .timer-btn.secondary {
-  background: #3f3f3f;
-  color: #e4e4e4;
-}
-
-body.pg-mode #timer {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255, 107, 107, 0.26),
-      rgba(255, 217, 61, 0.26),
-      rgba(107, 255, 154, 0.26),
-      rgba(107, 180, 255, 0.26),
-      rgba(195, 107, 255, 0.26)
-    ),
-    rgba(255, 255, 255, 0.9);
-  border-color: rgba(36, 86, 204, 0.25);
-}
-
 @keyframes pulse {
   0%,
   100% {
@@ -882,11 +488,9 @@ body.pg-mode #timer {
 }
 
 .stat-card {
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  border: 2px solid rgba(22, 22, 22, 0.35);
-  color: white;
+  background: linear-gradient(135deg, #feeaf8, #71d8ff, #ff89cf);
+  border-color: #3b0be873;
+  color: #17350f;
   padding: 30px;
   border-radius: 15px;
   text-align: center;
@@ -930,20 +534,6 @@ body.pg-mode #timer {
 /* Modal Container */
 .modal {
   background:
-    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  border-radius: 20px;
-  border: 2px solid rgba(16, 16, 16, 0.45);
-  padding: 40px;
-  max-width: 500px;
-  width: 90%;
-  position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  animation: scaleIn 0.3s ease;
-}
-
-body.pg-mode .modal {
-  background:
     linear-gradient(
       135deg,
       rgba(255, 107, 107, 0.22),
@@ -953,7 +543,14 @@ body.pg-mode .modal {
       rgba(195, 107, 255, 0.22)
     ),
     rgba(255, 255, 255, 0.93);
-  border-color: rgba(255, 124, 203, 0.55);
+  border-radius: 20px;
+  border: 2px solid rgba(255, 124, 203, 0.55);
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: scaleIn 0.3s ease;
 }
 
 .completed-section {
@@ -1058,6 +655,16 @@ body.pg-mode .modal {
   min-width: 180px;
   padding: 10px 14px;
   border-radius: 12px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(86, 214, 111, 0.42),
+      rgba(113, 216, 255, 0.42),
+      rgba(157, 232, 107, 0.42)
+    ),
+    rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(110, 201, 133, 0.55);
+  color: #214626;
 }
 
 .focus-floating-clock__label {
@@ -1069,31 +676,6 @@ body.pg-mode .modal {
   font-size: 2rem;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-}
-
-body:not(.pg-mode) .focus-floating-clock {
-  background:
-    linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)),
-    url("./assets/textures/dirty-paper.png") center/cover;
-  border: 2px solid rgba(139, 17, 17, 0.65);
-  color: #fff;
-}
-
-body:not(.pg-mode) .focus-floating-clock__time {
-  font-family: "anarchy", "Punk2", sans-serif;
-}
-
-body.pg-mode .focus-floating-clock {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(86, 214, 111, 0.42),
-      rgba(113, 216, 255, 0.42),
-      rgba(157, 232, 107, 0.42)
-    ),
-    rgba(255, 255, 255, 0.95);
-  border: 2px solid rgba(110, 201, 133, 0.55);
-  color: #214626;
 }
 
 .about-modal {
@@ -1129,29 +711,6 @@ body.pg-mode .focus-floating-clock {
   padding-left: 18px;
 }
 
-body:not(.pg-mode) .app-title,
-body:not(.pg-mode) .utility-btn,
-body:not(.pg-mode) .pg-switch {
-  border: 2px solid rgba(20, 20, 20, 0.65);
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.45);
-}
-
-body.pg-mode .app-title,
-body.pg-mode .utility-btn,
-body.pg-mode .pg-switch {
-  border: 2px solid #ff89cf;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65);
-}
-
-body.pg-mode .about-modal {
-  color: #224;
-}
-
-body.pg-mode .about-features section {
-  background: rgba(255, 255, 255, 0.7);
-  border-color: rgba(255, 124, 203, 0.45);
-}
-
 .is-hidden {
   display: none !important;
 }
@@ -1183,7 +742,6 @@ body.pg-mode .about-features section {
   color: #333;
 }
 
-/* Modal Title */
 .modal-title {
   text-align: center;
   margin-bottom: 20px;
@@ -1203,7 +761,6 @@ body.pg-mode .about-features section {
   color: #666;
 }
 
-/* Prize List */
 .prize-list {
   list-style: none;
   margin: 20px 0;
@@ -1220,7 +777,6 @@ body.pg-mode .about-features section {
   color: #333;
 }
 
-/* Prize GIF */
 .prize-gif {
   width: 100%;
   max-width: 300px;
@@ -1236,7 +792,6 @@ body.pg-mode .about-features section {
   margin-bottom: 20px;
 }
 
-/* Prize Actions */
 .prize-actions {
   text-align: center;
 }
@@ -1252,27 +807,17 @@ body.pg-mode .about-features section {
 }
 
 .btn--primary {
-  background: #667eea;
-  color: white;
+  background: linear-gradient(135deg, #56d66f, #71d8ff, #9de86b);
+  color: #17350f;
 }
 
 .btn--primary:hover {
-  background: #5568d3;
+  background: linear-gradient(135deg, #49c75f, #5ec3ee, #86d95a);
   transform: scale(1.05);
 }
 
 .btn--primary:active {
   transform: scale(0.98);
-}
-
-/* PG Mode Modal Styling */
-body.pg-mode .btn--primary {
-  background: linear-gradient(135deg, #56d66f, #71d8ff, #9de86b);
-  color: #17350f;
-}
-
-body.pg-mode .btn--primary:hover {
-  background: linear-gradient(135deg, #49c75f, #5ec3ee, #86d95a);
 }
 
 /* =====================================================
@@ -1295,8 +840,8 @@ body.pg-mode .btn--primary:hover {
 }
 
 .task-complete-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #56d66f, #71d8ff, #9de86b);
+  color: #17350f;
   padding: 15px 25px;
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -1318,11 +863,6 @@ body.pg-mode .btn--primary:hover {
   font-size: 1.2em;
 }
 
-body.pg-mode .task-complete-card {
-  background: linear-gradient(135deg, #56d66f, #71d8ff, #9de86b);
-  color: #17350f;
-}
-
 @media (max-width: 768px) {
   .task-complete-notification {
     top: 10px;
@@ -1339,10 +879,8 @@ body.pg-mode .task-complete-card {
 
 /* =====================================================
    RESPONSIVE DESIGN
-   Mobile-first approach with breakpoints for tablets and desktop
 ===================================================== */
 
-/* Mobile adjustments (default/base styles above are mobile-friendly) */
 @media (max-width: 768px) {
   body {
     padding: 10px;
@@ -1396,7 +934,7 @@ body.pg-mode .task-complete-card {
 
   #task-input {
     width: 100%;
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px;
   }
 
   #add-task-btn {
@@ -1461,14 +999,6 @@ body.pg-mode .task-complete-card {
   }
 }
 
-/* Tablet adjustments */
-@media (min-width: 769px) and (max-width: 1024px) {
-  header h1 {
-    font-size: 2.2em;
-  }
-}
-
-/* Desktop enhancements */
 @media (min-width: 1025px) {
   header h1 {
     font-size: 2.8em;
@@ -1479,7 +1009,6 @@ body.pg-mode .task-complete-card {
   }
 }
 
-/* High resolution displays */
 @media (min-resolution: 192dpi) {
   body {
     -webkit-font-smoothing: antialiased;
@@ -1487,7 +1016,6 @@ body.pg-mode .task-complete-card {
   }
 }
 
-/* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
