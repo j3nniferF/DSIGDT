@@ -12,6 +12,11 @@ let stats = { completedTasks: 0, timerSessions: 0 };
 let audioCtx = null;
 let selectedTaskId = null;
 let setFocusDialValues = null;
+let refreshTimerPickerUI = null;
+let startFloatingTimer = null;
+let timerTargetTabId = null;
+let timerTargetTaskId = null;
+let refreshTaskInputPlaceholder = null;
 
 const CONFETTI_COLORS = {
   pg: ["#ff6ad5", "#caa7ff", "#65b8ff", "#ff9bde", "#9de8ff", "#ffffff"],
@@ -48,6 +53,16 @@ function initializeTasks() {
   const taskInput = document.getElementById("task-input");
   const addTaskBtn = document.getElementById("add-task-btn");
   const taskList = document.getElementById("task-list");
+  const TAB_PLACEHOLDER_OPTIONS = {
+    tab1: [
+      "Take a nice shower",
+      "Take your vitamins",
+      "Breathe & stretch for 5 min",
+    ],
+    tab2: ["Tidy up the kitchen", "Quick grocery run"],
+    tab3: ["Organize your closet", "Schedule a dentist appointment"],
+    tab4: ["Pick up pet food", "Pay credit card bill"],
+  };
 
   // Add task on button click
   addTaskBtn.addEventListener("click", addTask);
@@ -62,10 +77,36 @@ function initializeTasks() {
   // Load tasks from localStorage
   loadTasks();
 
+  function updateTaskInputPlaceholder() {
+    if (!taskInput) return;
+    if (activeTabId === ALL_TASKS_TAB_ID) {
+      taskInput.placeholder = "Viewing all tasks - select a tab to add";
+      taskInput.disabled = true;
+      if (addTaskBtn) addTaskBtn.disabled = true;
+      return;
+    }
+    taskInput.disabled = false;
+    if (addTaskBtn) addTaskBtn.disabled = false;
+    const options = TAB_PLACEHOLDER_OPTIONS[activeTabId];
+    if (!options || options.length === 0) {
+      taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER;
+      return;
+    }
+    const first = options[Math.floor(Math.random() * options.length)];
+    let second = options[Math.floor(Math.random() * options.length)];
+    if (options.length > 1 && second === first) {
+      second = options[(options.indexOf(first) + 1) % options.length];
+    }
+    taskInput.placeholder = `Try: ${first} • ${second}`;
+  }
+
+  refreshTaskInputPlaceholder = updateTaskInputPlaceholder;
+
   /**
    * Add a new task to the list
    */
   function addTask() {
+    if (activeTabId === ALL_TASKS_TAB_ID) return;
     const taskText = taskInput.value.trim();
 
     if (taskText === "") {
@@ -88,6 +129,7 @@ function initializeTasks() {
     tasks.push(task);
     saveTasks();
     rerenderTaskList();
+    updateTaskInputPlaceholder();
 
     taskInput.value = "";
     taskInput.focus();
@@ -135,7 +177,8 @@ function initializeTasks() {
     // Create delete button
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-btn";
-    deleteBtn.textContent = "Delete";
+    deleteBtn.textContent = "✕";
+    deleteBtn.setAttribute("aria-label", "Delete task");
     deleteBtn.addEventListener("click", () => deleteTask(task.id));
 
     // Assemble task item
@@ -148,9 +191,23 @@ function initializeTasks() {
 
   function rerenderTaskList() {
     taskList.innerHTML = "";
-    tasks
-      .filter((t) => t.tabId === activeTabId && !t.completed)
-      .forEach((task) => renderTask(task));
+    if (activeTabId === ALL_TASKS_TAB_ID) {
+      tabs.forEach((tab) => {
+        const tabTasks = tasks.filter((t) => t.tabId === tab.id && !t.completed);
+        if (!tabTasks.length) return;
+
+        const header = document.createElement("li");
+        header.className = "task-group-header";
+        header.textContent = tab.name;
+        taskList.appendChild(header);
+
+        tabTasks.forEach((task) => renderTask(task));
+      });
+    } else {
+      tasks
+        .filter((t) => t.tabId === activeTabId && !t.completed)
+        .forEach((task) => renderTask(task));
+    }
     updateTaskCount();
   }
   window.rerenderTaskList = rerenderTaskList;
@@ -179,10 +236,13 @@ function initializeTasks() {
         showTaskCompletedNotification(); // Show quick notification
         updateTaskCount(); // Update task counter
 
-        // Check if all tasks are now complete
-        if (areAllTasksComplete()) {
+        // Show reward when this tab is fully completed
+        const tabTasks = tasks.filter((t) => t.tabId === task.tabId);
+        const tabIsNowComplete =
+          tabTasks.length > 0 && tabTasks.every((t) => t.completed);
+        if (tabIsNowComplete) {
           setTimeout(() => {
-            showRewardModal(); // Show full reward modal only when all done
+            showRewardModal("task");
           }, 500);
         }
       } else if (wasCompleted && !task.completed) {
@@ -210,13 +270,17 @@ function initializeTasks() {
     rerenderTaskList();
     renderCompletedByTab();
     syncTaskTimerSelectionUI();
+    updateTaskInputPlaceholder();
   }
 
   /**
    * Update task count display
    */
   function updateTaskCount() {
-    const currentTabTasks = tasks.filter((t) => t.tabId === activeTabId);
+    const currentTabTasks =
+      activeTabId === ALL_TASKS_TAB_ID
+        ? tasks
+        : tasks.filter((t) => t.tabId === activeTabId);
     const totalTasks = currentTabTasks.length;
     const completedTasks = currentTabTasks.filter((t) => t.completed).length;
     const taskCountEl = document.getElementById("taskCount");
@@ -250,6 +314,7 @@ function initializeTasks() {
     rerenderTaskList();
     renderCompletedByTab();
     syncTaskTimerSelectionUI();
+    updateTaskInputPlaceholder();
   }
 
   /**
@@ -270,64 +335,62 @@ function initializeTasks() {
  * Pomodoro-style focus timer with start/pause/reset controls
  */
 function initializeTimer() {
-  const startBtn = document.getElementById("start-btn");
-  const pauseBtn = document.getElementById("pause-btn");
-  const resetBtn = document.getElementById("reset-btn");
+  const launchBtn = document.getElementById("timerLaunchBtn");
+  const timerTaskSelect = document.getElementById("timerTaskSelect");
   const timerSection = document.querySelector(".timer-section");
-  const hoursValueEl = document.getElementById("focusHoursValue");
-  const minutesValueEl = document.getElementById("focusMinutesValue");
-  const secondsValueEl = document.getElementById("focusSecondsValue");
-  const hoursDecBtn = document.getElementById("focusHoursDec");
-  const hoursIncBtn = document.getElementById("focusHoursInc");
-  const minutesDecBtn = document.getElementById("focusMinutesDec");
-  const minutesIncBtn = document.getElementById("focusMinutesInc");
-  const secondsDecBtn = document.getElementById("focusSecondsDec");
-  const secondsIncBtn = document.getElementById("focusSecondsInc");
-  const steppers = document.querySelectorAll(".time-stepper");
+  const floating = document.getElementById("floatingFocusTimer");
+  const floatingTimeEl = document.getElementById("floatingFocusTime");
+  const floatingTaskEl = document.getElementById("floatingFocusTask");
+  const floatingStartBtn = document.getElementById("floatingStartBtn");
+  const floatingPauseBtn = document.getElementById("floatingPauseBtn");
+  const floatingResetBtn = document.getElementById("floatingResetBtn");
+  const floatingCloseBtn = document.getElementById("floatingFocusCloseBtn");
+  const hoursWheel = document.getElementById("focusHoursWheel");
+  const minutesWheel = document.getElementById("focusMinutesWheel");
+  const secondsWheel = document.getElementById("focusSecondsWheel");
 
   if (
-    !startBtn ||
-    !pauseBtn ||
-    !resetBtn ||
+    !launchBtn ||
+    !timerTaskSelect ||
     !timerSection ||
-    !hoursValueEl ||
-    !minutesValueEl ||
-    !secondsValueEl ||
-    !hoursDecBtn ||
-    !hoursIncBtn ||
-    !minutesDecBtn ||
-    !minutesIncBtn ||
-    !secondsDecBtn ||
-    !secondsIncBtn
+    !floating ||
+    !floatingTimeEl ||
+    !floatingTaskEl ||
+    !floatingStartBtn ||
+    !floatingPauseBtn ||
+    !floatingResetBtn ||
+    !floatingCloseBtn ||
+    !hoursWheel ||
+    !minutesWheel ||
+    !secondsWheel
   ) {
     return;
   }
 
   const dialState = {
     hours: 0,
-    minutes: 25,
+    minutes: 10,
     seconds: 0,
   };
 
-  // Start button
-  startBtn.addEventListener("click", startTimer);
+  function ensureWheelOptions(selectEl, max) {
+    if (selectEl.options.length) return;
+    for (let i = 0; i <= max; i += 1) {
+      const option = document.createElement("option");
+      option.value = `${i}`;
+      option.textContent = `${i}`.padStart(2, "0");
+      selectEl.appendChild(option);
+    }
+  }
 
-  // Pause button
-  pauseBtn.addEventListener("click", pauseTimer);
-
-  // Reset button
-  resetBtn.addEventListener("click", resetTimer);
-
-  function clampWithWrap(value, max) {
-    if (value < 0) return max;
-    if (value > max) return 0;
-    return value;
+  function syncWheelsFromState() {
+    hoursWheel.value = `${dialState.hours}`;
+    minutesWheel.value = `${dialState.minutes}`;
+    secondsWheel.value = `${dialState.seconds}`;
   }
 
   function renderDials() {
-    hoursValueEl.textContent = `${dialState.hours}`.padStart(2, "0");
-    minutesValueEl.textContent = `${dialState.minutes}`.padStart(2, "0");
-    secondsValueEl.textContent = `${dialState.seconds}`.padStart(2, "0");
+    syncWheelsFromState();
   }
 
   function readDialSeconds() {
@@ -339,15 +402,105 @@ function initializeTimer() {
 
   function setFromDials() {
     const next = readDialSeconds();
-    timeLeft = next > 0 ? next : 25 * 60;
+    timeLeft = next > 0 ? next : 10 * 60;
     updateDisplay();
   }
 
-  function adjustDial(unit, delta) {
-    const limits = { hours: 23, minutes: 59, seconds: 59 };
-    dialState[unit] = clampWithWrap(dialState[unit] + delta, limits[unit]);
-    renderDials();
-    if (!isRunning) setFromDials();
+  function showFloating() {
+    floating.classList.remove("is-hidden");
+  }
+
+  function hideFloating() {
+    floating.classList.add("is-hidden");
+  }
+
+  function updateFloatingControls() {
+    floatingStartBtn.disabled = isRunning;
+    floatingPauseBtn.disabled = !isRunning;
+    launchBtn.disabled = isRunning || !timerTargetTaskId;
+  }
+
+  function updateFloatingTaskLabel() {
+    const task = tasks.find((item) => item.id === timerTargetTaskId) || null;
+    floatingTaskEl.textContent = task
+      ? `left to work on ${task.text}`
+      : "left to work on your task";
+  }
+
+  function fillTaskPicker() {
+    timerTaskSelect.innerHTML = "";
+    const groupedChoices = tabs.map((tab) => ({
+      tab,
+      tasks: tasks.filter((task) => task.tabId === tab.id && !task.completed),
+    }));
+
+    const choices = groupedChoices.flatMap((group) => group.tasks);
+
+    if (!choices.length) {
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "No incomplete tasks";
+      timerTaskSelect.appendChild(opt);
+      timerTaskSelect.disabled = true;
+      timerTargetTaskId = null;
+      launchBtn.disabled = true;
+      return;
+    }
+
+    timerTaskSelect.disabled = false;
+    launchBtn.disabled = false;
+
+    const hasCurrent = choices.some((task) => task.id === timerTargetTaskId);
+    if (!hasCurrent) {
+      timerTargetTaskId = choices[0].id;
+    }
+
+    const selectedTab =
+      timerTargetTabId && timerTargetTabId !== ALL_TASKS_TAB_ID
+        ? tabs.find((tab) => tab.id === timerTargetTabId) || null
+        : null;
+    const sortedGroups = selectedTab
+      ? [
+          ...groupedChoices.filter((group) => group.tab.id === selectedTab.id),
+          ...groupedChoices.filter((group) => group.tab.id !== selectedTab.id),
+        ]
+      : groupedChoices;
+
+    sortedGroups.forEach((group) => {
+      const header = document.createElement("option");
+      header.value = "";
+      header.textContent = `\u2014 ${group.tab.name} \u2014`;
+      header.disabled = true;
+      timerTaskSelect.appendChild(header);
+
+      if (!group.tasks.length) {
+        const emptyOpt = document.createElement("option");
+        emptyOpt.value = "";
+        emptyOpt.textContent = "  (no incomplete tasks)";
+        emptyOpt.disabled = true;
+        timerTaskSelect.appendChild(emptyOpt);
+        return;
+      }
+
+      group.tasks.forEach((task) => {
+        const opt = document.createElement("option");
+        opt.value = String(task.id);
+        opt.textContent = `  ${task.text}`;
+        if (task.id === timerTargetTaskId) {
+          opt.selected = true;
+        }
+        timerTaskSelect.appendChild(opt);
+      });
+    });
+  }
+
+  function syncPickersFromState() {
+    if (!tabs.length) return;
+    if (!tabs.some((tab) => tab.id === timerTargetTabId)) {
+      timerTargetTabId =
+        activeTabId === ALL_TASKS_TAB_ID ? tabs[0].id : activeTabId;
+    }
+    fillTaskPicker();
   }
 
   function applyDialValues(hours, minutes, seconds) {
@@ -365,8 +518,8 @@ function initializeTimer() {
     if (!isRunning) {
       isRunning = true;
       timerSection.classList.add("timer-running");
-      startBtn.disabled = true;
-      pauseBtn.disabled = false;
+      updateFloatingControls();
+      showFloating();
 
       timerInterval = setInterval(() => {
         timeLeft--;
@@ -387,8 +540,8 @@ function initializeTimer() {
       isRunning = false;
       timerSection.classList.remove("timer-running");
       clearInterval(timerInterval);
-      startBtn.disabled = false;
-      pauseBtn.disabled = true;
+      timerInterval = null;
+      updateFloatingControls();
     }
   }
 
@@ -398,6 +551,7 @@ function initializeTimer() {
   function resetTimer() {
     pauseTimer();
     setFromDials();
+    hideFloating();
   }
 
   /**
@@ -411,7 +565,7 @@ function initializeTimer() {
       hrs > 0
         ? `${hrs.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
         : `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-    document.getElementById("time-left").textContent = display;
+    floatingTimeEl.textContent = display;
   }
 
   /**
@@ -419,7 +573,21 @@ function initializeTimer() {
    */
   function timerComplete() {
     pauseTimer();
-    document.getElementById("timer-label").textContent = "Session Complete! 🎉";
+    hideFloating();
+
+    const timedTask = tasks.find((task) => task.id === timerTargetTaskId);
+    if (timedTask && !timedTask.completed) {
+      timedTask.completed = true;
+      incrementCompletedTasks();
+      localStorage.setItem(getModeStorageKey(), JSON.stringify(tasks));
+      if (typeof window.rerenderTaskList === "function") {
+        window.rerenderTaskList();
+      }
+      renderCompletedByTab();
+      if (selectedTaskId === timedTask.id) {
+        selectedTaskId = null;
+      }
+    }
 
     // Trigger confetti celebration
     celebrateByMode(3000);
@@ -429,33 +597,155 @@ function initializeTimer() {
     incrementTimerSessions();
 
     // Show reward modal
-    showRewardModal();
+    showRewardModal("timer");
   }
 
-  hoursDecBtn.addEventListener("click", () => adjustDial("hours", -1));
-  hoursIncBtn.addEventListener("click", () => adjustDial("hours", 1));
-  minutesDecBtn.addEventListener("click", () => adjustDial("minutes", -1));
-  minutesIncBtn.addEventListener("click", () => adjustDial("minutes", 1));
-  secondsDecBtn.addEventListener("click", () => adjustDial("seconds", -1));
-  secondsIncBtn.addEventListener("click", () => adjustDial("seconds", 1));
+  launchBtn.addEventListener("click", () => {
+    if (!timerTargetTaskId) {
+      alert("Choose an incomplete task first.");
+      return;
+    }
+    selectedTaskId = timerTargetTaskId;
+    syncTaskTimerSelectionUI();
+    setFromDials();
+    showFloating();
+    startTimer();
+  });
+  floatingStartBtn.addEventListener("click", startTimer);
+  floatingPauseBtn.addEventListener("click", pauseTimer);
+  floatingResetBtn.addEventListener("click", resetTimer);
+  floatingCloseBtn.addEventListener("click", () => {
+    pauseTimer();
+    hideFloating();
+  });
 
-  steppers.forEach((stepper) => {
-    stepper.addEventListener(
+  function bindWheelScroll(selectEl, max, stateKey) {
+    const WHEEL_STEP_THRESHOLD = 55;
+    const WHEEL_STEP_COOLDOWN_MS = 55;
+    let wheelBuffer = 0;
+    let lastStepAt = 0;
+    selectEl.addEventListener(
       "wheel",
       (event) => {
         event.preventDefault();
-        const unit = stepper.getAttribute("data-unit");
-        if (!unit) return;
-        adjustDial(unit, event.deltaY > 0 ? -1 : 1);
+        const now = performance.now();
+        wheelBuffer += event.deltaY;
+        if (Math.abs(wheelBuffer) < WHEEL_STEP_THRESHOLD) return;
+        if (now - lastStepAt < WHEEL_STEP_COOLDOWN_MS) return;
+        lastStepAt = now;
+        const direction = wheelBuffer > 0 ? 1 : -1;
+        wheelBuffer = 0;
+        let nextValue = dialState[stateKey] + direction;
+        if (nextValue < 0) nextValue = max;
+        if (nextValue > max) nextValue = 0;
+        dialState[stateKey] = nextValue;
+        selectEl.value = String(nextValue);
+        if (!isRunning) setFromDials();
       },
       { passive: false },
     );
+  }
+
+  function bindPickerWheel(selectEl) {
+    const WHEEL_STEP_THRESHOLD = 55;
+    const WHEEL_STEP_COOLDOWN_MS = 55;
+    let wheelBuffer = 0;
+    let lastStepAt = 0;
+    selectEl.addEventListener(
+      "wheel",
+      (event) => {
+        if (selectEl.disabled || !selectEl.options.length) return;
+        event.preventDefault();
+        const now = performance.now();
+        wheelBuffer += event.deltaY;
+        if (Math.abs(wheelBuffer) < WHEEL_STEP_THRESHOLD) return;
+        if (now - lastStepAt < WHEEL_STEP_COOLDOWN_MS) return;
+        lastStepAt = now;
+        const direction = wheelBuffer > 0 ? 1 : -1;
+        wheelBuffer = 0;
+        const currentIndex = Math.max(0, selectEl.selectedIndex);
+        let nextIndex = currentIndex;
+        let guard = 0;
+        do {
+          nextIndex += direction;
+          if (nextIndex < 0) nextIndex = selectEl.options.length - 1;
+          if (nextIndex >= selectEl.options.length) nextIndex = 0;
+          guard += 1;
+          if (guard > selectEl.options.length) return;
+        } while (selectEl.options[nextIndex].disabled);
+        selectEl.selectedIndex = nextIndex;
+        selectEl.dispatchEvent(new Event("change", { bubbles: true }));
+      },
+      { passive: false },
+    );
+  }
+  ensureWheelOptions(hoursWheel, 23);
+  ensureWheelOptions(minutesWheel, 59);
+  ensureWheelOptions(secondsWheel, 59);
+
+  hoursWheel.addEventListener("change", () => {
+    dialState.hours = Number.parseInt(hoursWheel.value, 10) || 0;
+    if (!isRunning) setFromDials();
+  });
+  minutesWheel.addEventListener("change", () => {
+    dialState.minutes = Number.parseInt(minutesWheel.value, 10) || 0;
+    if (!isRunning) setFromDials();
+  });
+  secondsWheel.addEventListener("change", () => {
+    dialState.seconds = Number.parseInt(secondsWheel.value, 10) || 0;
+    if (!isRunning) setFromDials();
+  });
+  bindWheelScroll(hoursWheel, 23, "hours");
+  bindWheelScroll(minutesWheel, 59, "minutes");
+  bindWheelScroll(secondsWheel, 59, "seconds");
+  bindPickerWheel(timerTaskSelect);
+
+  timerTaskSelect.addEventListener("change", () => {
+    if (
+      timerTaskSelect.selectedIndex >= 0 &&
+      timerTaskSelect.options[timerTaskSelect.selectedIndex].disabled
+    ) {
+      fillTaskPicker();
+      return;
+    }
+    timerTargetTaskId = timerTaskSelect.value
+      ? Number.parseInt(timerTaskSelect.value, 10)
+      : null;
+    selectedTaskId = timerTargetTaskId;
+    const selectedTask = tasks.find((task) => task.id === timerTargetTaskId);
+    if (selectedTask) {
+      timerTargetTabId = selectedTask.tabId;
+    }
+    updateFloatingTaskLabel();
   });
 
   setFocusDialValues = applyDialValues;
+  refreshTimerPickerUI = syncPickersFromState;
+  startFloatingTimer = () => {
+    showFloating();
+    startTimer();
+  };
+
+  const selectedTask = tasks.find(
+    (task) => task.id === selectedTaskId && !task.completed,
+  );
+  timerTargetTabId = selectedTask
+    ? selectedTask.tabId
+    : activeTabId === ALL_TASKS_TAB_ID
+      ? tabs[0].id
+      : activeTabId;
+  const initialTask = selectedTask || tasks.find((task) => !task.completed);
+  timerTargetTaskId = initialTask ? initialTask.id : null;
+  if (timerTargetTaskId) {
+    selectedTaskId = timerTargetTaskId;
+  }
+  syncPickersFromState();
+  updateFloatingTaskLabel();
 
   // Initialize display
-  applyDialValues(0, 25, 0);
+  applyDialValues(0, 10, 0);
+  updateFloatingControls();
+  hideFloating();
 }
 
 function formatFocusTimeDisplay(totalSeconds) {
@@ -469,14 +759,10 @@ function formatFocusTimeDisplay(totalSeconds) {
 }
 
 function refreshFocusTimerDisplay() {
-  const timeLeftEl = document.getElementById("time-left");
-  if (timeLeftEl) {
-    timeLeftEl.textContent = formatFocusTimeDisplay(timeLeft);
+  const floatingTimeEl = document.getElementById("floatingFocusTime");
+  if (floatingTimeEl) {
+    floatingTimeEl.textContent = formatFocusTimeDisplay(timeLeft);
   }
-}
-
-function getSelectedTask() {
-  return tasks.find((task) => task.id === selectedTaskId) || null;
 }
 
 function setCompletedTitleForMode() {
@@ -522,13 +808,22 @@ function renderCompletedByTab() {
 }
 
 function syncTaskTimerSelectionUI() {
-  const focusTaskLineEl = document.getElementById("focusTaskLine");
-  const task = getSelectedTask();
+  const selectedTask = tasks.find((item) => item.id === selectedTaskId) || null;
+  if (selectedTask && !selectedTask.completed) {
+    timerTargetTabId = selectedTask.tabId;
+    timerTargetTaskId = selectedTask.id;
+  }
 
-  const focusClockText = task
+  if (typeof refreshTimerPickerUI === "function") {
+    refreshTimerPickerUI();
+  }
+
+  const floatingTaskEl = document.getElementById("floatingFocusTask");
+  const task = tasks.find((item) => item.id === timerTargetTaskId) || null;
+  const timerTaskText = task
     ? `left to work on ${task.text}`
     : "left to work on your task";
-  if (focusTaskLineEl) focusTaskLineEl.textContent = focusClockText;
+  if (floatingTaskEl) floatingTaskEl.textContent = timerTaskText;
 }
 
 function celebrateByMode(duration = 2500) {
@@ -575,7 +870,7 @@ function playModeSound(type) {
 
 /**
  * Initialize motivational messages and activity suggestions
- * Uses Bored API for activity suggestions (no API key needed!)
+ * Uses affirmation/fun-fact APIs with local fallbacks
  */
 function initializeQuotes() {
   const fallbackMessages = [
@@ -771,6 +1066,7 @@ function updateStatsDisplay() {
 const STORAGE_KEY_PG = "dsigdt_tasks_pg";
 const TAB_KEY_PG = "dsigdt_tabs_pg";
 const ACTIVE_TAB_KEY_PG = "dsigdt_active_tab_pg";
+const ALL_TASKS_TAB_ID = "__all_tasks__";
 
 const DEFAULT_TABS = [
   { id: "tab1", name: "DUE TODAY" },
@@ -818,8 +1114,8 @@ async function applyThemeText() {
   const addFiveMinBtn = document.getElementById("addFiveMinBtn");
   const prizeGif = document.getElementById("prizeGif");
 
-  if (prizeLine1) prizeLine1.textContent = "GREAT JOB";
-  if (prizeLine2) prizeLine2.textContent = "YOU'RE AMAZING!";
+  if (prizeLine1) prizeLine1.textContent = "AMAZING!";
+  if (prizeLine2) prizeLine2.textContent = "";
   if (prizeSubtitle) prizeSubtitle.textContent = "You earned a reward!";
   if (prizeNote) prizeNote.textContent = "or you can enjoy this cute cat!";
   if (nextTaskBtn) nextTaskBtn.textContent = "Next Task!";
@@ -861,7 +1157,11 @@ function loadTabs() {
   const savedTabs = localStorage.getItem(getTabStorageKey());
   const savedActive = localStorage.getItem(getActiveTabStorageKey());
   tabs = savedTabs ? JSON.parse(savedTabs) : [...DEFAULT_TABS];
-  activeTabId = savedActive || tabs[0].id;
+  const isValidActive =
+    savedActive &&
+    (savedActive === ALL_TASKS_TAB_ID ||
+      tabs.some((tab) => tab.id === savedActive));
+  activeTabId = isValidActive ? savedActive : tabs[0].id;
 }
 
 function saveTabs() {
@@ -871,10 +1171,15 @@ function saveTabs() {
 
 function renderTaskTabs() {
   const tabsEl = document.getElementById("task-tabs");
+  const addTabBtn = document.getElementById("addTabBtn");
+  const taskInput = document.getElementById("task-input");
   if (!tabsEl) return;
 
   tabsEl.innerHTML = "";
   tabs.forEach((tab) => {
+    const chip = document.createElement("div");
+    chip.className = "task-tab-chip";
+
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = `task-tab-btn ${tab.id === activeTabId ? "active" : ""}`;
@@ -892,15 +1197,110 @@ function renderTaskTabs() {
       }
 
       activeTabId = tab.id;
+      timerTargetTabId = tab.id;
+      const firstTaskInTab = tasks.find(
+        (task) => task.tabId === tab.id && !task.completed,
+      );
+      timerTargetTaskId = firstTaskInTab ? firstTaskInTab.id : null;
+      selectedTaskId = timerTargetTaskId;
       saveTabs();
       renderTaskTabs();
       if (typeof window.rerenderTaskList === "function") {
         window.rerenderTaskList();
       }
       syncTaskTimerSelectionUI();
+      if (typeof refreshTaskInputPlaceholder === "function") {
+        refreshTaskInputPlaceholder();
+      }
+      if (taskInput && !taskInput.disabled) {
+        taskInput.focus();
+      }
     });
-    tabsEl.appendChild(btn);
+    chip.appendChild(btn);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "task-tab-delete";
+    deleteBtn.setAttribute("aria-label", `Delete tab ${tab.name}`);
+    deleteBtn.textContent = "✕";
+    deleteBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const confirmed = confirm(
+        `Delete tab "${tab.name}" and all tasks inside it?`,
+      );
+      if (!confirmed) return;
+
+      tabs = tabs.filter((item) => item.id !== tab.id);
+      tasks = tasks.filter((task) => task.tabId !== tab.id);
+      if (selectedTaskId && !tasks.some((task) => task.id === selectedTaskId)) {
+        selectedTaskId = null;
+      }
+      if (activeTabId === tab.id) {
+        activeTabId = tabs.length ? tabs[0].id : ALL_TASKS_TAB_ID;
+      }
+      localStorage.setItem(getModeStorageKey(), JSON.stringify(tasks));
+      saveTabs();
+      renderTaskTabs();
+      if (typeof window.rerenderTaskList === "function") {
+        window.rerenderTaskList();
+      }
+      renderCompletedByTab();
+      syncTaskTimerSelectionUI();
+      if (typeof refreshTaskInputPlaceholder === "function") {
+        refreshTaskInputPlaceholder();
+      }
+    });
+    chip.appendChild(deleteBtn);
+
+    tabsEl.appendChild(chip);
   });
+
+  const allBtn = document.createElement("button");
+  allBtn.type = "button";
+  allBtn.className = `task-tab-btn ${activeTabId === ALL_TASKS_TAB_ID ? "active" : ""}`;
+  allBtn.textContent = "ALL TASKS";
+  allBtn.addEventListener("click", () => {
+    activeTabId = ALL_TASKS_TAB_ID;
+    timerTargetTabId = null;
+    saveTabs();
+    renderTaskTabs();
+    if (typeof window.rerenderTaskList === "function") {
+      window.rerenderTaskList();
+    }
+    syncTaskTimerSelectionUI();
+    if (typeof refreshTaskInputPlaceholder === "function") {
+      refreshTaskInputPlaceholder();
+    }
+  });
+  tabsEl.appendChild(allBtn);
+
+  if (addTabBtn) {
+    addTabBtn.onclick = () => {
+      const next = prompt("New tab name:");
+      if (!next) return;
+      const name = next.trim();
+      if (!name) return;
+
+      const newTab = {
+        id: `tab_${Date.now()}`,
+        name,
+      };
+      tabs.push(newTab);
+      activeTabId = newTab.id;
+      saveTabs();
+      renderTaskTabs();
+      if (typeof window.rerenderTaskList === "function") {
+        window.rerenderTaskList();
+      }
+      syncTaskTimerSelectionUI();
+      if (typeof refreshTaskInputPlaceholder === "function") {
+        refreshTaskInputPlaceholder();
+      }
+      if (taskInput && !taskInput.disabled) {
+        taskInput.focus();
+      }
+    };
+  }
 }
 
 /**
@@ -980,11 +1380,8 @@ function initializeResetAll() {
   const taskInput = document.getElementById("task-input");
   const taskList = document.getElementById("task-list");
   const timerSection = document.querySelector(".timer-section");
-  const startBtn = document.getElementById("start-btn");
-  const pauseBtn = document.getElementById("pause-btn");
-  const timerLabel = document.getElementById("timer-label");
-  const focusTaskLine = document.getElementById("focusTaskLine");
-  const timeLeftEl = document.getElementById("time-left");
+  const floatingTimer = document.getElementById("floatingFocusTimer");
+  const launchBtn = document.getElementById("timerLaunchBtn");
 
   if (!openBtn || !overlay || !confirmBtn) return;
 
@@ -1004,11 +1401,8 @@ function initializeResetAll() {
     isRunning = false;
     timeLeft = 25 * 60;
     if (timerSection) timerSection.classList.remove("timer-running");
-    if (startBtn) startBtn.disabled = false;
-    if (pauseBtn) pauseBtn.disabled = true;
-    if (timerLabel) timerLabel.textContent = "TIME";
-    if (focusTaskLine) focusTaskLine.textContent = "left to work on your task";
-    if (timeLeftEl) timeLeftEl.textContent = "25:00";
+    if (launchBtn) launchBtn.disabled = false;
+    if (floatingTimer) floatingTimer.classList.add("is-hidden");
     if (typeof setFocusDialValues === "function") {
       setFocusDialValues(0, 25, 0);
     }
@@ -1017,6 +1411,8 @@ function initializeResetAll() {
     selectedTaskId = null;
     tabs = [...DEFAULT_TABS];
     activeTabId = tabs[0].id;
+    timerTargetTabId = activeTabId;
+    timerTargetTaskId = null;
     stats = { completedTasks: 0, timerSessions: 0 };
 
     localStorage.removeItem(STORAGE_KEY_PG);
@@ -1060,14 +1456,6 @@ function initializeResetAll() {
 ===================================================== */
 
 /**
- * Check if all tasks are completed
- */
-function areAllTasksComplete() {
-  if (tasks.length === 0) return false; // No tasks, no reward
-  return tasks.every((task) => task.completed);
-}
-
-/**
  * Show task completed notification
  */
 function showTaskCompletedNotification() {
@@ -1100,8 +1488,8 @@ function showTaskCompletedNotification() {
 /**
  * Show reward modal with fresh GIF
  */
-async function showRewardModal() {
-  await loadFreshRewardGif();
+async function showRewardModal(source = "task") {
+  await loadFreshRewardGif(source);
 
   // Open the modal
   openPrizeModal();
@@ -1110,7 +1498,7 @@ async function showRewardModal() {
 /**
  * Load a fresh reward GIF and update modal content
  */
-async function loadFreshRewardGif() {
+async function loadFreshRewardGif(source = "task") {
   const prizeGif = document.getElementById("prizeGif");
   const prizeLine1 = document.getElementById("prizeLine1");
   const prizeLine2 = document.getElementById("prizeLine2");
@@ -1119,18 +1507,25 @@ async function loadFreshRewardGif() {
   const nextTaskBtn = document.getElementById("nextTaskBtn");
   const addFiveMinBtn = document.getElementById("addFiveMinBtn");
   const prizeList = document.getElementById("prizeList");
+  const prizeActions = document.querySelector("#prizeModal .prize-actions");
 
   if (!prizeGif) return;
 
   // Show loading state
   prizeGif.style.opacity = "0.5";
 
-  if (prizeLine1) prizeLine1.textContent = "GREAT JOB";
-  // if (prizeLine2) prizeLine2.textContent = "YOU'RE AMAZING!";
+  if (prizeLine1) prizeLine1.textContent = "AMAZING!";
+  if (prizeLine2) prizeLine2.textContent = "";
   if (prizeSubtitle) prizeSubtitle.textContent = "You earned a reward!";
   if (prizeNote) prizeNote.textContent = "or you can enjoy this cute cat!";
   if (nextTaskBtn) nextTaskBtn.textContent = "Next Task!";
   if (addFiveMinBtn) addFiveMinBtn.textContent = "Add 5 Min";
+  if (addFiveMinBtn) {
+    addFiveMinBtn.style.display = source === "timer" ? "" : "none";
+  }
+  if (prizeActions) {
+    prizeActions.classList.toggle("prize-actions--single", source !== "timer");
+  }
 
   if (prizeList) {
     prizeList.innerHTML = `
@@ -1185,8 +1580,6 @@ function initializePrizeModal() {
   if (nextTaskBtn) {
     nextTaskBtn.addEventListener("click", () => {
       closePrizeModal();
-      const timerLabel = document.getElementById("timer-label");
-      if (timerLabel) timerLabel.textContent = "TIME";
       const input = document.getElementById("task-input");
       if (input) {
         input.focus();
@@ -1200,11 +1593,10 @@ function initializePrizeModal() {
       closePrizeModal();
       timeLeft = Math.max(0, timeLeft) + 5 * 60;
       refreshFocusTimerDisplay();
-      const timerLabel = document.getElementById("timer-label");
-      if (timerLabel) timerLabel.textContent = "TIME";
       if (!isRunning) {
-        const startBtn = document.getElementById("start-btn");
-        if (startBtn) startBtn.click();
+        if (typeof startFloatingTimer === "function") {
+          startFloatingTimer();
+        }
       }
     });
   }

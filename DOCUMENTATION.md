@@ -6,7 +6,7 @@ DSIGDT is a daily productivity dashboard designed to make overwhelming tasks fee
 
 ## Capstone Requirements and Features
 
-This project includes a required non-weather API integration using the Bored API. It fetches activity suggestions to provide quick “break idea” prompts, and displays fallback text if the request fails. Task data is stored in arrays of objects and used to compute and display totals such as completed tasks and completed timer sessions. User input is validated to prevent empty or whitespace-only tasks from being saved. Data persistence is handled through localStorage, which saves and reloads tasks and stats automatically.
+This project includes non-weather API integrations using `affirmations.dev` and `uselessfacts.jsph.pl` for rotating footer messages, with local fallback messages if requests fail. Task data is stored in arrays of objects and used to compute and display totals such as completed tasks and completed timer sessions. User input is validated to prevent empty or whitespace-only tasks from being saved. Data persistence is handled through localStorage, which saves and reloads tasks and stats automatically.
 
 ## Technologies Used
 
