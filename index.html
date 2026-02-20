@@ -17,6 +17,7 @@
         <p class="tagline" id="tagline">
           Stay organized, be productive, you got this!
         </p>
+        <p class="vibe-row" aria-hidden="true">🦄 🌈 ✨ 🌈 🦄</p>
 
         <div class="utility-buttons">
           <button
@@ -49,7 +50,7 @@
               <input
                 type="text"
                 id="task-input"
-                placeholder="+ ADD MORE STUFF"
+                placeholder="+ Add a new task"
                 aria-label="New task input"
               />
               <button id="add-task-btn" aria-label="Add task">
@@ -112,7 +113,7 @@
         </div>
 
         <section class="tab-content completed-section" id="completedSection">
-          <h3 id="completedTitle">STUFF I DID</h3>
+          <h3 id="completedTitle">NEAT THINGS I GOT DONE TODAY</h3>
           <div id="completedByTab" class="completed-by-tab"></div>
         </section>
       </main>
@@ -122,6 +123,7 @@
       </footer>
     </div>
 
+    <!-- Task Timer Modal -->
     <div
       class="modal-overlay is-hidden"
       id="taskTimerOverlay"
@@ -182,6 +184,7 @@
       </div>
     </div>
 
+    <!-- Floating Timer -->
     <div class="floating-timer is-hidden" id="floatingTimer">
       <div class="floating-timer__time" id="floatingTimerTime">00:00:00</div>
       <div class="floating-timer__task" id="floatingTimerTask">
@@ -189,6 +192,7 @@
       </div>
     </div>
 
+    <!-- Focus Floating Clock -->
     <div class="focus-floating-clock is-hidden" id="focusFloatingClock">
       <div class="focus-floating-clock__label">FOCUS TIMER</div>
       <div class="focus-floating-clock__time" id="focusFloatingClockTime">
@@ -196,6 +200,7 @@
       </div>
     </div>
 
+    <!-- Timer Complete Modal -->
     <div
       class="modal-overlay is-hidden"
       id="timerCompleteOverlay"
@@ -240,36 +245,35 @@
         </button>
 
         <h2 class="modal-title" id="prizeTitle">
-          <span class="modal-title-line1" id="prizeLine1">GOOD JOB</span>
-          <span class="modal-title-line2" id="prizeLine2">DUMMY!</span>
+          <span class="modal-title-line1" id="prizeLine1">GREAT JOB</span>
+          <span class="modal-title-line2" id="prizeLine2">SUPERSTAR!</span>
         </h2>
 
-        <p class="modal-subtitle" id="prizeSubtitle">PICK A PRIZE</p>
+        <p class="modal-subtitle" id="prizeSubtitle">You earned a reward!</p>
 
         <ul class="prize-list" id="prizeList">
-          <li>GO FOR A WALK.</li>
-          <li>TAKE A QUICK NAP.</li>
-          <li>GO GET YOUR PRODUCTIVE ASS SOME SKITTLES.</li>
+          <li>Go for a nice walk.</li>
+          <li>Take a quick nap.</li>
+          <li>Treat yourself to a snack!</li>
         </ul>
 
         <img
           class="prize-gif"
           id="prizeGif"
-          src="https://media.giphy.com/media/uF4QwYRpMDuGuMXL1G/giphy.gif"
+          src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHBybnhveG4wdnRodGg2MnJ1NWhxNmxzcWV5Zm4weDcyZGFqMDV1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/75mBr8CLHect4tHlMb/giphy.gif"
           alt="Reward cat"
         />
-        <p class="prize-note" id="prizeNote">
-          or you can stare at this cute dumb cat
-        </p>
+        <p class="prize-note" id="prizeNote">or you can enjoy this cute cat!</p>
 
         <div class="prize-actions">
           <button class="btn btn--primary" id="backToItBtn" type="button">
-            NOW GET BACK TO WORK!
+            KEEP GOING, YOU'RE AMAZING!
           </button>
         </div>
       </div>
     </div>
 
+    <!-- About Modal -->
     <div
       class="modal-overlay is-hidden"
       id="aboutOverlay"
@@ -311,10 +315,10 @@
             </ul>
           </section>
           <section>
-            <h3>Modes</h3>
+            <h3>PG Mode</h3>
             <ul>
-              <li>PG mode with rainbow/clean style</li>
-              <li>Separate task storage per mode</li>
+              <li>Fun, clean, rainbow style for positive vibes</li>
+              <li>All features in one mode</li>
             </ul>
           </section>
         </div>

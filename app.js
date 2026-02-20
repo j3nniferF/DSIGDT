@@ -3,31 +3,45 @@
  * Main JavaScript file
  */
 
-// PG Silly Stuff I Gotta Do Today mode only
-// Remove all STUFF mode, toggles, and unrelated features
-
 // Global state
 let tasks = [];
 let timerInterval = null;
 let timeLeft = 25 * 60; // 25 minutes in seconds
 let isRunning = false;
 let stats = { completedTasks: 0, timerSessions: 0 };
+let audioCtx = null;
 let selectedTaskId = null;
-const tabs = [
-  { id: "tab1", name: "DUE TODAY" },
-  { id: "tab2", name: "NEXT UP" },
-  { id: "tab3", name: "WHEN I CAN" },
-  { id: "tab4", name: "DON'T FORGET" },
-];
-let activeTabId = tabs[0].id;
+const taskTimerState = {
+  intervalId: null,
+  remainingSeconds: 0,
+  initialSeconds: 0,
+  running: false,
+  taskId: null,
+};
 
+const CONFETTI_COLORS = {
+  pg: ["#ff6ad5", "#ffd93d", "#7bff8a", "#65b8ff", "#b28dff", "#ffffff"],
+  stuff: ["#d61f1f", "#8f0f0f", "#5a5a5a", "#2f2f2f", "#151515", "#b3b3b3"],
+};
+
+// UI Text Constants
 const UI_TEXT = {
-  TASK_PLACEHOLDER: "+ Add a new task",
-  TASK_PLACEHOLDER_ERROR: "⚠️ Please enter a task",
-  TITLE_MAIN: "SILLY STUFF",
-  TITLE_SUB: "I GOTTA DO TODAY",
-  DOC_TITLE: "Silly Stuff I Gotta Do Today",
-  TAGLINE: "Stay organized, be productive, you got this!",
+  STUFF_MODE: {
+    TASK_PLACEHOLDER: "+ ADD MORE STUFF",
+    TASK_PLACEHOLDER_ERROR: "⚠️ ADD SOME STUFF FIRST, DUH!",
+    TITLE_MAIN: "DUMB STUFF",
+    TITLE_SUB: "I GOTTA DO TODAY",
+    DOC_TITLE: "Dumb STUFF I Gotta Do Today",
+    TAGLINE: "Stay focused, get stuff done",
+  },
+  PG_MODE: {
+    TASK_PLACEHOLDER: "+ Add a new task",
+    TASK_PLACEHOLDER_ERROR: "⚠️ Please enter a task",
+    TITLE_MAIN: "SILLY STUFF",
+    TITLE_SUB: "I GOTTA DO TODAY",
+    DOC_TITLE: "Silly Stuff I Gotta Do Today",
+    TAGLINE: "Stay organized, be productive, you got this!",
+  },
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -73,11 +87,18 @@ function initializeTasks() {
     const taskText = taskInput.value.trim();
 
     if (taskText === "") {
+      const errorPlaceholder = isPgMode
+        ? UI_TEXT.PG_MODE.TASK_PLACEHOLDER_ERROR
+        : UI_TEXT.STUFF_MODE.TASK_PLACEHOLDER_ERROR;
+      const normalPlaceholder = isPgMode
+        ? UI_TEXT.PG_MODE.TASK_PLACEHOLDER
+        : UI_TEXT.STUFF_MODE.TASK_PLACEHOLDER;
+
       taskInput.classList.add("input-error");
-      taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER_ERROR;
+      taskInput.placeholder = errorPlaceholder;
       setTimeout(() => {
         taskInput.classList.remove("input-error");
-        taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER;
+        taskInput.placeholder = normalPlaceholder;
       }, 2000);
       return;
     }
@@ -188,16 +209,16 @@ function initializeTasks() {
           setTimeout(() => {
             showRewardModal(); // Show full reward modal only when all done
           }, 500);
-        } else if (wasCompleted && !task.completed) {
-          // Task was uncompleted, update counter
-          updateTaskCount();
         }
-
-        saveTasks(); // Save to localStorage
-        rerenderTaskList();
-        renderCompletedByTab();
-        syncTaskTimerSelectionUI();
+      } else if (wasCompleted && !task.completed) {
+        // Task was uncompleted, update counter
+        updateTaskCount();
       }
+
+      saveTasks(); // Save to localStorage
+      rerenderTaskList();
+      renderCompletedByTab();
+      syncTaskTimerSelectionUI();
     }
   }
 
@@ -415,9 +436,7 @@ function saveTasksForCurrentMode() {
 function setCompletedTitleForMode() {
   const completedTitle = document.getElementById("completedTitle");
   if (!completedTitle) return;
-  completedTitle.textContent = isPgMode
-    ? "NEAT THINGS I GOT DONE TODAY"
-    : "STUFF I DID";
+  completedTitle.textContent = "NEAT THINGS I GOT DONE TODAY";
 }
 
 function renderCompletedByTab() {
@@ -744,6 +763,13 @@ function playModeSound(type) {
  * Uses Bored API for activity suggestions (no API key needed!)
  */
 function initializeQuotes() {
+  const fallbackSTUFFMode = [
+    "Do one thing now. Stop negotiating with yourself.",
+    "Small step. Right now. Momentum beats mood.",
+    "You started this for a reason. Keep going.",
+    "Pick the ugliest task and finish it first.",
+    "Progress counts more than perfection today.",
+  ];
   const fallbackPgMode = [
     "Fun fact: Tiny progress done daily compounds fast.",
     "Fun fact: Focus is easier when tasks are specific.",
@@ -755,6 +781,36 @@ function initializeQuotes() {
   const messageElement = document.getElementById("quote");
   if (!messageElement) return;
 
+  async function fetchSTUFFModeAdvice() {
+    try {
+      // CoinGecko API (no key)
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true",
+      );
+      if (!response.ok) {
+        throw new Error("API request failed");
+      }
+
+      const data = await response.json();
+      const btc = data?.bitcoin?.usd;
+      const eth = data?.ethereum?.usd;
+      const btcChange = data?.bitcoin?.usd_24h_change;
+
+      if (typeof btc === "number" && typeof eth === "number") {
+        const vibe = btcChange >= 0 ? "up" : "down";
+        displayMessage(
+          `PUNK ECONOMY ${vibe}: BTC $${Math.round(btc).toLocaleString()} | ETH $${Math.round(eth).toLocaleString()} | Get your tasks done anyway.`,
+        );
+        return;
+      }
+    } catch (error) {
+      console.log("Using STUFF mode fallback message:", error.message);
+    }
+
+    const randomMessage =
+      fallbackSTUFFMode[Math.floor(Math.random() * fallbackSTUFFMode.length)];
+    displayMessage(randomMessage);
+  }
   async function fetchPgModeFact() {
     try {
       // Useless Facts API (no key)
@@ -792,6 +848,7 @@ function initializeQuotes() {
       await fetchPgModeFact();
       return;
     }
+    await fetchSTUFFModeAdvice();
   }
 
   // Expose refresh function so mode switch can update immediately
@@ -908,15 +965,10 @@ function updateStatsDisplay() {
 }
 
 /* =====================================================
-   PG MODE TOGGLE FUNCTIONALITY
-   Switches between $H!T MODE and PG MODE
-   - Different text/language for each mode
-   - Separate task storage per mode
-   - Visual theme changes
+   PG MODE SETTINGS (single mode app)
 ===================================================== */
 
 const STORAGE_KEY_PG = "dsigdt_tasks_pg";
-const PG_MODE_KEY = "dsigdt_pg_mode";
 const TAB_KEY_PG = "dsigdt_tabs_pg";
 const ACTIVE_TAB_KEY_PG = "dsigdt_active_tab_pg";
 
@@ -927,7 +979,9 @@ const DEFAULT_TABS = [
   { id: "tab4", name: "DON'T FORGET" },
 ];
 
-let isPgMode = false;
+let isPgMode = true;
+let tabs = [...DEFAULT_TABS];
+let activeTabId = DEFAULT_TABS[0].id;
 
 /**
  * Apply theme text for current mode
@@ -1022,15 +1076,15 @@ async function applyThemeText(mode) {
  * Get storage key for current mode
  */
 function getModeStorageKey() {
-  return isPgMode ? STORAGE_KEY_PG : STORAGE_KEY_STUFF;
+  return STORAGE_KEY_PG;
 }
 
 function getTabStorageKey() {
-  return isPgMode ? TAB_KEY_PG : TAB_KEY_STUFF;
+  return TAB_KEY_PG;
 }
 
 function getActiveTabStorageKey() {
-  return isPgMode ? ACTIVE_TAB_KEY_PG : ACTIVE_TAB_KEY_STUFF;
+  return ACTIVE_TAB_KEY_PG;
 }
 
 function loadTabs() {
@@ -1095,22 +1149,12 @@ function initializeTabRename() {
 /**
  * Switch PG mode
  */
-function setPgMode(pgMode) {
-  isPgMode = pgMode;
-  const mode = pgMode ? "pg" : "stuff";
+function setPgMode() {
+  isPgMode = true;
+  document.body.classList.add("pg-mode");
 
-  document.body.classList.toggle("pg-mode", pgMode);
-
-  const label = document.getElementById("pgLabel");
-  if (label) label.textContent = pgMode ? "PG MODE" : "STUFF MODE";
-
-  const toggle = document.getElementById("pgToggle");
-  if (toggle) toggle.checked = !pgMode;
-
-  applyThemeText(mode);
+  applyThemeText("pg");
   setCompletedTitleForMode();
-  playModeSound("modeSwitch");
-  localStorage.setItem(PG_MODE_KEY, pgMode ? "1" : "0");
   if (window.refreshQuoteGlobal) {
     window.refreshQuoteGlobal();
   }
@@ -1145,17 +1189,7 @@ function setPgMode(pgMode) {
  * Initialize PG mode
  */
 function initializePgMode() {
-  const savedPg = localStorage.getItem(PG_MODE_KEY);
-  const startInPgMode = savedPg === "1";
-
-  const pgToggle = document.getElementById("pgToggle");
-  if (pgToggle) {
-    pgToggle.addEventListener("change", () => {
-      setPgMode(!pgToggle.checked);
-    });
-  }
-
-  setPgMode(startInPgMode);
+  setPgMode();
 }
 
 function initializeUtilityModals() {
