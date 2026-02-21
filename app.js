@@ -209,7 +209,6 @@ function initializeTasks() {
         .filter((t) => t.tabId === activeTabId && !t.completed)
         .forEach((task) => renderTask(task));
     }
-    updateTaskCount();
   }
   window.rerenderTaskList = rerenderTaskList;
 
@@ -235,7 +234,6 @@ function initializeTasks() {
         playModeSound("taskComplete");
         incrementCompletedTasks(); // Track stat
         showTaskCompletedNotification(); // Show quick notification
-        updateTaskCount(); // Update task counter
 
         // Show reward when this tab is fully completed
         const tabTasks = tasks.filter((t) => t.tabId === task.tabId);
@@ -246,11 +244,7 @@ function initializeTasks() {
             showRewardModal("task");
           }, 500);
         }
-      } else if (wasCompleted && !task.completed) {
-        // Task was uncompleted, update counter
-        updateTaskCount();
       }
-
       saveTasks(); // Save to localStorage
       rerenderTaskList();
       renderCompletedByTab();
@@ -273,24 +267,6 @@ function initializeTasks() {
     syncTaskTimerSelectionUI();
     updateTaskInputPlaceholder();
   }
-
-  /**
-   * Update task count display
-   */
-  function updateTaskCount() {
-    const currentTabTasks =
-      activeTabId === ALL_TASKS_TAB_ID
-        ? tasks
-        : tasks.filter((t) => t.tabId === activeTabId);
-    const totalTasks = currentTabTasks.length;
-    const completedTasks = currentTabTasks.filter((t) => t.completed).length;
-    const taskCountEl = document.getElementById("taskCount");
-
-    if (taskCountEl) {
-      taskCountEl.textContent = `${completedTasks}/${totalTasks} completed`;
-    }
-  }
-
   /**
    * Load tasks from localStorage
    */
@@ -867,7 +843,6 @@ function playModeSound(type) {
       osc.stop(now + index * 0.12 + 0.11);
     });
   } catch (error) {
-    console.log("Audio playback skipped:", error.message);
   }
 }
 
@@ -900,8 +875,8 @@ function initializeQuotes() {
         displayMessage(`Rainbow pep talk: ${affirmation}`);
         return;
       }
-    } catch (error) {
-      console.log("Affirmation API unavailable:", error.message);
+    } catch (_) {
+      // Silent fallback handled by refreshQuote()
     }
     throw new Error("No affirmation result");
   }
@@ -921,8 +896,8 @@ function initializeQuotes() {
         displayMessage(`Fun fact: ${fact}`);
         return;
       }
-    } catch (error) {
-      console.log("Fun fact API unavailable:", error.message);
+    } catch (_) {
+      // Silent fallback handled by refreshQuote()
     }
     throw new Error("No fact result");
   }
@@ -968,7 +943,6 @@ async function fetchRewardGif(searchTerm = "excited celebration") {
     !CONFIG.GIPHY_API_KEY ||
     CONFIG.GIPHY_API_KEY === "YOUR_API_KEY_HERE"
   ) {
-    console.log("GIPHY API key not configured, using fallback GIF");
     return null;
   }
 
@@ -997,8 +971,7 @@ async function fetchRewardGif(searchTerm = "excited celebration") {
     }
 
     return null;
-  } catch (error) {
-    console.log("Error fetching GIPHY:", error.message);
+  } catch (_) {
     return null;
   }
 }
@@ -1310,8 +1283,6 @@ function renderTaskTabs() {
  * Switch PG mode
  */
 function setPgMode() {
-  document.body.classList.add("pg-mode");
-
   applyThemeText();
   setCompletedTitleForMode();
   loadTabs();

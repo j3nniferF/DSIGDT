@@ -22,6 +22,7 @@
   --group-title-color: #333;
   --group-title-size: 1.8em;
   --group-title-letter-spacing: 0.02em;
+  --group-card-border-width: 9px;
   --group-card-fill-gradient: linear-gradient(
     135deg,
     rgba(255, 236, 248, 0.95),
@@ -30,25 +31,33 @@
   );
   --group-card-border-gradient: linear-gradient(
     120deg,
-    #ff61c7 0%,
-    #ff8f75 18%,
-    #ffe66a 34%,
-    #9de8ff 52%,
-    #8c81ff 72%,
-    #ff8ad4 100%
+    #f9a6d8 0%,
+    #f5b69d 20%,
+    #f3df8f 40%,
+    #9be4fa 60%,
+    #b69ef9 80%,
+    #f0a7d6 100%
   );
+
   --group-card-shadow:
-    0 0 0 2px rgba(255, 255, 255, 0.7),
-    0 0 0 4px rgba(255, 124, 203, 0.22),
+    0 0 0 2px rgba(255, 255, 255, 0.7), 0 0 0 4px rgba(255, 124, 203, 0.22),
     0 10px 22px rgba(121, 141, 226, 0.2);
   --group-control-gradient: linear-gradient(135deg, #ffe3f3, #9de8ff, #caa7ff);
   --group-control-border: rgba(109, 78, 241, 0.55);
   --group-control-shadow:
-    0 0 0 2px rgba(255, 255, 255, 0.76),
-    0 10px 22px rgba(121, 141, 226, 0.22);
+    0 0 0 2px rgba(255, 255, 255, 0.76), 0 10px 22px rgba(121, 141, 226, 0.22);
+  --app-title-border-width: 9px;
+  --footer-border-width: 9px;
+  --font-weight-default: 300;
+  --font-weight-section-title: 300;
+  --font-weight-timer-setup-title: 360;
+  --font-weight-button: 300;
+  --thin-text-letter-spacing: 0.03em;
+  --thin-text-line-height: 1.2;
 
   /* Standalone tokens (separate from cohesive card group) */
-  --page-background: #f8f9fa url("./assets/textures/pretty.png") center/cover fixed;
+  --page-background: #f8f9fa url("./assets/textures/pretty.png") center/cover
+    fixed;
   --footer-fill-gradient: linear-gradient(
     135deg,
     rgba(255, 236, 248, 0.95),
@@ -64,6 +73,24 @@
     #8c81ff 72%,
     #ff8ad4 100%
   );
+  --modal-fill-gradient: linear-gradient(
+    135deg,
+    rgba(255, 107, 107, 0.22),
+    rgba(202, 167, 255, 0.22),
+    rgba(107, 180, 255, 0.22),
+    rgba(195, 107, 255, 0.22)
+  );
+  --modal-bg-color: rgba(255, 255, 255, 0.93);
+  --modal-border-width: 2px;
+  --modal-border-color: rgba(255, 124, 203, 0.55);
+  --modal-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --about-modal-fill-gradient: var(--group-card-fill-gradient);
+  --about-modal-border-gradient: var(--group-card-border-gradient);
+  --about-modal-border-width: 4px;
+  --about-modal-shadow: var(--group-card-shadow);
+  --about-feature-fill: rgba(255, 255, 255, 0.7);
+  --about-feature-border-width: 4px;
+  --about-feature-border-color: var(--pg-uniform-border);
 
   /* Backward-compatible aliases used across file */
   --pg-pink: #ff89cf;
@@ -73,6 +100,15 @@
   --pg-uniform-shadow: var(--group-control-shadow);
   --card-fill-gradient: var(--group-card-fill-gradient);
   --card-rainbow-border: var(--group-card-border-gradient);
+}
+
+/* Global typography lock requested: Helvetica Neue Thin everywhere */
+body,
+body *,
+body *::before,
+body *::after {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-weight: var(--font-weight-default);
 }
 
 body {
@@ -119,7 +155,7 @@ body .app-title {
   width: min(760px, 100%);
   margin: 0 auto 12px;
   padding: 18px 24px 14px;
-  border: 8px solid transparent;
+  border: var(--app-title-border-width) solid transparent;
   border-radius: 999px;
   background:
     /* linear-gradient(135deg, rgb(217, 164, 220), rgb(120, 206, 227), #fda7af) */
@@ -253,7 +289,7 @@ body .container {
 
 #titleMain {
   font-size: clamp(3rem, 9vw, 5.6rem);
-  font-weight: 999 !important;
+  font-weight: 300;
   letter-spacing: 0.04em;
   line-height: 0.95;
   text-align: center;
@@ -278,7 +314,7 @@ body .container {
 
 #titleSub {
   font-size: clamp(1rem, 4vw, 3rem);
-  font-weight: 100 !important;
+  font-weight: 300;
   letter-spacing: 0.04em;
   line-height: 0.95;
   text-align: center;
@@ -352,7 +388,7 @@ body .container {
   100% {
     background-position:
       0 0,
-      100% 50%;
+      55% 50%;
   }
 }
 
@@ -407,7 +443,7 @@ body .about-heart-btn {
   border: 0;
   background: linear-gradient(135deg, #ffe5f6, #cfefff, #e5d5ff);
   color: #9d2f75;
-  font-weight: 800 !important;
+  font-weight: 300;
   font-size: 1.15rem;
   line-height: 1;
   box-shadow:
@@ -509,7 +545,7 @@ main {
 .tab-content {
   display: block;
   animation: fadeIn 0.3s ease;
-  border: 3px solid transparent;
+  border: var(--group-card-border-width) solid transparent;
   border-radius: 16px;
   padding: 18px;
   background:
@@ -524,7 +560,7 @@ main {
   box-shadow: var(--group-card-shadow);
   animation:
     fadeIn 0.3s ease,
-    rainbowBorderDrift 13s linear infinite;
+    rainbowBorderDrift 22s linear infinite;
 }
 
 @keyframes fadeIn {
@@ -539,12 +575,14 @@ main {
 }
 
 .section-title {
+  font-weight: var(--font-weight-section-title);
   color: var(--group-title-color);
   margin-bottom: 20px;
   font-size: var(--group-title-size);
   text-align: center;
   letter-spacing: var(--group-title-letter-spacing);
   font-family: var(--group-font-family);
+  line-height: 1.12;
 }
 
 .task-header .section-title {
@@ -565,6 +603,7 @@ main {
   padding: 6px 12px;
   font-size: 0.82rem;
   font-weight: 700;
+  letter-spacing: var(--thin-text-letter-spacing);
   color: #9e2f74;
   background: linear-gradient(135deg, #ffe5f5, #e7f7ff, #f0ddff);
   cursor: pointer;
@@ -605,7 +644,8 @@ main {
   cursor: pointer;
   text-align: center;
   white-space: nowrap;
-  line-height: 1;
+  line-height: var(--thin-text-line-height);
+  letter-spacing: var(--thin-text-letter-spacing);
   overflow: hidden;
   text-overflow: ellipsis;
   box-shadow: var(--pg-uniform-shadow);
@@ -664,6 +704,7 @@ body .task-tab-btn:hover {
   box-shadow: var(--pg-uniform-shadow);
   color: #17350f;
   align-self: flex-start;
+  letter-spacing: var(--thin-text-letter-spacing);
 }
 
 .add-tab-btn:hover {
@@ -721,7 +762,7 @@ body .task-item.selected {
 /* Footer */
 footer {
   padding: 18px 24px 24px;
-  border: 3px solid transparent;
+  border: var(--footer-border-width) solid transparent;
   border-radius: 16px;
   background:
     var(--footer-fill-gradient) padding-box,
@@ -735,7 +776,7 @@ footer {
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.7),
     0 0 0 4px rgba(255, 124, 203, 0.22);
-  animation: rainbowBorderDrift 13s linear infinite;
+  animation: rainbowBorderDrift 22s linear infinite;
 }
 
 .motivational-quote {
@@ -792,6 +833,7 @@ footer {
 }
 
 #add-task-btn {
+  font-weight: var(--font-weight-button);
   padding: 12px 20px;
   background: var(--pg-uniform-gradient);
   color: #17350f;
@@ -805,6 +847,7 @@ footer {
   align-items: center;
   gap: 5px;
   box-shadow: var(--pg-uniform-shadow);
+  letter-spacing: var(--thin-text-letter-spacing);
 }
 
 #add-task-btn:hover {
@@ -963,19 +1006,13 @@ footer {
 }
 
 .timer-setup-title {
+  font-weight: var(--font-weight-timer-setup-title);
   margin: 0 0 4px;
   color: #3e3fc8;
   font-size: clamp(1.25rem, 2.6vw, 2.05rem);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-}
-
-.timer-setup-subtitle {
-  margin: 0 0 10px;
-  color: #8f87a8;
-  font-size: 0.95rem;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  line-height: 1.15;
 }
 
 .timer-picker-shell {
@@ -1093,13 +1130,15 @@ footer {
 }
 
 .timer-btn {
+  font-weight: var(--font-weight-button);
   padding: 15px 30px;
   border: none;
   border-radius: 10px;
   font-size: 1.1em;
-  font-weight: 400;
   cursor: pointer;
   transition: all 0.3s ease;
+  letter-spacing: var(--thin-text-letter-spacing);
+  line-height: var(--thin-text-line-height);
 }
 
 .timer-btn.primary {
@@ -1285,7 +1324,7 @@ body #timer {
   font-size: 1.1em;
   color: #2c2c2c;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.6px;
 }
 
 /* Modal Overlay */
@@ -1309,16 +1348,14 @@ body #timer {
 
 /* Modal h2 */
 .modal {
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
-    url("./assets/textures/dirty-paper.png") center/cover;
+  background: var(--modal-fill-gradient), var(--modal-bg-color);
   border-radius: 22px;
-  border: 2px solid rgba(16, 16, 16, 0.45);
+  border: var(--modal-border-width) solid var(--modal-border-color);
   padding: 40px;
   max-width: 500px;
   width: 90%;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--modal-shadow);
   animation: scaleIn 0.3s ease;
 }
 
@@ -1333,22 +1370,9 @@ body #timer {
   color: #7a1f66;
 }
 
-body .modal {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255, 107, 107, 0.22),
-      rgba(202, 167, 255, 0.22),
-      rgba(107, 180, 255, 0.22),
-      rgba(195, 107, 255, 0.22)
-    ),
-    rgba(255, 255, 255, 0.93);
-  border-color: rgba(255, 124, 203, 0.55);
-}
-
 .completed-section {
   margin-top: 10px;
-  border: 3px solid transparent;
+  border: var(--group-card-border-width) solid transparent;
   border-radius: 20px;
   padding: 20px 18px;
   background:
@@ -1364,7 +1388,7 @@ body .modal {
     0 0 0 2px rgba(255, 255, 255, 0.7),
     0 0 0 4px rgba(255, 124, 203, 0.22),
     0 10px 22px rgba(121, 141, 226, 0.2);
-  animation: rainbowBorderDrift 13s linear infinite;
+  animation: rainbowBorderDrift 22s linear infinite;
 }
 
 .completed-by-tab {
@@ -1522,6 +1546,21 @@ body .modal {
 
 .about-modal {
   max-width: 760px;
+  border: var(--about-modal-border-width) solid transparent;
+  border-radius: 20px;
+  background:
+    var(--about-modal-fill-gradient) padding-box,
+    var(--about-modal-border-gradient) border-box;
+  box-shadow: var(--about-modal-shadow);
+  animation:
+    scaleIn 0.3s ease,
+    rainbowBorderDrift 22s linear infinite;
+}
+
+.about-title {
+  color: var(--group-title-color);
+  letter-spacing: var(--group-title-letter-spacing);
+  line-height: 1.12;
 }
 
 .about-title {
@@ -1539,10 +1578,12 @@ body .modal {
 }
 
 .about-features section {
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: var(--about-feature-border-width) solid
+    var(--about-feature-border-color);
   border-radius: 10px;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--about-feature-fill);
+  box-shadow: var(--pg-uniform-shadow);
 }
 
 .about-features h3 {
@@ -1551,15 +1592,6 @@ body .modal {
 
 .about-features ul {
   padding-left: 18px;
-}
-
-body #tasks,
-body .app-title,
-body #timer,
-#completedSection,
-footer,
-body #stats {
-  border: 9px solid transparent;
 }
 
 body .task-tab-btn,
@@ -1581,11 +1613,6 @@ body .delete-btn {
 
 body .about-modal {
   color: #224;
-}
-
-body .about-features section {
-  background: rgba(255, 255, 255, 0.7);
-  border-color: rgba(255, 124, 203, 0.45);
 }
 
 .is-hidden {
@@ -1690,13 +1717,15 @@ body .about-features section {
 }
 
 .btn {
+  font-weight: var(--font-weight-button);
   padding: 15px 30px;
   border: none;
   border-radius: 10px;
   font-size: 1.1em;
-  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  letter-spacing: var(--thin-text-letter-spacing);
+  line-height: var(--thin-text-line-height);
 }
 
 .btn--primary {
