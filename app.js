@@ -19,7 +19,7 @@ let timerTargetTaskId = null;
 let refreshTaskInputPlaceholder = null;
 
 const CONFETTI_COLORS = {
-  pg: ["#ff6ad5", "#caa7ff", "#65b8ff", "#ff9bde", "#9de8ff", "#ffffff"],
+  rainbow: ["#ff6ad5", "#caa7ff", "#65b8ff", "#ff9bde", "#9de8ff", "#ffffff"],
 };
 
 // UI Text Constants
@@ -29,7 +29,7 @@ const UI_TEXT = {
   TITLE_MAIN: "DUMB STUFF",
   TITLE_SUB: "I GOTTA DO TODAY",
   DOC_TITLE: "Dumb Stuff I Gotta Do Today",
-  TAGLINE: "Stay organized, be productive, you got this!",
+  TAGLINE: "Stay organized, be productive!",
   COMPLETED_TITLE: "Neat Stuff I Got Done Today!",
 };
 
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeQuotes();
   initializeUtilityModals();
   initializeResetAll();
-  initializePgMode();
+  initializeAppMode();
   initializePrizeModal();
 });
 
@@ -194,7 +194,9 @@ function initializeTasks() {
     taskList.innerHTML = "";
     if (activeTabId === ALL_TASKS_TAB_ID) {
       tabs.forEach((tab) => {
-        const tabTasks = tasks.filter((t) => t.tabId === tab.id && !t.completed);
+        const tabTasks = tasks.filter(
+          (t) => t.tabId === tab.id && !t.completed,
+        );
         if (!tabTasks.length) return;
 
         const header = document.createElement("li");
@@ -271,8 +273,8 @@ function initializeTasks() {
    * Load tasks from localStorage
    */
   function loadTasks() {
-    const storageKey = getModeStorageKey();
-    const savedTasks = localStorage.getItem(storageKey);
+    const storageKey = getTaskStorageKey();
+    const savedTasks = getStoredValue(storageKey, LEGACY_STORAGE_KEY);
     if (savedTasks) {
       try {
         tasks = JSON.parse(savedTasks);
@@ -299,7 +301,7 @@ function initializeTasks() {
    */
   function saveTasks() {
     try {
-      const storageKey = getModeStorageKey();
+      const storageKey = getTaskStorageKey();
       localStorage.setItem(storageKey, JSON.stringify(tasks));
     } catch (error) {
       console.error("Error saving tasks:", error);
@@ -556,7 +558,7 @@ function initializeTimer() {
     if (timedTask && !timedTask.completed) {
       timedTask.completed = true;
       incrementCompletedTasks();
-      localStorage.setItem(getModeStorageKey(), JSON.stringify(tasks));
+      localStorage.setItem(getTaskStorageKey(), JSON.stringify(tasks));
       if (typeof window.rerenderTaskList === "function") {
         window.rerenderTaskList();
       }
@@ -806,7 +808,7 @@ function syncTaskTimerSelectionUI() {
 }
 
 function celebrateByMode(duration = 2500) {
-  confetti.celebrate(duration, CONFETTI_COLORS.pg);
+  confetti.celebrate(duration, CONFETTI_COLORS.rainbow);
 }
 
 function playModeSound(type) {
@@ -842,8 +844,7 @@ function playModeSound(type) {
       osc.start(now + index * 0.12);
       osc.stop(now + index * 0.12 + 0.11);
     });
-  } catch (error) {
-  }
+  } catch (error) {}
 }
 
 /**
@@ -1036,12 +1037,15 @@ function updateStatsDisplay() {
 }
 
 /* =====================================================
-   PG MODE SETTINGS (single mode app)
+   APP STORAGE SETTINGS
 ===================================================== */
 
-const STORAGE_KEY_PG = "dsigdt_tasks_pg";
-const TAB_KEY_PG = "dsigdt_tabs_pg";
-const ACTIVE_TAB_KEY_PG = "dsigdt_active_tab_pg";
+const STORAGE_KEY = "dsigdt_tasks";
+const TAB_KEY = "dsigdt_tabs";
+const ACTIVE_TAB_KEY = "dsigdt_active_tab";
+const LEGACY_STORAGE_KEY = "dsigdt_tasks_pg";
+const LEGACY_TAB_KEY = "dsigdt_tabs_pg";
+const LEGACY_ACTIVE_TAB_KEY = "dsigdt_active_tab_pg";
 const ALL_TASKS_TAB_ID = "__all_tasks__";
 
 const DEFAULT_TABS = [
@@ -1055,7 +1059,7 @@ let tabs = [...DEFAULT_TABS];
 let activeTabId = DEFAULT_TABS[0].id;
 
 /**
- * Apply PG theme text
+ * Apply app theme text
  * Async because it fetches a fresh GIF from GIPHY API for the reward modal
  */
 async function applyThemeText() {
@@ -1115,23 +1119,36 @@ async function applyThemeText() {
 }
 
 /**
- * Get storage key for current mode
+ * Get localStorage key helpers
  */
-function getModeStorageKey() {
-  return STORAGE_KEY_PG;
+function getTaskStorageKey() {
+  return STORAGE_KEY;
 }
 
 function getTabStorageKey() {
-  return TAB_KEY_PG;
+  return TAB_KEY;
 }
 
 function getActiveTabStorageKey() {
-  return ACTIVE_TAB_KEY_PG;
+  return ACTIVE_TAB_KEY;
+}
+
+function getStoredValue(primaryKey, legacyKey) {
+  const currentValue = localStorage.getItem(primaryKey);
+  if (currentValue !== null) return currentValue;
+  const legacyValue = localStorage.getItem(legacyKey);
+  if (legacyValue !== null) {
+    localStorage.setItem(primaryKey, legacyValue);
+  }
+  return legacyValue;
 }
 
 function loadTabs() {
-  const savedTabs = localStorage.getItem(getTabStorageKey());
-  const savedActive = localStorage.getItem(getActiveTabStorageKey());
+  const savedTabs = getStoredValue(getTabStorageKey(), LEGACY_TAB_KEY);
+  const savedActive = getStoredValue(
+    getActiveTabStorageKey(),
+    LEGACY_ACTIVE_TAB_KEY,
+  );
   tabs = savedTabs ? JSON.parse(savedTabs) : [...DEFAULT_TABS];
   const isValidActive =
     savedActive &&
@@ -1214,7 +1231,7 @@ function renderTaskTabs() {
       if (activeTabId === tab.id) {
         activeTabId = tabs.length ? tabs[0].id : ALL_TASKS_TAB_ID;
       }
-      localStorage.setItem(getModeStorageKey(), JSON.stringify(tasks));
+      localStorage.setItem(getTaskStorageKey(), JSON.stringify(tasks));
       saveTabs();
       renderTaskTabs();
       if (typeof window.rerenderTaskList === "function") {
@@ -1280,20 +1297,20 @@ function renderTaskTabs() {
 }
 
 /**
- * Switch PG mode
+ * Load app state and UI text
  */
-function setPgMode() {
+function loadAppState() {
   applyThemeText();
   setCompletedTitleForMode();
   loadTabs();
   renderTaskTabs();
 
-  // Clear and reload tasks for new mode
+  // Clear and reload tasks
   tasks = [];
   const taskList = document.getElementById("task-list");
   if (taskList) taskList.innerHTML = "";
 
-  const savedTasks = localStorage.getItem(getModeStorageKey());
+  const savedTasks = getStoredValue(getTaskStorageKey(), LEGACY_STORAGE_KEY);
   if (savedTasks) {
     try {
       tasks = JSON.parse(savedTasks);
@@ -1313,10 +1330,10 @@ function setPgMode() {
 }
 
 /**
- * Initialize PG mode
+ * Initialize app mode
  */
-function initializePgMode() {
-  setPgMode();
+function initializeAppMode() {
+  loadAppState();
 }
 
 function initializeUtilityModals() {
@@ -1389,9 +1406,12 @@ function initializeResetAll() {
     timerTargetTaskId = null;
     stats = { completedTasks: 0, timerSessions: 0 };
 
-    localStorage.removeItem(STORAGE_KEY_PG);
-    localStorage.removeItem(TAB_KEY_PG);
-    localStorage.removeItem(ACTIVE_TAB_KEY_PG);
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(TAB_KEY);
+    localStorage.removeItem(ACTIVE_TAB_KEY);
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+    localStorage.removeItem(LEGACY_TAB_KEY);
+    localStorage.removeItem(LEGACY_ACTIVE_TAB_KEY);
     localStorage.removeItem("dumbit_stats");
 
     renderTaskTabs();

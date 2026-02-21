@@ -36,3 +36,10 @@ background-clip: text;
 color: transparent;
 text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
+
+#F894C8
+#FEC67C
+#FBE662
+#76CEE0
+#72C4DE
+#DEB1E1
