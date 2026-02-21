@@ -27,3 +27,12 @@ border-color: #d21ccf;
 color: #000000;
 box-shadow: inset 0 -2px 0 #801cd2;
 }
+
+body .tab-content h2,
+body .timer-setup-title {
+background: linear-gradient(120deg, #5a67f2, #c14dcc, #33a8d8, #6a4bdc);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}

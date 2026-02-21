@@ -9,6 +9,7 @@
   </head>
   <body>
     <div class="container">
+      <!-- Standalone branding area: edit singularly in .app-title / .tagline / .about-heart-btn -->
       <header>
         <h1 class="app-title" id="appTitle">
           <span id="titleMain">DUMB STUFF</span>
@@ -26,12 +27,14 @@
         </p>
       </header>
 
-      <!-- Content -->
+      <!-- Main productivity card group:
+           Use styles.css :root --group-* tokens to keep these cards cohesive -->
       <main>
-        <!-- Tasks -->
+        <!-- Card: Tasks
+             Includes task tabs, add input, task list, and reset action -->
         <div id="tasks" class="tab-content">
           <div class="task-header">
-            <h2>My Tasks</h2>
+            <h2 class="section-title">My Tasks</h2>
           </div>
           <div class="task-lists-toolbar">
             <div class="task-tabs" id="task-tabs" aria-label="Task tabs"></div>
@@ -68,10 +71,12 @@
           </div>
         </div>
 
+        <!-- Row: Timer + Statistics cards -->
         <div class="timer-stats-row">
-          <!-- Timer -->
+          <!-- Card: Timer
+               Includes task picker, time wheel dials, and launch button -->
           <div id="timer" class="tab-content">
-            <h2>Timer</h2>
+            <h2 class="section-title">Timer</h2>
             <div class="timer-section">
               <div class="timer-setup-grid">
                 <section class="timer-setup-card timer-setup-card--task">
@@ -126,8 +131,10 @@
             </div>
           </div>
 
+          <!-- Card: Statistics
+               Auto-updated by app.js (completed tasks + focus sessions) -->
           <div id="stats" class="tab-content">
-            <h2>Statistics</h2>
+            <h2 class="section-title">Statistics</h2>
             <div class="stats-section">
               <div class="stat-card">
                 <div class="stat-number" id="statCompletedTasks">0</div>
@@ -141,17 +148,23 @@
           </div>
         </div>
 
+        <!-- Card: Completed tasks by tab
+             Title id kept as #completedTitle for JS compatibility -->
         <section class="tab-content completed-section" id="completedSection">
-          <h3 id="completedTitle">NEAT THINGS I GOT DONE TODAY</h3>
+          <h2 class="section-title" id="completedTitle">
+            Neat Stuff I Got Done Today!
+          </h2>
           <div id="completedByTab" class="completed-by-tab"></div>
         </section>
       </main>
 
+      <!-- Standalone footer quote card: edit singularly in footer / .motivational-quote -->
       <footer>
         <p id="quote" class="motivational-quote">Loading inspiration...</p>
       </footer>
     </div>
 
+    <!-- Floating focus timer (shown while timer is active) -->
     <aside class="floating-focus-timer is-hidden" id="floatingFocusTimer">
       <button
         class="floating-focus-timer__close"
@@ -179,7 +192,7 @@
       </div>
     </aside>
 
-    <!-- Reset Confirmation Modal -->
+    <!-- Modal: Reset confirmation -->
     <div
       class="modal-overlay is-hidden"
       id="resetConfirmOverlay"
@@ -206,7 +219,7 @@
       </div>
     </div>
 
-    <!-- Reward Modal -->
+    <!-- Modal: Prize / reward after timer completion -->
     <div
       class="modal-overlay is-hidden"
       id="prizeOverlay"
@@ -255,7 +268,7 @@
       </div>
     </div>
 
-    <!-- About Modal -->
+    <!-- Modal: About (standalone; not part of cohesive card group) -->
     <div
       class="modal-overlay is-hidden"
       id="aboutOverlay"

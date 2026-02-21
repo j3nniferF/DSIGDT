@@ -30,6 +30,7 @@ const UI_TEXT = {
   TITLE_SUB: "I GOTTA DO TODAY",
   DOC_TITLE: "Dumb Stuff I Gotta Do Today",
   TAGLINE: "Stay organized, be productive, you got this!",
+  COMPLETED_TITLE: "Neat Stuff I Got Done Today!",
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -766,9 +767,11 @@ function refreshFocusTimerDisplay() {
 }
 
 function setCompletedTitleForMode() {
-  const completedTitle = document.getElementById("completedTitle");
+  const completedTitle =
+    document.getElementById("completedTitle") ||
+    document.querySelector("#completedSection .section-title");
   if (!completedTitle) return;
-  completedTitle.textContent = "NEAT THINGS I GOT DONE TODAY";
+  completedTitle.textContent = UI_TEXT.COMPLETED_TITLE;
 }
 
 function renderCompletedByTab() {
