@@ -116,6 +116,13 @@
   --about-modal-shadow: var(--group-card-shadow);
   --about-feature-border-width: 2px;
   --about-feature-border-color: var(--pg-uniform-border);
+  --close-x-border: rgba(255, 145, 210, 0.95);
+  --close-x-bg: rgba(240, 245, 255, 0.9);
+  --close-x-bg-hover: rgba(255, 255, 255, 0.98);
+  --close-x-color: #8059b2;
+  --close-x-color-hover: #6b3f95;
+  --close-x-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.72), 0 6px 14px rgba(111, 125, 220, 0.18);
 
   /* Backward-compatible aliases used across file */
   --pg-uniform-gradient: var(--group-control-gradient);
@@ -176,10 +183,28 @@ body .app-title {
   border: var(--app-title-border-width) solid transparent;
   border-radius: 999px;
   background:
-    padding-box,
+    radial-gradient(
+        circle at 22% 28%,
+        rgba(255, 255, 255, 0.98) 0 21%,
+        transparent 22%
+      )
+      padding-box,
+    radial-gradient(
+        circle at 78% 20%,
+        rgba(255, 255, 255, 0.95) 0 18%,
+        transparent 19%
+      )
+      padding-box,
+    radial-gradient(
+        circle at 50% 86%,
+        rgba(255, 255, 255, 0.92) 0 28%,
+        transparent 29%
+      )
+      padding-box,
     var(--app-title-fill-gradient) padding-box,
     var(--app-title-border-gradient) border-box;
   box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.88),
     0 0 0 12px rgba(255, 124, 203, 0.28),
     0 16px 36px rgba(121, 139, 229, 0.3);
   background-size:
@@ -208,6 +233,7 @@ body header:hover .app-title,
 body header:focus-within .app-title {
   transform: translateY(-3px);
   box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.92),
     0 0 0 13px rgba(255, 124, 203, 0.34),
     0 18px 40px rgba(98, 123, 229, 0.32);
 }
@@ -222,7 +248,7 @@ body .app-title::before {
 }
 
 body .tagline {
-  margin-top: -28px;
+  margin-top: 4px;
   padding: 3px 12px;
   border-radius: 14px;
   border: 3px solid transparent;
@@ -428,13 +454,13 @@ body .utility-btn:hover {
 }
 
 body .about-heart-btn {
-  position: absolute;
-  right: 14px;
-  bottom: -18px;
+  position: static;
+  margin-top: 2px;
+  margin-bottom: 2px;
   width: fit-content;
   min-width: 76px;
-  min-height: 46px;
-  padding: 7px 11px;
+  min-height: 38px;
+  padding: 6px 12px;
   border-radius: 28px;
   background: linear-gradient(135deg, #ffd5ef, #c8ebff, #dec7ff);
   color: #8b2a6d;
@@ -445,8 +471,8 @@ body .about-heart-btn {
   box-shadow:
     inset 0 0 0 2px rgba(255, 78, 181, 0.35),
     0 12px 24px rgba(115, 129, 221, 0.28);
-  z-index: 4;
-  overflow: visible;
+  z-index: 1;
+  overflow: hidden;
 }
 
 body .about-heart-btn:hover {
@@ -646,22 +672,29 @@ main {
   position: absolute;
   top: 4px;
   right: 6px;
-  width: 20px;
-  height: 20px;
-  border: 1px solid rgba(255, 124, 203, 0.6);
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--close-x-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.75);
-  color: #a1327a;
-  font-size: 0.75rem;
+  background: var(--close-x-bg);
+  color: var(--close-x-color);
+  font-size: 0.82rem;
   line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: var(--close-x-shadow);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .task-tab-delete:hover {
-  background: linear-gradient(135deg, #ffe3f3, #9de8ff, #caa7ff);
+  background: var(--close-x-bg-hover);
+  color: var(--close-x-color-hover);
+  transform: translateY(-1px);
 }
 
 .task-tab-btn.active {
@@ -783,7 +816,7 @@ footer {
   color: #2f2f39;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-align: center;
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(1rem, 2.3vw, 2rem);
   line-height: 1.4;
   margin: 0 auto;
@@ -861,6 +894,16 @@ footer {
 #task-input:focus {
   outline: none;
   border-color: #667eea;
+}
+
+#task-input::placeholder {
+  color: #d44aa6;
+  opacity: 0.95;
+  font-weight: 300;
+}
+
+#task-input:focus::placeholder {
+  color: rgba(212, 74, 166, 0.58);
 }
 
 #add-task-btn {
@@ -983,9 +1026,9 @@ footer {
 }
 
 .delete-btn {
-  background: linear-gradient(135deg, #ffd9ef, #d8eeff, #eddcff);
-  color: #9b2f78;
-  border: 1px solid rgba(255, 124, 203, 0.55);
+  background: var(--close-x-bg);
+  color: var(--close-x-color);
+  border: 2px solid var(--close-x-border);
   width: 42px;
   height: 42px;
   display: inline-flex;
@@ -994,15 +1037,19 @@ footer {
   padding: 0;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: 700;
-  transition: all 0.25s ease;
+  font-size: 1.2rem;
+  font-weight: 300;
+  box-shadow: var(--close-x-shadow);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .delete-btn:hover {
-  background: linear-gradient(135deg, #ffb9df, #c4e8ff, #dab8ff);
-  transform: translateY(-1px) scale(1.04);
-  color: #7a1f66;
+  background: var(--close-x-bg-hover);
+  color: var(--close-x-color-hover);
+  transform: translateY(-1px);
 }
 
 .empty-state {
@@ -1318,17 +1365,31 @@ body #timer {
   position: absolute;
   top: 8px;
   right: 10px;
-  border: none;
-  background: transparent;
-  color: rgba(122, 45, 106, 0.7);
-  font-size: 1.4rem;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--close-x-border);
+  border-radius: 999px;
+  background: var(--close-x-bg);
+  color: var(--close-x-color);
+  font-size: 1.2rem;
+  font-weight: 300;
   line-height: 1;
   cursor: pointer;
-  padding: 4px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--close-x-shadow);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .floating-focus-timer__close:hover {
-  color: #7a2d6a;
+  background: var(--close-x-bg-hover);
+  color: var(--close-x-color-hover);
+  transform: translateY(-1px);
 }
 /* TIME */
 /* .floating-focus-timer__label {
@@ -1957,18 +2018,32 @@ body .delete-btn {
 
 .modal-close-x {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 1.5em;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  border: 2px solid var(--close-x-border);
+  border-radius: 999px;
+  background: var(--close-x-bg);
+  color: var(--close-x-color);
+  font-size: 1.45rem;
+  font-weight: 300;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  color: #999;
-  transition: color 0.3s ease;
+  box-shadow: var(--close-x-shadow);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .modal-close-x:hover {
-  color: #333;
+  background: var(--close-x-bg-hover);
+  color: var(--close-x-color-hover);
+  transform: translateY(-1px);
 }
 
 /* Modal Title */
@@ -2212,8 +2287,9 @@ body .task-complete-card {
   body {
     /* Prevent stretched/distorted fixed background rendering on mobile browsers */
     background-attachment: scroll;
-    background-position: center top;
-    background-size: cover;
+    background-position: top center;
+    background-size: 100% auto;
+    background-repeat: repeat-y;
   }
 
   .container {
@@ -2227,38 +2303,39 @@ body .task-complete-card {
   }
 
   #titleMain {
-    font-size: clamp(2.5rem, 12vw, 3.8rem);
-    letter-spacing: 0.05em;
+    font-size: clamp(2rem, 10.5vw, 2.8rem);
+    letter-spacing: 0.032em;
+    white-space: nowrap;
     -webkit-text-stroke: 1.4px rgba(109, 50, 170, 0.78);
   }
 
   #titleSub {
-    font-size: clamp(1.05rem, 5vw, 1.5rem);
-    letter-spacing: 0.09em;
-    padding: 6px 12px;
+    font-size: clamp(0.9rem, 4.6vw, 1.2rem);
+    letter-spacing: 0.055em;
+    white-space: nowrap;
+    padding: 0;
   }
 
   body .app-title {
-    width: min(96vw, 840px);
-    padding: 20px 84px 14px 14px;
+    width: min(95vw, 480px);
+    padding: 16px 14px 12px;
+    gap: 6px;
   }
 
   body .about-heart-btn {
-    min-width: 58px;
+    min-width: 66px;
     min-height: 34px;
-    padding: 4px 8px;
-    right: 8px;
-    top: 8px;
-    bottom: auto;
-    font-size: 0.82rem;
+    padding: 4px 10px;
+    margin-top: 4px;
+    font-size: 0.84rem;
   }
 
   body .tagline {
-    margin-top: 2px;
+    margin-top: 4px;
     padding: 5px 11px;
-    max-width: 92vw;
-    font-size: clamp(0.95rem, 3.8vw, 1.08rem);
-    line-height: 1.2;
+    max-width: min(94vw, 460px);
+    font-size: clamp(0.88rem, 3.7vw, 1.02rem);
+    line-height: 1.22;
   }
 
   main {
@@ -2302,9 +2379,9 @@ body .task-complete-card {
   }
 
   .task-tab-btn {
-    min-height: 46px;
+    min-height: 44px;
     padding: 10px 12px;
-    font-size: 0.92rem;
+    font-size: 0.95rem;
   }
 
   .add-tab-btn {
@@ -2335,34 +2412,54 @@ body .task-complete-card {
   }
 
   .timer-setup-card {
-    padding: 10px 10px 9px;
+    padding: 9px 9px 8px;
     border-radius: 14px;
+  }
+
+  .timer-setup-title {
+    font-size: clamp(1.04rem, 5.4vw, 1.38rem);
+    letter-spacing: 0.04em;
+    margin-bottom: 3px;
+  }
+
+  .timer-picker {
+    font-size: 0.95rem;
+  }
+
+  .timer-picker-label {
+    font-size: 0.8rem;
+    margin-bottom: 4px;
   }
 
   .timer-dials {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
+    gap: 5px;
   }
 
-  .time-wheel-select {
-    width: 100%;
-    max-width: 76px;
-    height: 88px;
+  .time-wheel-select[size] {
+    width: min(19vw, 66px);
+    height: 86px;
+    padding: 3px 0;
     margin: 0 auto;
-    font-size: 1.25rem;
+    font-size: 1.08rem;
   }
 
-  .time-wheel-select option {
+  .time-wheel-select[size] option {
     font-size: 1.12rem;
+    line-height: 1.08;
+    text-align: center;
+    padding: 2px 0;
   }
 
-  .timer-picker-label {
-    font-size: 0.88rem;
+  .timer-picker--dial[size] {
+    min-height: 80px;
+    max-height: 80px;
+    padding: 2px;
   }
 
-  .timer-picker--dial {
-    min-height: 90px;
-    max-height: 90px;
+  .timer-picker--dial option {
+    padding: 4px 6px;
+    font-size: 0.9rem;
   }
 
   .floating-focus-timer {
@@ -2441,20 +2538,13 @@ body .task-complete-card {
     top: 0;
     right: 0;
     margin-left: auto;
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 124, 203, 0.45);
-    background: rgba(255, 255, 255, 0.82);
-    color: #6c318b;
+    width: 38px;
+    height: 38px;
     z-index: 2;
   }
 
   .about-modal .modal-close-x:hover {
-    color: #39113f;
-    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(0);
   }
 
   .modal-title {
@@ -2469,20 +2559,20 @@ body .task-complete-card {
 
 @media (max-width: 520px) {
   body .app-title {
-    padding: 18px 72px 12px 10px;
+    width: min(95vw, 380px);
+    padding: 14px 10px 10px;
   }
 
   body .about-heart-btn {
-    min-width: 52px;
+    min-width: 60px;
     min-height: 32px;
-    right: 6px;
-    top: 7px;
-    font-size: 0.78rem;
+    margin-top: 4px;
+    font-size: 0.8rem;
   }
 
   body .tagline {
-    max-width: 94vw;
-    font-size: 0.9rem;
+    max-width: min(94vw, 360px);
+    font-size: 0.84rem;
     padding: 4px 9px;
   }
 
@@ -2509,8 +2599,8 @@ body .task-complete-card {
   }
 
   .timer-picker--dial {
-    min-height: 88px;
-    max-height: 88px;
+    min-height: 76px;
+    max-height: 76px;
     padding: 3px;
   }
 
@@ -2530,11 +2620,10 @@ body .task-complete-card {
     font-size: 0.8rem;
   }
 
-  .time-wheel-select {
-    width: 100%;
-    max-width: 66px;
-    height: 80px;
-    font-size: 1.08rem;
+  .time-wheel-select[size] {
+    width: min(18vw, 58px);
+    height: 76px;
+    font-size: 0.98rem;
   }
 
   #timerLaunchBtn {

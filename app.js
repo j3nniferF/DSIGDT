@@ -33,6 +33,65 @@ const UI_TEXT = {
   COMPLETED_TITLE: "Dumb Stuff I Got Done Today!",
 };
 
+const APP_CONFIG = typeof CONFIG !== "undefined" ? CONFIG : {};
+
+const TASK_INPUT_SUGGESTIONS_BY_TAB =
+  APP_CONFIG.TASK_INPUT_SUGGESTIONS_BY_TAB || {};
+const TASK_INPUT_SUGGESTION_ROTATE_MS =
+  Number(APP_CONFIG.TASK_INPUT_SUGGESTION_ROTATE_MS) || 5000;
+
+const DEFAULT_PRIZE_MODAL_CONFIG = {
+  titleLine1: "AMAZING!",
+  titleLine2: "",
+  subtitle: "You earned a reward!",
+  note: "or you can enjoy this cute cat!",
+  nextTaskButton: "Next Task!",
+  addFiveMinButton: "Add 5 Min",
+  suggestions: [
+    "Go for a nice walk.",
+    "Take a quick nap.",
+    "Treat yourself to a snack!",
+  ],
+  gifSearch: "happy celebration cat cute",
+  gifFallback:
+    "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHBybnhveG4wdnRodGg2MnJ1NWhxNmxzcWV5Zm4weDcyZGFqMDV1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/75mBr8CLHect4tHlMb/giphy.gif",
+};
+
+function getPrizeModalConfig() {
+  const raw = APP_CONFIG.PRIZE_MODAL || {};
+  const suggestionList = Array.isArray(raw.suggestions)
+    ? raw.suggestions.filter((item) => typeof item === "string" && item.trim())
+    : [];
+  return {
+    titleLine1: raw.titleLine1 || DEFAULT_PRIZE_MODAL_CONFIG.titleLine1,
+    titleLine2: raw.titleLine2 ?? DEFAULT_PRIZE_MODAL_CONFIG.titleLine2,
+    subtitle: raw.subtitle || DEFAULT_PRIZE_MODAL_CONFIG.subtitle,
+    note: raw.note || DEFAULT_PRIZE_MODAL_CONFIG.note,
+    nextTaskButton:
+      raw.nextTaskButton || DEFAULT_PRIZE_MODAL_CONFIG.nextTaskButton,
+    addFiveMinButton:
+      raw.addFiveMinButton || DEFAULT_PRIZE_MODAL_CONFIG.addFiveMinButton,
+    suggestions:
+      suggestionList.length > 0
+        ? suggestionList
+        : DEFAULT_PRIZE_MODAL_CONFIG.suggestions,
+    gifSearch: raw.gifSearch || DEFAULT_PRIZE_MODAL_CONFIG.gifSearch,
+    gifFallback: raw.gifFallback || DEFAULT_PRIZE_MODAL_CONFIG.gifFallback,
+  };
+}
+
+const PRIZE_MODAL_CONFIG = getPrizeModalConfig();
+
+function renderPrizeSuggestionList(prizeListEl, suggestions) {
+  if (!prizeListEl) return;
+  prizeListEl.innerHTML = "";
+  suggestions.forEach((text) => {
+    const li = document.createElement("li");
+    li.textContent = text;
+    prizeListEl.appendChild(li);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   loadStats(); // Load stats first
   loadTabs();
@@ -54,16 +113,7 @@ function initializeTasks() {
   const taskInput = document.getElementById("task-input");
   const addTaskBtn = document.getElementById("add-task-btn");
   const taskList = document.getElementById("task-list");
-  const TAB_PLACEHOLDER_OPTIONS = {
-    tab1: [
-      "Take a nice shower",
-      "Take your vitamins",
-      "Breathe & stretch for 5 min",
-    ],
-    tab2: ["Tidy up the kitchen", "Quick grocery run"],
-    tab3: ["Organize your closet", "Schedule a dentist appointment"],
-    tab4: ["Pick up pet food", "Pay credit card bill"],
-  };
+  const suggestionIndexByTab = {};
 
   // Add task on button click
   addTaskBtn.addEventListener("click", addTask);
@@ -78,7 +128,24 @@ function initializeTasks() {
   // Load tasks from localStorage
   loadTasks();
 
-  function updateTaskInputPlaceholder() {
+  function getSuggestionsForTab(tabId) {
+    const fromTab = TASK_INPUT_SUGGESTIONS_BY_TAB[tabId];
+    if (Array.isArray(fromTab) && fromTab.length > 0) return fromTab;
+
+    const fallback = TASK_INPUT_SUGGESTIONS_BY_TAB.default;
+    if (Array.isArray(fallback) && fallback.length > 0) return fallback;
+
+    return [UI_TEXT.TASK_PLACEHOLDER.replace(/^\+\s*/, "Add ")];
+  }
+
+  function getNextSuggestion(tabId) {
+    const options = getSuggestionsForTab(tabId);
+    const nextIndex = suggestionIndexByTab[tabId] || 0;
+    suggestionIndexByTab[tabId] = (nextIndex + 1) % options.length;
+    return options[nextIndex];
+  }
+
+  function updateTaskInputPlaceholder({ advance = false } = {}) {
     if (!taskInput) return;
     if (activeTabId === ALL_TASKS_TAB_ID) {
       taskInput.placeholder = "Viewing all tasks - select a tab to add";
@@ -86,22 +153,45 @@ function initializeTasks() {
       if (addTaskBtn) addTaskBtn.disabled = true;
       return;
     }
+
     taskInput.disabled = false;
     if (addTaskBtn) addTaskBtn.disabled = false;
-    const options = TAB_PLACEHOLDER_OPTIONS[activeTabId];
-    if (!options || options.length === 0) {
-      taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER;
+
+    if (taskInput.value.trim()) return;
+
+    if (!advance && taskInput.dataset.suggestionText) {
+      taskInput.placeholder = `TRY: ♡ ${taskInput.dataset.suggestionText}`;
       return;
     }
-    const first = options[Math.floor(Math.random() * options.length)];
-    let second = options[Math.floor(Math.random() * options.length)];
-    if (options.length > 1 && second === first) {
-      second = options[(options.indexOf(first) + 1) % options.length];
-    }
-    taskInput.placeholder = `Try: ${first} • ${second}`;
+
+    const suggestion = getNextSuggestion(activeTabId);
+    taskInput.dataset.suggestionText = suggestion;
+    taskInput.placeholder = `TRY: ♡ ${suggestion}`;
   }
 
-  refreshTaskInputPlaceholder = updateTaskInputPlaceholder;
+  taskInput.addEventListener("focus", () => {
+    if (activeTabId === ALL_TASKS_TAB_ID) return;
+    taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER;
+  });
+
+  taskInput.addEventListener("blur", () => {
+    updateTaskInputPlaceholder();
+  });
+
+  taskInput.addEventListener("input", () => {
+    if (taskInput.value.trim()) return;
+    updateTaskInputPlaceholder();
+  });
+
+  setInterval(() => {
+    if (!taskInput || taskInput.disabled) return;
+    if (document.activeElement === taskInput) return;
+    if (taskInput.value.trim()) return;
+    updateTaskInputPlaceholder({ advance: true });
+  }, TASK_INPUT_SUGGESTION_ROTATE_MS);
+
+  refreshTaskInputPlaceholder = () =>
+    updateTaskInputPlaceholder({ advance: true });
 
   /**
    * Add a new task to the list
@@ -115,7 +205,7 @@ function initializeTasks() {
       taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER_ERROR;
       setTimeout(() => {
         taskInput.classList.remove("input-error");
-        taskInput.placeholder = UI_TEXT.TASK_PLACEHOLDER;
+        updateTaskInputPlaceholder({ advance: true });
       }, 2000);
       return;
     }
@@ -130,7 +220,7 @@ function initializeTasks() {
     tasks.push(task);
     saveTasks();
     rerenderTaskList();
-    updateTaskInputPlaceholder();
+    updateTaskInputPlaceholder({ advance: true });
 
     taskInput.value = "";
     taskInput.focus();
@@ -1093,28 +1183,22 @@ async function applyThemeText() {
   const addFiveMinBtn = document.getElementById("addFiveMinBtn");
   const prizeGif = document.getElementById("prizeGif");
 
-  if (prizeLine1) prizeLine1.textContent = "AMAZING!";
-  if (prizeLine2) prizeLine2.textContent = "";
-  if (prizeSubtitle) prizeSubtitle.textContent = "You earned a reward!";
-  if (prizeNote) prizeNote.textContent = "or you can enjoy this cute cat!";
-  if (nextTaskBtn) nextTaskBtn.textContent = "Next Task!";
-  if (addFiveMinBtn) addFiveMinBtn.textContent = "Add 5 Min";
+  if (prizeLine1) prizeLine1.textContent = PRIZE_MODAL_CONFIG.titleLine1;
+  if (prizeLine2) prizeLine2.textContent = PRIZE_MODAL_CONFIG.titleLine2;
+  if (prizeSubtitle) prizeSubtitle.textContent = PRIZE_MODAL_CONFIG.subtitle;
+  if (prizeNote) prizeNote.textContent = PRIZE_MODAL_CONFIG.note;
+  if (nextTaskBtn) nextTaskBtn.textContent = PRIZE_MODAL_CONFIG.nextTaskButton;
+  if (addFiveMinBtn) {
+    addFiveMinBtn.textContent = PRIZE_MODAL_CONFIG.addFiveMinButton;
+  }
 
-  const gifUrl = await fetchRewardGif("happy celebration cat");
+  const gifUrl = await fetchRewardGif(PRIZE_MODAL_CONFIG.gifSearch);
   if (prizeGif) {
-    prizeGif.src =
-      gifUrl ||
-      "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHBybnhveG4wdnRodGg2MnJ1NWhxNmxzcWV5Zm4weDcyZGFqMDV1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/75mBr8CLHect4tHlMb/giphy.gif";
+    prizeGif.src = gifUrl || PRIZE_MODAL_CONFIG.gifFallback;
   }
 
   const prizeList = document.getElementById("prizeList");
-  if (prizeList) {
-    prizeList.innerHTML = `
-              <li>Go for a nice walk.</li>
-              <li>Take a quick nap.</li>
-              <li>Treat yourself to a snack!</li>
-          `;
-  }
+  renderPrizeSuggestionList(prizeList, PRIZE_MODAL_CONFIG.suggestions);
 }
 
 /**
@@ -1507,12 +1591,14 @@ async function loadFreshRewardGif(source = "task") {
   // Show loading state
   prizeGif.style.opacity = "0.5";
 
-  if (prizeLine1) prizeLine1.textContent = "AMAZING!";
-  if (prizeLine2) prizeLine2.textContent = "";
-  if (prizeSubtitle) prizeSubtitle.textContent = "You earned a reward!";
-  if (prizeNote) prizeNote.textContent = "or you can enjoy this cute cat!";
-  if (nextTaskBtn) nextTaskBtn.textContent = "Next Task!";
-  if (addFiveMinBtn) addFiveMinBtn.textContent = "Add 5 Min";
+  if (prizeLine1) prizeLine1.textContent = PRIZE_MODAL_CONFIG.titleLine1;
+  if (prizeLine2) prizeLine2.textContent = PRIZE_MODAL_CONFIG.titleLine2;
+  if (prizeSubtitle) prizeSubtitle.textContent = PRIZE_MODAL_CONFIG.subtitle;
+  if (prizeNote) prizeNote.textContent = PRIZE_MODAL_CONFIG.note;
+  if (nextTaskBtn) nextTaskBtn.textContent = PRIZE_MODAL_CONFIG.nextTaskButton;
+  if (addFiveMinBtn) {
+    addFiveMinBtn.textContent = PRIZE_MODAL_CONFIG.addFiveMinButton;
+  }
   if (addFiveMinBtn) {
     addFiveMinBtn.style.display = source === "timer" ? "" : "none";
   }
@@ -1520,18 +1606,10 @@ async function loadFreshRewardGif(source = "task") {
     prizeActions.classList.toggle("prize-actions--single", source !== "timer");
   }
 
-  if (prizeList) {
-    prizeList.innerHTML = `
-              <li>Go for a nice walk.</li>
-              <li>Take a quick nap.</li>
-              <li>Treat yourself to a snack!</li>
-          `;
-  }
+  renderPrizeSuggestionList(prizeList, PRIZE_MODAL_CONFIG.suggestions);
 
-  const gifUrl = await fetchRewardGif("happy celebration cat cute");
-  prizeGif.src =
-    gifUrl ||
-    "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHBybnhveG4wdnRodGg2MnJ1NWhxNmxzcWV5Zm4weDcyZGFqMDV1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/75mBr8CLHect4tHlMb/giphy.gif";
+  const gifUrl = await fetchRewardGif(PRIZE_MODAL_CONFIG.gifSearch);
+  prizeGif.src = gifUrl || PRIZE_MODAL_CONFIG.gifFallback;
 
   // Wait for image to load
   prizeGif.onload = () => {
