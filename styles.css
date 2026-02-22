@@ -510,7 +510,6 @@ body .about-heart-btn {
   min-height: 46px;
   padding: 7px 11px;
   border-radius: 28px;
-  border: 2px solid rgba(255, 255, 255, 0.9);
   background: linear-gradient(135deg, #ffd5ef, #c8ebff, #dec7ff);
   color: #8b2a6d;
   font-weight: 300;
