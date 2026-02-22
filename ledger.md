@@ -43,3 +43,10 @@ text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 #76CEE0
 #72C4DE
 #DEB1E1
+
+border: var(--group-card-border-width) solid transparent;
+background:
+var(--group-card-wash-layer) padding-box,
+var(--group-card-image-layer) padding-box,
+var(--card-rainbow-border) border-box;
+box-shadow: var(--group-card-shadow);

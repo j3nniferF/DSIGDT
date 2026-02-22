@@ -146,7 +146,7 @@ body *,
 body *::before,
 body *::after {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-weight: var(--font-weight-default);
+  font-weight: 12;
 }
 
 body {
@@ -766,7 +766,7 @@ body .task-tab-btn:focus-visible {
 
 .task-item.selected {
   outline: 0;
-  border: 2px solid rgba(255, 124, 203, 0.82);
+  border: 3px solid rgba(255, 124, 203, 0.82);
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.84),
     0 10px 22px rgba(121, 141, 226, 0.2);
@@ -789,7 +789,7 @@ body .task-item.selected {
   letter-spacing: 0.03em;
   color: #9e2f74;
   background: linear-gradient(135deg, #ffe5f5, #e7f7ff, #f0ddff);
-  border: 1px solid rgba(255, 124, 203, 0.6);
+  border: 2px solid rgba(255, 124, 203, 0.6);
   box-shadow: 0 2px 8px rgba(140, 79, 168, 0.2);
 }
 
@@ -846,7 +846,7 @@ footer {
   max-width: 760px;
   padding: 24px 28px;
   border: var(--group-card-border-width) solid transparent;
-  border-radius: 20px;
+  border-radius: 70px;
   background:
     linear-gradient(
         135deg,
@@ -1006,13 +1006,32 @@ footer {
 .task-group-header {
   list-style: none;
   margin: 12px 0 8px;
-  padding: 6px 10px;
-  border-radius: 10px;
-  font-weight: 400;
-  letter-spacing: 0.03em;
-  color: #4f5675;
-  background: linear-gradient(135deg, #ffe3f3, #9de8ff, #caa7ff);
-  border: 1px solid rgba(109, 78, 241, 0.35);
+  width: 100%;
+  min-height: 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  font-size: clamp(1.1rem, 2.3vw, 1.45rem);
+  letter-spacing: var(--group-title-letter-spacing);
+  line-height: 1.12;
+  text-align: center;
+  background:
+    var(--section-title-gradient),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.7))
+      padding-box,
+    var(--group-card-border-gradient) border-box;
+  background-clip: text, padding-box, border-box;
+  -webkit-background-clip: text, padding-box, border-box;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px var(--section-title-stroke);
+  text-shadow: var(--section-title-shadow);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.72),
+    0 8px 18px rgba(110, 70, 188, 0.2);
 }
 
 .task-group-header + .task-item {
@@ -1306,20 +1325,13 @@ body #timer {
   z-index: 9998;
   width: min(360px, calc(100vw - 28px));
   border-radius: 24px;
-  border: 2px solid rgba(255, 124, 203, 0.62);
+  border: var(--group-card-border-width) solid transparent;
   padding: 14px 16px 16px;
   background:
-    linear-gradient(
-      135deg,
-      rgba(255, 227, 243, 0.92),
-      rgba(202, 167, 255, 0.5),
-      rgba(113, 216, 255, 0.62),
-      rgba(255, 227, 243, 0.92)
-    ),
-    rgba(255, 255, 255, 0.96);
-  box-shadow:
-    0 0 0 3px rgba(255, 255, 255, 0.82),
-    0 14px 28px rgba(115, 166, 240, 0.22);
+    var(--group-card-wash-layer) padding-box,
+    var(--group-card-image-layer) padding-box,
+    var(--card-rainbow-border) border-box;
+  box-shadow: var(--group-card-shadow);
 }
 
 .floating-focus-timer__close {
@@ -1338,8 +1350,8 @@ body #timer {
 .floating-focus-timer__close:hover {
   color: #7a2d6a;
 }
-
-.floating-focus-timer__label {
+/* TIME */
+/* .floating-focus-timer__label {
   margin: 0;
   font-size: 0.86rem;
   opacity: 0.95;
@@ -1348,7 +1360,7 @@ body #timer {
   font-weight: 700;
   text-align: center;
   color: #7a2d6a;
-}
+} */
 
 .floating-focus-timer__time {
   margin: 4px 0 0;
@@ -1362,7 +1374,7 @@ body #timer {
 .floating-focus-timer__task {
   margin: 7px 0 12px;
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 400;
   text-align: center;
   color: #7a2d6a;
 }
@@ -1513,16 +1525,27 @@ body #timer {
 .completed-tab-group h4 {
   margin-bottom: 10px;
   font-size: 1rem;
-  font-weight: 300;
-  letter-spacing: 0.04em;
+  font-weight: 200;
+  letter-spacing: var(--group-title-letter-spacing);
+  line-height: 1.12;
   text-align: center;
   padding: 6px 10px;
+  border: 3px solid transparent;
   border-radius: 999px;
-  border: 1px solid rgba(129, 111, 219, 0.35);
-  background: var(--ui-rainbow-text-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
+  background:
+    var(--section-title-gradient),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.7))
+      padding-box,
+    var(--group-card-border-gradient) border-box;
+  background-clip: text, padding-box, border-box;
+  -webkit-background-clip: text, padding-box, border-box;
   color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px var(--section-title-stroke);
+  text-shadow: var(--section-title-shadow);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.72),
+    0 8px 18px rgba(110, 70, 188, 0.2);
 }
 
 /* Shared rainbow text treatment for requested labels + controls */
@@ -1531,16 +1554,14 @@ body #timer {
 .task-tab-btn,
 .add-tab-btn,
 #add-task-btn,
-.task-group-header,
 .reset-all-btn,
 #confirmResetBtn {
-  font-weight: 400;
+  font-weight: 350;
 }
 
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
   .timer-setup-title,
-  .stat-label,
-  .completed-tab-group h4 {
+  .stat-label {
     background: var(--ui-rainbow-text-gradient);
     -webkit-background-clip: text;
     background-clip: text;
@@ -1651,7 +1672,11 @@ body #timer {
 }
 
 .completed-tab-group li {
+  background: #f9f9f9;
   display: flex;
+  gap: 12px;
+  padding: 2px;
+  border-radius: 10px;
   align-items: flex-start;
   gap: 8px;
   font-size: 1.02rem;
@@ -1663,6 +1688,7 @@ body #timer {
 .completed-tab-group li::before {
   content: "♡";
   color: #d54aa6;
+  padding: 2px;
   font-weight: 700;
   line-height: 1.2;
   margin-top: 1px;
@@ -1760,7 +1786,9 @@ body #timer {
 
 .about-modal {
   position: relative;
+  width: min(92vw, 760px);
   max-width: 760px;
+  max-height: min(88vh, calc(100dvh - 48px));
   border: var(--about-modal-border-width) solid transparent;
   border-radius: 20px;
   background:
@@ -1774,7 +1802,8 @@ body #timer {
     var(--border-drift-distance) 50%;
   box-shadow: var(--about-modal-shadow);
   text-align: center;
-  overflow: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   animation:
     scaleIn 0.3s ease,
     rainbowBorderDrift var(--border-drift-duration) var(--border-drift-easing)
@@ -2274,6 +2303,41 @@ body .task-complete-card {
     max-width: 400px;
     padding: 25px;
     margin: 20px;
+  }
+
+  #aboutOverlay {
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: max(10px, env(safe-area-inset-top)) 10px 16px;
+  }
+
+  .about-modal {
+    width: min(96vw, 760px);
+    max-width: none;
+    max-height: calc(100dvh - max(20px, env(safe-area-inset-top)) - 16px);
+    padding: 16px 12px 14px;
+    border-radius: 18px;
+  }
+
+  .about-modal .modal-close-x {
+    position: sticky;
+    top: 0;
+    right: 0;
+    margin-left: auto;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 124, 203, 0.45);
+    background: rgba(255, 255, 255, 0.82);
+    color: #6c318b;
+    z-index: 2;
+  }
+
+  .about-modal .modal-close-x:hover {
+    color: #39113f;
+    background: rgba(255, 255, 255, 0.95);
   }
 
   .modal-title {

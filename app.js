@@ -30,7 +30,7 @@ const UI_TEXT = {
   TITLE_SUB: "I GOTTA DO TODAY",
   DOC_TITLE: "Dumb Stuff I Gotta Do Today",
   TAGLINE: "Stay organized, be productive!",
-  COMPLETED_TITLE: "Neat Stuff I Got Done Today!",
+  COMPLETED_TITLE: "Dumb Stuff I Got Done Today!",
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -530,7 +530,6 @@ function initializeTimer() {
   function resetTimer() {
     pauseTimer();
     setFromDials();
-    hideFloating();
   }
 
   /**
