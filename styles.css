@@ -780,9 +780,10 @@ footer {
 }
 
 .motivational-quote {
-  color: #2c2c2c;
+  color: #2f2f39;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-align: center;
+  font-weight: 300;
   font-size: clamp(1rem, 2.3vw, 2rem);
   line-height: 1.4;
   margin: 0 auto;
@@ -810,6 +811,35 @@ footer {
     0% 50%;
   box-shadow: var(--group-card-shadow);
   animation: none;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .motivational-quote {
+    background:
+      var(--ui-rainbow-text-gradient),
+      linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.48),
+          rgba(255, 255, 255, 0.54)
+        )
+        padding-box,
+      url("./assets/textures/prettybg.png") center/cover no-repeat padding-box,
+      var(--card-rainbow-border) border-box;
+    background-size:
+      200% 200%,
+      100% 100%,
+      cover,
+      220% 220%;
+    background-position:
+      50% 50%,
+      0 0,
+      50% 50%,
+      0% 50%;
+    background-clip: text, padding-box, padding-box, border-box;
+    -webkit-background-clip: text, padding-box, padding-box, border-box;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 /* Task Section */
@@ -1822,7 +1852,11 @@ body #timer {
   border-radius: 12px;
   padding: 10px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.72))
+    linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.86),
+        rgba(255, 255, 255, 0.72)
+      )
       padding-box,
     var(--group-card-border-gradient) border-box;
   box-shadow:
