@@ -842,15 +842,32 @@ footer {
   font-size: clamp(1rem, 2.3vw, 2rem);
   line-height: 1.4;
   margin: 0 auto;
-  max-width: 560px;
-  padding: 30px;
-  border-radius: 16px;
-  border: 2px solid rgba(255, 124, 203, 0.35);
+  width: min(760px, 92%);
+  max-width: 760px;
+  padding: 24px 28px;
+  border: var(--group-card-border-width) solid transparent;
+  border-radius: 20px;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
-    url("./assets/textures/dirty-paper.png") center/cover;
+    linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.48),
+        rgba(255, 255, 255, 0.54)
+      )
+      padding-box,
+    url("./assets/textures/prettybg.png") center/cover no-repeat padding-box,
+    var(--card-rainbow-border) border-box;
+  background-size:
+    100% 100%,
+    cover,
+    220% 220%;
+  background-position:
+    0 0,
+    50% 50%,
+    0% 50%;
   box-shadow: var(--group-card-shadow);
-  animation: none;
+  animation: prettyCardDrift var(--border-drift-duration)
+    var(--border-drift-easing) infinite alternate;
+  will-change: background-position;
 }
 
 @keyframes quoteGlow {
