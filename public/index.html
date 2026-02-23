@@ -11,10 +11,18 @@
       <header>
         <h1>DUMB STUFF I GOTTA DO TODAY</h1>
       </header>
-      <main id="app"></main>
-      <footer>
-        <p id="quote">Loading stuff...</p>
-      </footer>
+      <main id="app">
+        <section class="tasks-card">
+          <h2>My Stuff</h2>
+          <div id="task-tabs" class="task-tabs"></div>
+          <div class="task-input-row">
+            <input type="text" id="task-input" placeholder="+ Add Stuff" />
+            <button id="add-task-btn">+</button>
+          </div>
+          <ul id="task-list"></ul>
+          <button id="reset-btn">Reset All Stuff</button>
+        </section>
+      </main>
     </div>
     <script src="app.js"></script>
   </body>

@@ -4,31 +4,142 @@
   box-sizing: border-box;
 }
 
+/* pink background, full screen height. font FIX1 */
 body {
   font-family: sans-serif;
   background: #feeaf8;
   min-height: 100vh;
 }
 
+/* centers how wide */
 .container {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
 }
 
+/* top of page, centered */
 header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
+/* big title FIX2 */
 h1 {
   font-size: 2rem;
   color: #c14dcc;
 }
 
-footer {
-  text-align: center;
-  margin-top: 2rem;
+/* card that holds the stuff */
+.tasks-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* purple section headings, colors FIX3 */
+h2 {
+  color: #c14dcc;
+  margin-bottom: 1rem;
+}
+
+/* input and + button row*/
+.task-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* type your stuff */
+#task-input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: 2px solid #e0c8e8;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+}
+
+/* border turns purple when you click into the input, FIX3 */
+#task-input:focus {
+  border-color: #c14dcc;
+}
+
+/* purple + btn to add stuff, FIX3 */
+#add-task-btn {
+  background: #c14dcc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* removes bullet from list */
+#task-list {
+  list-style: none;
+  margin-bottom: 1rem;
+}
+
+/* reset btn */
+#reset-btn {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
   color: #888;
-  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* stuff, label, delete flex */
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f0e0f5;
+}
+
+/* no border on last stuff */
+.task-item:last-child {
+  border-bottom: none;
+}
+
+/* stuff stretches space */
+.task-item label {
+  flex: 1;
+  cursor: pointer;
+}
+
+/* purple checkbox, FIX3 */
+.task-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #c14dcc;
+  cursor: pointer;
+}
+
+/* X + grey when stuff completed */
+.task-item.completed label {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+/* x btn */
+.delete-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 0.25rem;
+}
+
+/* delete btn pink on hover, FIX3 */
+.delete-btn:hover {
+  color: #ff6b9d;
 }
