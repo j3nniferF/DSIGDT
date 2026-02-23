@@ -3,6 +3,7 @@ let tasks = [];
 document.addEventListener("DOMContentLoaded", () => {
   loadTasks();
   initializeTasks();
+  loadQuote();
 });
 
 // add + render tasks
@@ -14,6 +15,16 @@ function initializeTasks() {
 
   input.addEventListener("keypress", (e) => {
     if (e.key === "Enter") addTask();
+  });
+
+  // reset btn resets ALL STUFF if selected
+  const resetBtn = document.getElementById("reset-btn");
+  resetBtn.addEventListener("click", () => {
+    if (confirm("🧨 💣 Reset All STUFF? 💣 🧨")) {
+      tasks = [];
+      saveTasks();
+      renderTasks();
+    }
   });
 }
 
@@ -42,7 +53,7 @@ function renderTasks() {
 
   tasks.forEach((task) => {
     const li = document.createElement("li");
-    li.className = "task-item";
+    li.className = task.completed ? "task-item completed" : "task-item";
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -92,4 +103,16 @@ function loadTasks() {
     tasks = JSON.parse(saved);
   }
   renderTasks();
+}
+
+// fetch quote from affirmations.dev api
+async function loadQuote() {
+  const quoteEl = document.getElementById("quote");
+  try {
+    const response = await fetch("https://www.affirmations.dev/");
+    const data = await response.json();
+    quoteEl.textContent = data.affirmation;
+  } catch {
+    quoteEl.textContent = "✨You're doing awesome! 🌟 Keep it up!✨";
+  }
 }

@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "start": "nodemon server.js"
-  },
+"scripts": {
+  "start": "node server.js",
+  "dev": "npx nodemon server.js"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/j3nniferF/dsigdt.git"
