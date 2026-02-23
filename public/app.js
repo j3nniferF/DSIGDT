@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeTabs();
   loadQuote();
   initializeReminders();
+  initializeTimer();
 });
 
 // add + render tasks
@@ -243,5 +244,65 @@ function initializeTabs() {
       renderTasks();
     });
     container.appendChild(btn);
+  });
+}
+
+// === timer ===
+let timerInterval = null;
+let timerSeconds = 0;
+
+function initializeTimer() {
+  const btn = document.getElementById("timer-btn");
+  const panel = document.getElementById("timer-panel");
+  const display = document.getElementById("timer-display");
+  const startBtn = document.getElementById("timer-start");
+  const resetBtn = document.getElementById("timer-reset");
+  const minutesInput = document.getElementById("timer-minutes");
+
+  // toggle panel open/closed
+  btn.addEventListener("click", () => {
+    panel.classList.toggle("is-hidden");
+  });
+
+  // start or pause
+  startBtn.addEventListener("click", () => {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      startBtn.textContent = "Start";
+      return;
+    }
+
+    // set seconds from input if timer isn't running
+    if (timerSeconds === 0) {
+      timerSeconds = parseInt(minutesInput.value) * 60;
+    }
+
+    startBtn.textContent = "Pause";
+
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      display.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+
+      if (timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        startBtn.textContent = "Start";
+        timerSeconds = 0;
+        display.textContent = "🎉 Done!";
+      }
+    }, 1000);
+  });
+
+  // reset
+  resetBtn.addEventListener("click", () => {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerSeconds = 0;
+    startBtn.textContent = "Start";
+    const mins = parseInt(minutesInput.value);
+    display.textContent = `${String(mins).padStart(2, "0")}:00`;
   });
 }

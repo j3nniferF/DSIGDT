@@ -276,6 +276,95 @@ h2 {
   letter-spacing: 0.03em;
 }
 
+/* === floating timer button (top right corner) === */
+.timer-icon-btn {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: var(--rainbow);
+  background-size: 200% 200%;
+  border: none;
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  font-size: 1.4rem;
+  cursor: pointer;
+  z-index: 999;
+  animation: border-drift 4s ease-in-out infinite alternate;
+}
+
+/* === timer panel (pops up above the button) === */
+.timer-panel {
+  position: fixed;
+  bottom: 5rem;
+  right: 1.25rem;
+  background: white;
+  border: 2px solid var(--purple);
+  border-radius: 16px;
+  padding: 1.5rem;
+  z-index: 998;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(193, 77, 204, 0.25);
+  min-width: 200px;
+}
+
+.timer-panel h3 {
+  color: var(--purple);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+/* big countdown numbers */
+.timer-display {
+  font-size: 3rem;
+  font-weight: 200;
+  letter-spacing: 0.05em;
+  color: var(--purple);
+  margin-bottom: 0.75rem;
+}
+
+.timer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.timer-controls input {
+  width: 60px;
+  text-align: center;
+  border: 2px solid #e0c8e8;
+  border-radius: 8px;
+  padding: 0.3rem;
+  font-size: 1rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+
+.timer-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.timer-buttons button {
+  background: var(--rainbow);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  cursor: pointer;
+  animation: border-drift 4s ease-in-out infinite alternate;
+}
+
 /* quote footer */
 footer {
   text-align: center;

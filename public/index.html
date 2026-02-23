@@ -8,6 +8,22 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
+    <!-- floating timer button -->
+    <button id="timer-btn" class="timer-icon-btn" title="Open Timer">⏱️</button>
+
+    <!-- timer panel -->
+    <div id="timer-panel" class="timer-panel is-hidden">
+      <h3>Focus Timer</h3>
+      <div class="timer-display" id="timer-display">25:00</div>
+      <div class="timer-controls">
+        <input type="number" id="timer-minutes" value="25" min="1" max="90" />
+        <span>min</span>
+      </div>
+      <div class="timer-buttons">
+        <button id="timer-start">Start</button>
+        <button id="timer-reset">Reset</button>
+      </div>
+    </div>
     <div class="container">
       <header>
         <h1>
