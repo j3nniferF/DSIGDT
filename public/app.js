@@ -1,5 +1,7 @@
 let tasks = [];
 let chart = null;
+let tabs = [];
+let activeTabId = "tab_dumb";
 
 // reminder popup msgs
 const reminderMessages = [
@@ -11,9 +13,12 @@ const reminderMessages = [
   "Check your posture! ⬆️",
 ];
 
+// dom content block
 document.addEventListener("DOMContentLoaded", () => {
+  loadTabs();
   loadTasks();
   initializeTasks();
+  initializeTabs();
   loadQuote();
   initializeReminders();
 });
@@ -50,6 +55,7 @@ function addTask() {
     id: Date.now(),
     text: text,
     completed: false,
+    tabId: activeTabId,
   };
 
   tasks.push(task);
@@ -63,7 +69,8 @@ function renderTasks() {
   const list = document.getElementById("task-list");
   list.innerHTML = "";
 
-  tasks.forEach((task) => {
+  const visibleTasks = tasks.filter((task) => task.tabId === activeTabId);
+  visibleTasks.forEach((task) => {
     const li = document.createElement("li");
     li.className = task.completed ? "task-item completed" : "task-item";
 
@@ -158,6 +165,17 @@ function renderChart() {
   const completed = tasks.filter((task) => task.completed).length;
   const remaining = tasks.filter((task) => !task.completed).length;
 
+  // update the x/x summary text
+  const summary = document.getElementById("stats-summary");
+  const total = tasks.length;
+  if (total === 0) {
+    summary.textContent = "Add some stuff to get started!";
+  } else if (completed === total) {
+    summary.textContent = `🎉 All ${total} / ${total} stuff done! Amazing!`;
+  } else {
+    summary.textContent = `${completed} / ${total} stuff done!`;
+  }
+
   // if chart already exists, update the numbers
   if (chart) {
     chart.data.datasets[0].data = [completed, remaining];
@@ -184,5 +202,46 @@ function renderChart() {
         legend: { position: "bottom" },
       },
     },
+  });
+}
+
+// load tabs from localStorage/  defaults if none saved
+function loadTabs() {
+  const saved = localStorage.getItem("dsigdt_tabs");
+  if (saved) {
+    tabs = JSON.parse(saved);
+    const savedActive = localStorage.getItem("dsigdt_active_tab");
+    if (savedActive) activeTabId = savedActive;
+  } else {
+    tabs = [
+      { id: "tab_dumb", name: "DUMB STUFF" },
+      { id: "tab_other", name: "OTHER STUFF" },
+    ];
+    saveTabs();
+  }
+}
+
+// save tabs + active tab to localStorage
+function saveTabs() {
+  localStorage.setItem("dsigdt_tabs", JSON.stringify(tabs));
+  localStorage.setItem("dsigdt_active_tab", activeTabId);
+}
+
+// render tab bts + handle clicks
+function initializeTabs() {
+  const container = document.getElementById("task-tabs");
+  container.innerHTML = ""; // clear old buttons before re-rendering!
+
+  tabs.forEach((tab) => {
+    const btn = document.createElement("button");
+    btn.textContent = tab.name;
+    btn.className = tab.id === activeTabId ? "tab-btn active" : "tab-btn";
+    btn.addEventListener("click", () => {
+      activeTabId = tab.id;
+      saveTabs();
+      initializeTabs();
+      renderTasks();
+    });
+    container.appendChild(btn);
   });
 }

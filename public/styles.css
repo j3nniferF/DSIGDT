@@ -1,13 +1,14 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* === my colors! === */
+:root {
+  --purple: #c14dcc;
+  --rainbow: linear-gradient(120deg, #ff4fbe 0%, #7fd7ff 44%, #d66aff 100%);
 }
 
-/* pink background, full screen height. font FIX1 */
+/* body base */
 body {
-  font-family: sans-serif;
-  background: #feeaf8;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  background: #f8f9fa url("assets/textures/pretty.png") center / cover fixed;
   min-height: 100vh;
 }
 
@@ -24,25 +25,114 @@ header {
   margin-bottom: 2rem;
 }
 
-/* big title FIX2 */
+/* big rainbow title dsigdt */
 h1 {
-  font-size: 2rem;
-  color: #c14dcc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  gap: 0.1em;
+  background: var(--rainbow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(255, 79, 190, 0.6));
+}
+
+.title-main {
+  font-size: 4.5rem;
+  font-weight: 400;
+  letter-spacing: 0.09em;
+}
+
+.title-sub {
+  font-size: 2.6rem;
+  font-weight: 300;
+  letter-spacing: 0.25em;
 }
 
 /* card that holds the stuff */
 .tasks-card {
-  background: white;
+  background:
+    linear-gradient(
+        135deg,
+        rgba(255, 233, 248, 0.97),
+        rgba(212, 246, 255, 0.97),
+        rgba(232, 219, 255, 0.97)
+      )
+      padding-box,
+    linear-gradient(
+        120deg,
+        #ff68c6,
+        #ff9d8b,
+        #ffe070,
+        #87ebff,
+        #8f98ff,
+        #d98fff
+      )
+      border-box;
+  border: 4px solid transparent;
   border-radius: 16px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 30px rgba(193, 77, 204, 0.35);
+  background-size:
+    100% 100%,
+    300% 300%;
+  animation: border-drift 6s ease-in-out infinite alternate;
 }
 
-/* purple section headings, colors FIX3 */
+/* the drifting animation */
+@keyframes border-drift {
+  0% {
+    background-position:
+      0 0,
+      0% 50%;
+  }
+  100% {
+    background-position:
+      0 0,
+      100% 50%;
+  }
+}
+
+/* section headings */
 h2 {
-  color: #c14dcc;
+  font-weight: 300;
   margin-bottom: 1rem;
+  background: var(--rainbow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* tab btns */
+.task-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tab-btn {
+  background: none;
+  border: 2px solid #e0c8e8;
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  color: #aaa;
+}
+
+/* active tab gets cute rainbow border */
+.tab-btn.active {
+  background: var(--rainbow);
+  background-size: 200% 200%;
+  color: white;
+  border-color: transparent;
+  animation: border-drift 4s ease-in-out infinite alternate;
 }
 
 /* input and + button row*/
@@ -62,20 +152,22 @@ h2 {
   outline: none;
 }
 
-/* border turns purple when you click into the input, FIX3 */
+/* border turns purple when you click into the input */
 #task-input:focus {
-  border-color: #c14dcc;
+  border-color: var(--purple);
 }
 
-/* purple + btn to add stuff, FIX3 */
+/* purple + btn to add stuff */
 #add-task-btn {
-  background: #c14dcc;
+  background: var(--rainbow);
+  background-size: 200% 200%;
   color: white;
   border: none;
   border-radius: 8px;
   padding: 0.6rem 1rem;
   font-size: 1.2rem;
   cursor: pointer;
+  animation: border-drift 4s ease-in-out infinite alternate;
 }
 
 /* removes bullet from list */
@@ -115,11 +207,11 @@ h2 {
   cursor: pointer;
 }
 
-/* purple checkbox, FIX3 */
+/* purple checkbox */
 .task-item input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  accent-color: #c14dcc;
+  accent-color: var(--purple);
   cursor: pointer;
 }
 
@@ -150,7 +242,7 @@ h2 {
   bottom: 2rem;
   right: 2rem;
   background: white;
-  border: 2px solid #c14dcc;
+  border: 2px solid var(--purple);
   border-radius: 16px;
   padding: 1rem 1.5rem;
   box-shadow: 0 4px 20px rgba(193, 77, 204, 0.3);
@@ -162,7 +254,7 @@ h2 {
 
 /* dismiss btn */
 #reminder-dismiss {
-  background: #c14dcc;
+  background: var(--purple);
   color: white;
   border: none;
   border-radius: 8px;
@@ -176,13 +268,35 @@ h2 {
   display: none;
 }
 
+/* stats summary text */
+.stats-summary {
+  color: var(--purple);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.03em;
+}
+
+/* quote footer */
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.95rem;
+  color: #9b59b6;
+  font-style: normal;
+  letter-spacing: 0.03em;
+}
+
 /* mobile- under 600px wide */
 @media (max-width: 600px) {
   .container {
     padding: 1rem;
   }
 
-  h1 {
+  .title-main {
+    font-size: 2.5rem;
+  }
+
+  .title-sub {
     font-size: 1.4rem;
   }
 

@@ -36,4 +36,4 @@ It's built with JavaScript, HTML, CSS, and lots of love, tears and coffee.
 
 # AI Usage Disclosure
 
-AI assistance was used for guidance explaining debug errors, and some assistence implementating advanced features. The goal was to enhanse current knowledge with minimal assistance. All code was typed, fonts chosen, rainbows painted, tears cried and tough stuff created by hand!
+AI assistance was used for debug errors and assistence implementating advanced features. The goal was to enhanse current knowledge with minimal assistance. All code was typed, fonts chosen, rainbows painted, tears cried and tough stuff created by hand!
