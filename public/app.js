@@ -1,9 +1,21 @@
 let tasks = [];
+let chart = null;
+
+// reminder popup msgs
+const reminderMessages = [
+  "Unclench your jaw! 💜",
+  "Drink some water! 💧",
+  "Take a deep breath! 🌬️",
+  "Get yourself a snack! 🥤🥗🍔🍟",
+  "Stretch your shoulders! 🙆",
+  "Check your posture! ⬆️",
+];
 
 document.addEventListener("DOMContentLoaded", () => {
   loadTasks();
   initializeTasks();
   loadQuote();
+  initializeReminders();
 });
 
 // add + render tasks
@@ -73,6 +85,8 @@ function renderTasks() {
     li.appendChild(deleteBtn);
     list.appendChild(li);
   });
+
+  renderChart();
 }
 
 // toggle + delete + save + load
@@ -115,4 +129,60 @@ async function loadQuote() {
   } catch {
     quoteEl.textContent = "✨You're doing awesome! 🌟 Keep it up!✨";
   }
+}
+
+// reminder popups: picks random msg, shows on timer, hides on dismiss
+function initializeReminders() {
+  const popup = document.getElementById("reminder-popup");
+  const message = document.getElementById("reminder-message");
+  const dismissBtn = document.getElementById("reminder-dismiss");
+
+  // show random reminder every X secs, FIX4
+  setInterval(
+    () => {
+      const randomIndex = Math.floor(Math.random() * reminderMessages.length);
+      message.textContent = reminderMessages[randomIndex];
+      popup.classList.remove("is-hidden");
+    },
+    20 * 60 * 1000,
+  );
+
+  // hide when dismissed
+  dismissBtn.addEventListener("click", () => {
+    popup.classList.add("is-hidden");
+  });
+}
+
+// draw or update the chart: done vs to do
+function renderChart() {
+  const completed = tasks.filter((task) => task.completed).length;
+  const remaining = tasks.filter((task) => !task.completed).length;
+
+  // if chart already exists, update the numbers
+  if (chart) {
+    chart.data.datasets[0].data = [completed, remaining];
+    chart.update();
+    return;
+  }
+
+  // first time: create the chart
+  const ctx = document.getElementById("stats-chart").getContext("2d");
+  chart = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Done", "Still to do"],
+      datasets: [
+        {
+          data: [completed, remaining],
+          backgroundColor: ["#c14dcc", "#f0e0f5"],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "bottom" },
+      },
+    },
+  });
 }

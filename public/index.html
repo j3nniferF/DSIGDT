@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dumb Stuff I Gotta Do Today</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <div class="container">
@@ -22,10 +23,19 @@
           <ul id="task-list"></ul>
           <button id="reset-btn">Reset All Stuff</button>
         </section>
+        <section class="tasks-card">
+          <h2>My Stats</h2>
+          <canvas id="stats-chart"></canvas>
+        </section>
       </main>
       <footer>
         <p id="quote">Loading positive stuff...</p>
       </footer>
+    </div>
+    <!-- reminder popup -->
+    <div id="reminder-popup" class="reminder-popup is-hidden">
+      <p id="reminder-message">Unclench your jaw! 💜</p>
+      <button id="reminder-dismiss">I did it!</button>
     </div>
     <script src="app.js"></script>
   </body>

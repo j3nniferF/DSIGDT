@@ -143,3 +143,52 @@ h2 {
 .delete-btn:hover {
   color: #ff6b9d;
 }
+
+/* reminder popup - out of the way (btm rg) */
+.reminder-popup {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: white;
+  border: 2px solid #c14dcc;
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 20px rgba(193, 77, 204, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1000;
+}
+
+/* dismiss btn */
+#reminder-dismiss {
+  background: #c14dcc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* hides popup when is-hidden */
+.is-hidden {
+  display: none;
+}
+
+/* mobile- under 600px wide */
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .reminder-popup {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+}
