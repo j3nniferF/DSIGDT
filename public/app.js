@@ -145,7 +145,7 @@ function initializeReminders() {
   const message = document.getElementById("reminder-message");
   const dismissBtn = document.getElementById("reminder-dismiss");
 
-  // show random reminder every X secs, FIX4
+  // show random reminder every X secs
   setInterval(
     () => {
       const randomIndex = Math.floor(Math.random() * reminderMessages.length);

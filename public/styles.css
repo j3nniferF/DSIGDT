@@ -6,8 +6,21 @@
     url("assets/fonts/BUBBLEGUMS.woff") format("woff");
 }
 
+@font-face {
+  font-family: "bubble";
+  src: url("assets/fonts/bubble.tff") format("tff");
+}
+
 /* my colors */
 :root {
+  --section-title-gradient: linear-gradient(
+    120deg,
+    #ff4fbe 0%,
+    #ff8fd8 18%,
+    #7fd7ff 44%,
+    #8f8aff 70%,
+    #d66aff 100%
+  );
   --purple: #c14dcc;
   --rainbow: linear-gradient(120deg, #ff4fbe 0%, #7fd7ff 44%, #b615f6 100%);
   --title-fill: linear-gradient(to bottom, #ff85d8, #ffe066, #85e8ff, #cc80ff);
@@ -70,7 +83,7 @@ header {
 
 /* big rainbow title dsigdt */
 h1 {
-  font-family: "Bubblegums", sans-serif;
+  font-family: "bubble", sans-serif;
   paint-order: stroke fill;
   background: linear-gradient(
     #ff85d8,
@@ -106,7 +119,10 @@ h1 {
 }
 
 /* card that holds the stuff */
-.tasks-card {
+.tasks-card,
+header {
+  position: relative;
+  isolation: isolate;
   background: var(--pbgradient);
   border: 4px solid transparent;
   border-radius: 16px;
@@ -119,6 +135,19 @@ h1 {
   animation: border-drift 6s ease-in-out infinite alternate;
 }
 
+/* prettybg texture sits behind card content but inside the rainbow border */
+.tasks-card::before,
+header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: url("assets/textures/prettybg.png") center / cover;
+  opacity: 0.4;
+  z-index: -1;
+  pointer-events: none;
+}
+
 /* section headings - pill badge style */
 h2 {
   background: var(--pbgradient);
@@ -126,7 +155,8 @@ h2 {
   color: var(--purple);
   font-size: 1.4rem;
   font-weight: 400;
-  width: fit-content;
+  /* width: fit-content; */
+  text-align: center;
   margin: 0 auto 1rem;
   border-radius: 999px;
   padding: 6px 18px;
@@ -143,26 +173,37 @@ h2 {
 }
 
 .tab-btn {
-  background: white;
-  border: 1px solid #e0c8e8;
-  border-radius: 20px;
-  padding: 0.35rem 1rem;
+  background:
+    rgba(255, 255, 255, 0.8) padding-box,
+    linear-gradient(
+        120deg,
+        #ff68c6,
+        #ff9d8b,
+        #ffe070,
+        #87ebff,
+        #8f98ff,
+        #d98fff
+      )
+      border-box;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  padding: 0.35rem 1.2rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.85rem;
   font-weight: 300;
   letter-spacing: 0.05em;
   cursor: pointer;
-  color: #aaa;
+  color: var(--purple);
 }
 
-/* active tab gets cute rainbow border */
+/* active tab gets filled rainbow */
 .tab-btn.active {
   background: var(--pbgradient);
   background-size: 200% 200%;
-  border-color: transparent;
+  border: 3px solid transparent;
   color: var(--purple);
-  font-weight: 400;
-  border: 4px solid transparent;
+  font-weight: 500;
+  animation: border-drift 4s ease-in-out infinite alternate;
 }
 
 /* input and + button row*/
@@ -298,6 +339,14 @@ h2 {
   display: none;
 }
 
+/* keep the chart from eating the whole page */
+#stats-chart {
+  max-height: 220px;
+  max-width: 220px;
+  margin: 0 auto;
+  display: block;
+}
+
 /* stats summary text */
 .stats-summary {
   color: var(--purple);
@@ -405,7 +454,7 @@ footer {
   letter-spacing: 0.03em;
 }
 
-/* the drifting animation */
+/* the drifting animation - 2 layer */
 @keyframes border-drift {
   0% {
     background-position:
@@ -415,6 +464,22 @@ footer {
   100% {
     background-position:
       0 0,
+      100% 50%;
+  }
+}
+
+/* the drifting animation - 3 layer (for cards with texture) */
+@keyframes card-border-drift {
+  0% {
+    background-position:
+      0 0,
+      center,
+      0% 50%;
+  }
+  100% {
+    background-position:
+      0 0,
+      center,
       100% 50%;
   }
 }
