@@ -1,59 +1,17 @@
-/* === my colors! === */
+/* font friends */
+@font-face {
+  font-family: "Bubblegums";
+  src:
+    url("assets/fonts/BUBBLEGUMS.woff2") format("woff2"),
+    url("assets/fonts/BUBBLEGUMS.woff") format("woff");
+}
+
+/* my colors */
 :root {
   --purple: #c14dcc;
-  --rainbow: linear-gradient(120deg, #ff4fbe 0%, #7fd7ff 44%, #d66aff 100%);
-}
-
-/* body base */
-body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
-  background: #f8f9fa url("assets/textures/pretty.png") center / cover fixed;
-  min-height: 100vh;
-}
-
-/* centers how wide */
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-/* top of page, centered */
-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-/* big rainbow title dsigdt */
-h1 {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1;
-  gap: 0.1em;
-  background: var(--rainbow);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(255, 79, 190, 0.6));
-}
-
-.title-main {
-  font-size: 4.5rem;
-  font-weight: 400;
-  letter-spacing: 0.09em;
-}
-
-.title-sub {
-  font-size: 2.6rem;
-  font-weight: 300;
-  letter-spacing: 0.25em;
-}
-
-/* card that holds the stuff */
-.tasks-card {
-  background:
+  --rainbow: linear-gradient(120deg, #ff4fbe 0%, #7fd7ff 44%, #b615f6 100%);
+  --title-fill: linear-gradient(to bottom, #ff85d8, #ffe066, #85e8ff, #cc80ff);
+  --pbgradient:
     linear-gradient(
         135deg,
         rgba(255, 233, 248, 0.97),
@@ -71,6 +29,85 @@ h1 {
         #d98fff
       )
       border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* body base */
+body {
+  background: url("assets/textures/pretty.png") center / cover fixed;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+
+/* centers how wide */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* top of page, centered */
+header {
+  background: var(--pbgradient);
+  border: 8px solid transparent;
+  border-radius: 22px;
+  padding: 1.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 30px rgba(193, 77, 204, 0.35);
+  background-size:
+    100% 100%,
+    300% 300%;
+  animation: border-drift 6s ease-in-out infinite alternate;
+}
+
+/* big rainbow title dsigdt */
+h1 {
+  font-family: "Bubblegums", sans-serif;
+  paint-order: stroke fill;
+  background: linear-gradient(
+    #ff85d8,
+    #85e8ff,
+    #cc80ff,
+    #ff68c6,
+    #ff9d8b,
+    #ffe070,
+    #87ebff,
+    #8f98ff,
+    #d98fff
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(255, 79, 190, 0.6));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+  gap: 0.2em;
+}
+
+.title-main {
+  font-size: 4.2rem;
+  letter-spacing: 0.12em;
+}
+
+.title-sub {
+  font-size: 2.2rem;
+  font-weight: 100;
+  letter-spacing: 0.35em;
+}
+
+/* card that holds the stuff */
+.tasks-card {
+  background: var(--pbgradient);
   border: 4px solid transparent;
   border-radius: 16px;
   padding: 1.5rem;
@@ -82,28 +119,20 @@ h1 {
   animation: border-drift 6s ease-in-out infinite alternate;
 }
 
-/* the drifting animation */
-@keyframes border-drift {
-  0% {
-    background-position:
-      0 0,
-      0% 50%;
-  }
-  100% {
-    background-position:
-      0 0,
-      100% 50%;
-  }
-}
-
-/* section headings */
+/* section headings - pill badge style */
 h2 {
-  font-weight: 300;
-  margin-bottom: 1rem;
-  background: var(--rainbow);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background: var(--pbgradient);
+  border: 4px solid transparent;
+  color: var(--purple);
+  font-size: 1.4rem;
+  font-weight: 400;
+  width: fit-content;
+  margin: 0 auto 1rem;
+  border-radius: 999px;
+  padding: 6px 18px;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.6),
+    0 4px 15px rgba(193, 77, 204, 0.2);
 }
 
 /* tab btns */
@@ -114,8 +143,8 @@ h2 {
 }
 
 .tab-btn {
-  background: none;
-  border: 2px solid #e0c8e8;
+  background: white;
+  border: 1px solid #e0c8e8;
   border-radius: 20px;
   padding: 0.35rem 1rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -128,11 +157,12 @@ h2 {
 
 /* active tab gets cute rainbow border */
 .tab-btn.active {
-  background: var(--rainbow);
+  background: var(--pbgradient);
   background-size: 200% 200%;
-  color: white;
   border-color: transparent;
-  animation: border-drift 4s ease-in-out infinite alternate;
+  color: var(--purple);
+  font-weight: 400;
+  border: 4px solid transparent;
 }
 
 /* input and + button row*/
@@ -159,10 +189,10 @@ h2 {
 
 /* purple + btn to add stuff */
 #add-task-btn {
-  background: var(--rainbow);
+  background: var(--pbgradient);
   background-size: 200% 200%;
   color: white;
-  border: none;
+  border: 3px solid transparent;
   border-radius: 8px;
   padding: 0.6rem 1rem;
   font-size: 1.2rem;
@@ -179,7 +209,7 @@ h2 {
 /* reset btn */
 #reset-btn {
   background: none;
-  border: 1px solid #ccc;
+  border: 3px solid transparent;
   border-radius: 8px;
   padding: 0.4rem 0.8rem;
   cursor: pointer;
@@ -231,7 +261,7 @@ h2 {
   padding: 0 0.25rem;
 }
 
-/* delete btn pink on hover, FIX3 */
+/* delete btn pink on hover */
 .delete-btn:hover {
   color: #ff6b9d;
 }
@@ -281,9 +311,9 @@ h2 {
   position: fixed;
   top: 1.25rem;
   right: 1.25rem;
-  background: var(--rainbow);
+  background: var(--pbgradient);
   background-size: 200% 200%;
-  border: none;
+  border: 3px solid transparent;
   border-radius: 50%;
   width: 52px;
   height: 52px;
@@ -373,6 +403,20 @@ footer {
   color: #9b59b6;
   font-style: normal;
   letter-spacing: 0.03em;
+}
+
+/* the drifting animation */
+@keyframes border-drift {
+  0% {
+    background-position:
+      0 0,
+      0% 50%;
+  }
+  100% {
+    background-position:
+      0 0,
+      100% 50%;
+  }
 }
 
 /* mobile- under 600px wide */
