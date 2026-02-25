@@ -13,13 +13,6 @@
     url("assets/fonts/bubble.woff") format("woff");
 }
 
-@font-face {
-  font-family: "Popstar";
-  src:
-    url("assets/fonts/Popstar.woff2") format("woff2"),
-    url("assets/fonts/Popstar.woff") format("woff");
-}
-
 /* my colors */
 :root {
   --section-title-gradient: linear-gradient(
@@ -81,7 +74,7 @@ header {
   border-radius: 22px;
   padding: 1.5rem;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 4px 30px rgba(193, 77, 204, 0.35);
   background-size:
@@ -91,7 +84,8 @@ header {
 }
 
 /* big rainbow title dsigdt */
-h1 {
+h1, 
+h2 {
   font-family: "bubble", sans-serif;
   paint-order: stroke fill;
   background: linear-gradient(
@@ -107,13 +101,12 @@ h1 {
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(255, 79, 190, 0.6));
-  display: flex;
+  filter: drop-shadow(19 9 20px rgb(17 1 11 / 60%));
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
-  line-height: 1.2;
-  gap: 0.2em;
+  line-height: 1.0;
+  gap: 0.em;
 }
 
 .title-main {
@@ -123,7 +116,7 @@ h1 {
 
 .title-sub {
   font-size: 2.2rem;
-  font-weight: 100;
+  font-weight: 00;
   letter-spacing: 0.35em;
 }
 
@@ -133,7 +126,7 @@ header {
   position: relative;
   isolation: isolate;
   background: var(--pbgradient);
-  border: 4px solid transparent;
+  border: 9px solid transparent;
   border-radius: 16px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
