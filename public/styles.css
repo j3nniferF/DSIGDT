@@ -78,7 +78,7 @@ body {
 header {
   background: var(--pbgradient);
   border: 8px solid transparent;
-  border-radius: 22px;
+  border-radius: 77px !important;
   padding: 1.5rem;
   text-align: center;
   margin-bottom: 2rem;
@@ -87,12 +87,12 @@ header {
   background-size:
     100% 100%,
     300% 300%;
-  animation: border-drift 6s ease-in-out infinite alternate;
+  animation: border-drift 8s ease-in-out infinite alternate;
 }
 
 /* big rainbow title dsigdt */
 h1 {
-  font-family: "bubble", sans-serif;
+  font-family: "Popstar", sans-serif;
   paint-order: stroke fill;
   background: linear-gradient(
     #ff85d8,
@@ -117,19 +117,17 @@ h1 {
 }
 
 .title-main {
-  font-size: 4.2rem;
+  font-size: 4.9rem;
   letter-spacing: 0.12em;
 }
 
 .title-sub {
-  font-size: 2.2rem;
-  font-weight: 100;
-  letter-spacing: 0.35em;
+  font-size: 2.3rem;
+  letter-spacing: 0.25em;
 }
 
 /* card that holds the stuff */
-.tasks-card,
-header {
+.tasks-card {
   position: relative;
   isolation: isolate;
   background: var(--pbgradient);
@@ -141,12 +139,11 @@ header {
   background-size:
     100% 100%,
     300% 300%;
-  animation: border-drift 6s ease-in-out infinite alternate;
+  animation: border-drift 8s ease-in-out infinite alternate;
 }
 
 /* prettybg texture sits behind card content but inside the rainbow border */
-.tasks-card::before,
-header::before {
+.tasks-card::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -182,8 +179,45 @@ h2 {
 }
 
 .tab-btn {
-  background:
-    rgba(255, 255, 255, 0.8) padding-box,
+  flex: 1;
+  text-align: center;
+  background: var(--pbgradient);
+  background-size: 100% 100%, 300% 300%;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  padding: 0.5rem 0.5rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  color: var(--purple);
+  animation: border-drift 6s ease-in-out infinite alternate;
+}
+
+/* active tab: white fill, solid bright border */
+.tab-btn.active {
+  background: rgba(255, 255, 255, 0.92) padding-box,
+    linear-gradient(120deg, #ff4fbe, #b615f6) border-box;
+  border: 3px solid transparent;
+  color: var(--purple);
+  font-weight: 500;
+  animation: none;
+}
+
+/* input and + button row*/
+.task-input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* type your stuff - pill with gradient border */
+#task-input {
+  flex: 1;
+  padding: 0.6rem 1.2rem;
+  background: rgba(255, 255, 255, 0.85) padding-box,
     linear-gradient(
         120deg,
         #ff68c6,
@@ -196,58 +230,47 @@ h2 {
       border-box;
   border: 2px solid transparent;
   border-radius: 999px;
-  padding: 0.35rem 1.2rem;
+  font-size: 0.95rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.85rem;
   font-weight: 300;
-  letter-spacing: 0.05em;
-  cursor: pointer;
   color: var(--purple);
-}
-
-/* active tab gets filled rainbow */
-.tab-btn.active {
-  background: var(--pbgradient);
-  background-size: 200% 200%;
-  border: 3px solid transparent;
-  color: var(--purple);
-  font-weight: 500;
-  animation: border-drift 4s ease-in-out infinite alternate;
-}
-
-/* input and + button row*/
-.task-input-row {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-/* type your stuff */
-#task-input {
-  flex: 1;
-  padding: 0.6rem 1rem;
-  border: 2px solid #e0c8e8;
-  border-radius: 8px;
-  font-size: 1rem;
   outline: none;
 }
 
-/* border turns purple when you click into the input */
-#task-input:focus {
-  border-color: var(--purple);
+#task-input::placeholder {
+  color: #d4a8e0;
 }
 
-/* purple + btn to add stuff */
+/* input glows on focus */
+#task-input:focus {
+  box-shadow: 0 0 0 3px rgba(193, 77, 204, 0.15);
+}
+
+/* + btn - small square */
 #add-task-btn {
-  background: var(--pbgradient);
-  background-size: 200% 200%;
-  color: white;
-  border: 3px solid transparent;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.85) padding-box,
+    linear-gradient(
+        120deg,
+        #ff68c6,
+        #ff9d8b,
+        #ffe070,
+        #87ebff,
+        #8f98ff,
+        #d98fff
+      )
+      border-box;
+  border: 2px solid transparent;
   border-radius: 8px;
-  padding: 0.6rem 1rem;
   font-size: 1.2rem;
+  color: var(--purple);
   cursor: pointer;
-  animation: border-drift 4s ease-in-out infinite alternate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 /* removes bullet from list */
@@ -256,15 +279,21 @@ h2 {
   margin-bottom: 1rem;
 }
 
-/* reset btn */
+/* reset btn - small, bottom right */
 #reset-btn {
-  background: none;
-  border: 3px solid transparent;
-  border-radius: 8px;
-  padding: 0.4rem 0.8rem;
+  display: block;
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.7) padding-box,
+    linear-gradient(120deg, #ff68c6, #d98fff) border-box;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
   cursor: pointer;
-  color: #888;
-  font-size: 0.85rem;
+  color: #bbb;
+  font-size: 0.78rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.04em;
 }
 
 /* stuff, label, delete flex */
