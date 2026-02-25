@@ -156,14 +156,15 @@ h1 {
 
 /* section headings - pill badge style */
 h2 {
+  font-family: "Popstar", sans-serif;
   background: var(--pbgradient);
   background-size:
     100% 100%,
     300% 300%;
   border: 3px solid transparent;
-  color: #9a1fa8;
-  font-size: 1.3rem;
-  font-weight: 700;
+  color: 
+  font-size: 2.3rem;
+  font-weight: 100;
   width: fit-content;
   text-align: center;
   margin: 0 auto 1rem;
@@ -396,6 +397,15 @@ h2 {
   display: block;
 }
 
+/* empty message when no completed task yet */
+.empty-state {
+  text-align: center;
+  color: var(--purple);
+  font-size: 0.95rem;
+  opacity: 0.7;
+  padding: 1rem 0;
+}
+
 /* stats summary text */
 .stats-summary {
   color: var(--purple);
@@ -552,4 +562,124 @@ footer {
     right: 1rem;
     bottom: 1rem;
   }
+}
+
+/* reward modal overlay (darkens) */
+.reward-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+/* specificity fix: combined selector beats .is-hidden alone */
+.reward-overlay.is-hidden {
+  display: none;
+}
+
+/* reward modal card */
+.reward-modal {
+  position: relative;
+  background: var(--pbgradient);
+  border: 4px solid transparent;
+  border-radius: 24px;
+  padding: 2rem;
+  max-width: 340px;
+  width: 90%;
+  text-align: center;
+  background-size:
+    100% 100%,
+    300% 300%;
+  animation: border-drift 6s ease-in-out infinite alternate;
+}
+
+/* X btn top right corner */
+.reward-close-X {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: var(--purple);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* reward title to override the h2 pill badge style */
+.reward-title {
+  font-family: "Popstar", sans-serif;
+  font-size: 1.8rem;
+  background: linear-gradient(#ff85d8, #85e8ff, #cc80ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  width: auto;
+  box-shadow: none;
+  animation: none;
+  margin-bottom: 0.5rem;
+}
+
+/* reward subtitle */
+.reward-subtitle {
+  color: var(--purple);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* prize suggestion list */
+.reward-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  color: var(--purple);
+  font-size: 0.95rem;
+}
+
+.reward-list li::before {
+  content: "♥";
+  margin-right: 0.5rem;
+  color: var(--purple);
+}
+
+/* Goooobie gif! */
+.reward-gif {
+  width: 100%;
+  max-width: 220px;
+  border-radius: 12px;
+  margin: 0 auto 0.75rem;
+  display: block;
+}
+
+/* note text */
+.reward-note {
+  color: var(--purple);
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-bottom: 1.25rem;
+}
+
+/* big close button */
+.reward-close-btn {
+  background: var(--rainbow);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.5rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  width: 100%;
+  animation: border-drift 4s ease-in-out infinite alternate;
 }

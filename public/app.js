@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadQuote();
   initializeReminders();
   initializeTimer();
+  initializeReward();
 });
 
 // add + render tasks
@@ -68,13 +69,22 @@ function addTask() {
 // render tasks to page
 function renderTasks() {
   const list = document.getElementById("task-list");
+  const empty = document.getElementById("tasks-empty");
   list.innerHTML = "";
 
-  const visibleTasks = tasks.filter((task) => task.tabId === activeTabId);
+  const visibleTasks = tasks.filter(
+    (task) => task.tabId === activeTabId && !task.completed,
+  );
+
+  if (visibleTasks.length === 0) {
+    empty.classList.remove("is-hidden");
+  } else {
+    empty.classList.add("is-hidden");
+  }
+
   visibleTasks.forEach((task) => {
     const li = document.createElement("li");
-    li.className = task.completed ? "task-item completed" : "task-item";
-
+    li.className = "task-item";
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = task.completed;
@@ -95,18 +105,65 @@ function renderTasks() {
   });
 
   renderChart();
+  renderCompleted();
+}
+
+// render completed to the "got done" card
+function renderCompleted() {
+  const list = document.getElementById("completed-list");
+  const empty = document.getElementById("completed-empty");
+  list.innerHTML = "";
+
+  const completedTasks = tasks.filter(
+    (task) => task.tabId === activeTabId && task.completed,
+  );
+
+  if (completedTasks.length === 0) {
+    empty.classList.remove("is-hidden");
+  } else {
+    empty.classList.add("is-hidden");
+    completedTasks.forEach((task) => {
+      const li = document.createElement("li");
+      li.className = "task-item completed";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = true;
+      checkbox.addEventListener("change", () => toggleTask(task.id));
+
+      const label = document.createElement("label");
+      label.textContent = task.text;
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "x";
+      deleteBtn.className = "delete-btn";
+      deleteBtn.addEventListener("click", () => deleteTask(task.id));
+
+      li.appendChild(checkbox);
+      li.appendChild(label);
+      li.appendChild(deleteBtn);
+      list.appendChild(li);
+    });
+  }
 }
 
 // toggle + delete + save + load
 function toggleTask(id) {
-  tasks = tasks.map((task) => {
-    if (task.id === id) {
-      return { ...task, completed: !task.completed };
+  const task = tasks.find((t) => t.id === id);
+  const wasCompleted = task ? task.completed : false;
+
+  tasks = tasks.map((t) => {
+    if (t.id === id) {
+      return { ...t, completed: !t.completed };
     }
-    return task;
+    return t;
   });
   saveTasks();
   renderTasks();
+
+  if (!wasCompleted && isTabFullyCompleted(task.tabId)) {
+    setTimeout(() => showReward(), 400);
+  }
 }
 
 function deleteTask(id) {
@@ -131,7 +188,7 @@ function loadTasks() {
 async function loadQuote() {
   const quoteEl = document.getElementById("quote");
   try {
-    const response = await fetch("https://www.affirmations.dev/");
+    const response = await fetch("/api/quote");
     const data = await response.json();
     quoteEl.textContent = data.affirmation;
   } catch {
@@ -189,7 +246,7 @@ function renderChart() {
   chart = new Chart(ctx, {
     type: "doughnut",
     data: {
-      labels: ["Done", "Still to do"],
+      labels: ["To Do Stuff", "Stuff Done"],
       datasets: [
         {
           data: [completed, remaining],
@@ -305,4 +362,38 @@ function initializeTimer() {
     const mins = parseInt(minutesInput.value);
     display.textContent = `${String(mins).padStart(2, "0")}:00`;
   });
+}
+
+// check if all tasks in tab are completed
+function isTabFullyCompleted(tabId) {
+  const tabTasks = tasks.filter((task) => task.tabId === tabId);
+  return tabTasks.length > 0 && tabTasks.every((task) => task.completed);
+}
+
+// show reward modal and confetti
+function showReward() {
+  const overlay = document.getElementById("reward-overlay");
+  const gif = document.getElementById("reward-gif");
+  gif.src = CONFIG.gooberGif;
+  overlay.classList.remove("is-hidden");
+  confetti({
+    particleCount: 150,
+    spread: 80,
+    origin: { y: 0.6 },
+  });
+}
+
+// hide reward modal
+function hideReward() {
+  document.getElementById("reward-overlay").classList.add("is-hidden");
+}
+
+// wire up close btns
+function initializeReward() {
+  document
+    .getElementById("reward-close-X")
+    .addEventListener("click", hideReward);
+  document
+    .getElementById("reward-close-btn")
+    .addEventListener("click", hideReward);
 }

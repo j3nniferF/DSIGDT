@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/jenniferhandel/Documents/GitHub/dsigdt-prebake/**)",
+      "Read(//Users/jenniferhandel/Documents/GitHub/dumbit/js/**)",
+      "Read(//Users/jenniferhandel/Documents/GitHub/dumbit/**)"
+    ]
+  }
+}

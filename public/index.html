@@ -40,25 +40,57 @@
             <button id="add-task-btn">+</button>
           </div>
           <ul id="task-list"></ul>
+          <p id="tasks-empty" class="empty-state">
+            ✨ Add some stuff above! ✨
+          </p>
           <button id="reset-btn">Reset All Stuff</button>
         </section>
-        <section class="tasks-card">
-          <h2>My Stats</h2>
+        <section class="tasks-card" id="completed-card">
+          <h2>Dumb Stuff I Got Done Today</h2>
           <p id="stats-summary" class="stats-summary">
-            Add some stuff to get started!
+            + Add some STUFF to get started!
           </p>
           <canvas id="stats-chart"></canvas>
+          <ul id="completed-list"></ul>
+          <p id="completed-empty" class="empty-state">
+            ✨ Get some stuff done! ✨
+          </p>
         </section>
       </main>
       <footer>
         <p id="quote">Loading positive stuff...</p>
       </footer>
     </div>
+    <!-- reward modal -->
+    <div id="reward-overlay" class="reward-overlay is-hidden">
+      <div id="reward-modal" class="reward-modal">
+        <button id="reward-close-X" class="reward-close-X">X</button>
+        <h2 class="reward-title">✨ You Did Stuff! ✨</h2>
+        <p class="reward-subtitle">You Get A Prize!</p>
+        <ul class="reward-list">
+          <li>Go for a nice walk! 🚶</li>
+          <li>Take a quick nap! 😴</li>
+          <li>Treat yourself to a snack! 🍫</li>
+        </ul>
+        <img
+          id="reward-gif"
+          class="reward-gif"
+          src=""
+          alt="🐈‍⬛ Goober The Cat 🐈‍⬛"
+        />
+        <p class="reward-note">or you can stare at this cute cat</p>
+        <button id="reward-close-btn" class="reward-close-btn">
+          Do More Stuff!
+        </button>
+      </div>
+    </div>
     <!-- reminder popup -->
     <div id="reminder-popup" class="reminder-popup is-hidden">
       <p id="reminder-message">Unclench your jaw! 💜</p>
       <button id="reminder-dismiss">I did it!</button>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script src="config.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
