@@ -349,6 +349,7 @@ function initializeTimer() {
         startBtn.textContent = "Start";
         timerSeconds = 0;
         display.textContent = "🎉 Done!";
+        setTimeout(() => showReward(), 400);
       }
     }, 1000);
   });
