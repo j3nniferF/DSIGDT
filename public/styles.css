@@ -476,8 +476,10 @@ h2 {
 /* timer panel (pops up above btn) */
 .timer-panel {
   position: fixed;
-  bottom: 5rem;
-  right: 1.25rem;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: min(280px, calc(100vw - 2rem));
   background: var(--pbgradient);
   background-size:
     100% 100%,
@@ -515,11 +517,11 @@ h2 {
 
 /* big countdown numbers */
 .timer-display {
-  font-size: 3rem;
-  font-weight: 200;
+  font-size: 4rem;
+  font-weight: 300;
   letter-spacing: 0.05em;
   color: var(--purple);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .timer-controls {
@@ -547,6 +549,21 @@ h2 {
   display: flex;
   gap: 0.5rem;
   justify-content: center;
+}
+
+.timer-buttons button {
+  background: var(--rainbow);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  animation: border-drift 4s ease-in-out infinite alternate;
 }
 
 /* close X button */
@@ -585,16 +602,48 @@ h2 {
   0%,
   100% {
     color: var(--purple);
-    filter: drop-shadow(0 0 4px rgba(182, 31, 196, 0.3));
+    text-shadow: 0 0 8px rgba(182, 31, 196, 0.5);
+    transform: scale(1);
   }
   50% {
     color: #ff4fbe;
-    filter: drop-shadow(0 0 14px rgba(255, 79, 190, 0.9));
+    text-shadow:
+      0 0 16px rgba(255, 79, 190, 0.9),
+      0 0 36px rgba(255, 79, 190, 0.5);
+    transform: scale(1.06);
   }
 }
 
 .timer-display.is-running {
-  animation: timer-pulse 1.5s ease-in-out infinite;
+  animation: timer-pulse 2s ease-in-out infinite;
+  display: block;
+}
+
+@keyframes timer-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(16px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.timer-panel.is-entering {
+  animation:
+    border-drift 6s ease-in-out infinite alternate,
+    timer-enter 0.35s ease-out;
+}
+
+.timer-task-label {
+  color: var(--purple);
+  font-size: 0.8rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.8;
+  font-style: italic;
+  min-height: 1.2em;
 }
 
 /* quote footer */

@@ -343,12 +343,18 @@ function initializeTimer() {
   const resetBtn = document.getElementById("timer-reset");
   const minutesInput = document.getElementById("timer-minutes");
   const closeBtn = document.getElementById("timer-close");
+  const taskLabel = document.getElementById("timer-task-label");
+  const taskSelect = document.getElementById("timer-task-select");
 
   // open panel + tasks, X panel
   btn.addEventListener("click", () => {
-    panel.classList.toggle("is-hidden");
-    if (!panel.classList.contains("is-hidden")) {
+    if (panel.classList.contains("is-hidden")) {
+      panel.classList.remove("is-hidden");
+      panel.classList.add("is-entering");
+      setTimeout(() => panel.classList.remove("is-entering"), 400);
       populateTimerTasks();
+    } else {
+      panel.classList.add("is-hidden");
     }
   });
 
@@ -371,6 +377,11 @@ function initializeTimer() {
     }
 
     startBtn.textContent = "Pause";
+    const selectedTask = taskSelect.options[taskSelect.selectedIndex];
+    taskLabel.textContent =
+      selectedTask && selectedTask.value
+        ? `left to work on: ${selectedTask.textContent}`
+        : "";
     display.classList.add("is-running");
 
     timerInterval = setInterval(() => {
@@ -387,6 +398,7 @@ function initializeTimer() {
         display.textContent = "🎉 Done!";
         display.classList.remove("is-running");
         setTimeout(() => showReward(), 400);
+        taskLabel.textContent = "";
       }
     }, 1000);
   });
@@ -403,18 +415,28 @@ function initializeTimer() {
   });
 }
 
-// fill task dropdown with active tab's incomplete tasks
+// fill task dropdown with incomplete tasks
 function populateTimerTasks() {
   const select = document.getElementById("timer-task-select");
-  const activeTasks = tasks.filter(
-    (task) => task.tabId === activeTabId && !task.completed
-  );
   select.innerHTML = '<option value="">✨ Choose a task...</option>';
-  activeTasks.forEach((task) => {
-    const option = document.createElement("option");
-    option.value = task.id;
-    option.textContent = task.text;
-    select.appendChild(option);
+
+  tabs.forEach((tab) => {
+    const tabTasks = tasks.filter(
+      (task) => task.tabId === tab.id && !task.completed,
+    );
+    if (tabTasks.length === 0) return;
+
+    const header = document.createElement("option");
+    header.textContent = `— ${tab.name} —`;
+    header.disabled = true;
+    select.appendChild(header);
+
+    tabTasks.forEach((task) => {
+      const option = document.createElement("option");
+      option.value = task.id;
+      option.textContent = `  ${task.text}`;
+      select.appendChild(option);
+    });
   });
 }
 
@@ -455,7 +477,13 @@ function initializeReward() {
 // wire up reset confirm modal
 function initializeResetModal() {
   const overlay = document.getElementById("reset-overlay");
-
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerSeconds = 0;
+  document.getElementById("timer-start").textContent = "Start";
+  document.getElementById("timer-display").textContent = "25:00";
+  document.getElementById("timer-display").classList.remove("is-running");
+  document.getElementById("timer-task-label").textContent = "";
   document.getElementById("reset-confirm-btn").addEventListener("click", () => {
     tasks = [];
     tabs = [
