@@ -9,28 +9,36 @@
   </head>
   <body>
     <!-- floating timer button -->
-    <button id="timer-btn" class="timer-icon-btn" title="Open Timer">⏱️</button>
 
     <!-- timer panel -->
-    <div id="timer-panel" class="timer-panel is-hidden">
-      <h3>Focus Timer</h3>
-      <div class="timer-display" id="timer-display">25:00</div>
-      <div class="timer-controls">
-        <input type="number" id="timer-minutes" value="25" min="1" max="90" />
-        <span>min</span>
-      </div>
-      <div class="timer-buttons">
-        <button id="timer-start">Start</button>
-        <button id="timer-reset">Reset</button>
-      </div>
-    </div>
+<div id="timer-panel" class="timer-panel is-hidden">
+  <button id="timer-close" class="timer-close-btn">×</button>
+  <h3>Focus Timer</h3>
+  <select id="timer-task-select" class="timer-task-select">
+    <option value="">✨ Choose a task...</option>
+  </select>
+  <div class="timer-display" id="timer-display">25:00</div>
+  <div class="timer-controls">
+    <input type="number" id="timer-minutes" value="25" min="1" max="90" />
+    <span>min</span>
+  </div>
+  <div class="timer-buttons">
+    <button id="timer-start">Start</button>
+    <button id="timer-reset">Reset</button>
+  </div>
+</div>
     <div class="container">
       <header>
         <h1>
           <span class="title-main">DUMB STUFF</span>
           <span class="title-sub">I GOTTA DO TODAY</span>
         </h1>
-      </header>
+           </header>
+    <div class="header-btns">
+      <button id="timer-btn" class="header-icon-btn timer-btn-color" title="Open Timer">⏱️</button>
+      <button id="about-btn" class="header-icon-btn about-btn-color" title="About">✨</button>
+    </div>
+    <main id="app">
       <main id="app">
         <section class="tasks-card">
           <h2>My Stuff</h2>

@@ -342,10 +342,18 @@ function initializeTimer() {
   const startBtn = document.getElementById("timer-start");
   const resetBtn = document.getElementById("timer-reset");
   const minutesInput = document.getElementById("timer-minutes");
+  const closeBtn = document.getElementById("timer-close");
 
-  // toggle panel open/closed
+  // open panel + tasks, X panel
   btn.addEventListener("click", () => {
     panel.classList.toggle("is-hidden");
+    if (!panel.classList.contains("is-hidden")) {
+      populateTimerTasks();
+    }
+  });
+
+  closeBtn.addEventListener("click", () => {
+    panel.classList.add("is-hidden");
   });
 
   // start or pause
@@ -354,15 +362,16 @@ function initializeTimer() {
       clearInterval(timerInterval);
       timerInterval = null;
       startBtn.textContent = "Start";
+      display.classList.remove("is-running");
       return;
     }
 
-    // set seconds from input if timer isn't running
     if (timerSeconds === 0) {
       timerSeconds = parseInt(minutesInput.value) * 60;
     }
 
     startBtn.textContent = "Pause";
+    display.classList.add("is-running");
 
     timerInterval = setInterval(() => {
       timerSeconds--;
@@ -376,6 +385,7 @@ function initializeTimer() {
         startBtn.textContent = "Start";
         timerSeconds = 0;
         display.textContent = "🎉 Done!";
+        display.classList.remove("is-running");
         setTimeout(() => showReward(), 400);
       }
     }, 1000);
@@ -387,8 +397,24 @@ function initializeTimer() {
     timerInterval = null;
     timerSeconds = 0;
     startBtn.textContent = "Start";
+    display.classList.remove("is-running");
     const mins = parseInt(minutesInput.value);
     display.textContent = `${String(mins).padStart(2, "0")}:00`;
+  });
+}
+
+// fill task dropdown with active tab's incomplete tasks
+function populateTimerTasks() {
+  const select = document.getElementById("timer-task-select");
+  const activeTasks = tasks.filter(
+    (task) => task.tabId === activeTabId && !task.completed
+  );
+  select.innerHTML = '<option value="">✨ Choose a task...</option>';
+  activeTasks.forEach((task) => {
+    const option = document.createElement("option");
+    option.value = task.id;
+    option.textContent = task.text;
+    select.appendChild(option);
   });
 }
 
