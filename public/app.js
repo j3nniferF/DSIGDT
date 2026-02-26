@@ -334,6 +334,7 @@ function initializeTabs() {
 // === timer ===
 let timerInterval = null;
 let timerSeconds = 0;
+let totalTimerSeconds = 0;
 
 function initializeTimer() {
   const btn = document.getElementById("timer-btn");
@@ -345,6 +346,7 @@ function initializeTimer() {
   const closeBtn = document.getElementById("timer-close");
   const taskLabel = document.getElementById("timer-task-label");
   const taskSelect = document.getElementById("timer-task-select");
+  const dialProgress = document.getElementById("dial-progress");
 
   // open panel + tasks, X panel
   btn.addEventListener("click", () => {
@@ -374,14 +376,14 @@ function initializeTimer() {
 
     if (timerSeconds === 0) {
       timerSeconds = parseInt(minutesInput.value) * 60;
+      totalTimerSeconds = timerSeconds;
     }
+    panel.classList.add("is-running");
 
     startBtn.textContent = "Pause";
     const selectedTask = taskSelect.options[taskSelect.selectedIndex];
     taskLabel.textContent =
-      selectedTask && selectedTask.value
-        ? `left to work on: ${selectedTask.textContent}`
-        : "";
+      selectedTask && selectedTask.value ? `${selectedTask.textContent}` : "";
     display.classList.add("is-running");
 
     timerInterval = setInterval(() => {
@@ -389,6 +391,8 @@ function initializeTimer() {
       const mins = Math.floor(timerSeconds / 60);
       const secs = timerSeconds % 60;
       display.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+      dialProgress.style.strokeDashoffset =
+        314 * (1 - timerSeconds / totalTimerSeconds);
 
       if (timerSeconds <= 0) {
         clearInterval(timerInterval);
@@ -399,6 +403,9 @@ function initializeTimer() {
         display.classList.remove("is-running");
         setTimeout(() => showReward(), 400);
         taskLabel.textContent = "";
+
+        panel.classList.remove("is-running");
+        dialProgress.style.strokeDashoffset = 0;
       }
     }, 1000);
   });
@@ -412,6 +419,9 @@ function initializeTimer() {
     display.classList.remove("is-running");
     const mins = parseInt(minutesInput.value);
     display.textContent = `${String(mins).padStart(2, "0")}:00`;
+
+    panel.classList.remove("is-running");
+    dialProgress.style.strokeDashoffset = 0;
   });
 }
 
@@ -477,14 +487,14 @@ function initializeReward() {
 // wire up reset confirm modal
 function initializeResetModal() {
   const overlay = document.getElementById("reset-overlay");
-  clearInterval(timerInterval);
-  timerInterval = null;
-  timerSeconds = 0;
-  document.getElementById("timer-start").textContent = "Start";
-  document.getElementById("timer-display").textContent = "25:00";
-  document.getElementById("timer-display").classList.remove("is-running");
-  document.getElementById("timer-task-label").textContent = "";
   document.getElementById("reset-confirm-btn").addEventListener("click", () => {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerSeconds = 0;
+    document.getElementById("timer-start").textContent = "Start";
+    document.getElementById("timer-display").textContent = "25:00";
+    document.getElementById("timer-display").classList.remove("is-running");
+    document.getElementById("timer-task-label").textContent = "";
     tasks = [];
     tabs = [
       { id: "tab_dumb", name: "DUMB STUFF" },
