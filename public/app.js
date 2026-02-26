@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeReminders();
   initializeTimer();
   initializeReward();
+  initializeResetModal();
 });
 
 // add + render tasks
@@ -39,11 +40,7 @@ function initializeTasks() {
   // reset btn resets ALL STUFF if selected
   const resetBtn = document.getElementById("reset-btn");
   resetBtn.addEventListener("click", () => {
-    if (confirm("🧨 💣 Reset All STUFF? 💣 🧨")) {
-      tasks = [];
-      saveTasks();
-      renderTasks();
-    }
+    document.getElementById("reset-overlay").classList.remove("is-hidden");
   });
 }
 
@@ -297,9 +294,39 @@ function initializeTabs() {
     btn.addEventListener("click", () => {
       activeTabId = tab.id;
       saveTabs();
-      initializeTabs();
+      container
+        .querySelectorAll(".tab-btn")
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
       renderTasks();
     });
+
+    btn.addEventListener("dblclick", () => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = tab.name;
+      input.className = "tab-rename-input";
+      btn.replaceWith(input);
+      input.focus();
+      input.select();
+
+      function saveRename() {
+        const newName = input.value.trim();
+        if (newName) tab.name = newName;
+        saveTabs();
+        initializeTabs();
+      }
+
+      input.addEventListener("blur", saveRename);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") input.blur();
+        if (e.key === "Escape") {
+          input.removeEventListener("blur", saveRename);
+          initializeTabs();
+        }
+      });
+    });
+
     container.appendChild(btn);
   });
 }
@@ -397,4 +424,27 @@ function initializeReward() {
   document
     .getElementById("reward-close-btn")
     .addEventListener("click", hideReward);
+}
+
+// wire up reset confirm modal
+function initializeResetModal() {
+  const overlay = document.getElementById("reset-overlay");
+
+  document.getElementById("reset-confirm-btn").addEventListener("click", () => {
+    tasks = [];
+    tabs = [
+      { id: "tab_dumb", name: "DUMB STUFF" },
+      { id: "tab_other", name: "OTHER STUFF" },
+    ];
+    activeTabId = "tab_dumb";
+    saveTasks();
+    saveTabs();
+    initializeTabs();
+    renderTasks();
+    overlay.classList.add("is-hidden");
+  });
+
+  document.getElementById("reset-cancel-btn").addEventListener("click", () => {
+    overlay.classList.add("is-hidden");
+  });
 }

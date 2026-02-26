@@ -22,27 +22,28 @@
 
 /* my colors */
 :root {
-  --section-title-gradient: linear-gradient(
-    120deg,
-    #ff4fbe 0%,
-    #ff8fd8 18%,
-    #7fd7ff 44%,
-    #8f8aff 70%,
-    #d66aff 100%
-  );
-  --purple: #c14dcc;
+  --section-title-gradient: linear-gradient to top
+    right(
+      120deg,
+      #ff4fbe 0%,
+      #ff8fd8 18%,
+      #7fd7ff 44%,
+      #8f8aff 70%,
+      #d66aff 100%
+    );
+  --purple: #b61fc4;
   --rainbow: linear-gradient(120deg, #ff4fbe 0%, #7fd7ff 44%, #b615f6 100%);
   --title-fill: linear-gradient(to bottom, #ff85d8, #ffe066, #85e8ff, #cc80ff);
   --pbgradient:
     linear-gradient(
-        135deg,
+        to top right,
         rgba(255, 233, 248, 0.97),
         rgba(212, 246, 255, 0.97),
         rgba(232, 219, 255, 0.97)
       )
       padding-box,
     linear-gradient(
-        120deg,
+        to top right,
         #ff68c6,
         #ff9d8b,
         #ffe070,
@@ -95,6 +96,7 @@ h1 {
   font-family: "Popstar", sans-serif;
   paint-order: stroke fill;
   background: linear-gradient(
+    to top right,
     #ff85d8,
     #85e8ff,
     #cc80ff,
@@ -108,7 +110,7 @@ h1 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(255, 79, 190, 0.6));
+  filter: drop-shadow(0 0 20px rgba(255, 79, 190, 3.9));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -162,7 +164,7 @@ h2 {
     100% 100%,
     300% 300%;
   border: 3px solid transparent;
-  color: 
+  color: var(--purple);
   font-size: 2.3rem;
   font-weight: 100;
   width: fit-content;
@@ -212,6 +214,23 @@ h2 {
   color: var(--purple);
   font-weight: 500;
   animation: none;
+}
+
+/* tab rename input (matches tab btn size and style!) */
+.tab-rename-input {
+  flex: 1;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.92);
+  border: 3px solid var(--purple);
+  border-radius: 999px;
+  padding: 0.5rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--purple);
+  outline: none;
+  min-width: 0;
 }
 
 /* input and + button row*/
@@ -682,4 +701,39 @@ footer {
   cursor: pointer;
   width: 100%;
   animation: border-drift 4s ease-in-out infinite alternate;
+}
+
+/* reset modal buttons row */
+.reset-modal-btns {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+/* bye stuff - destructive, rainbow */
+.reset-confirm-btn {
+  background: var(--rainbow);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.25rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  animation: border-drift 4s ease-in-out infinite alternate;
+}
+
+/* nevermind - ghost style */
+.reset-cancel-btn {
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid var(--purple);
+  border-radius: 999px;
+  padding: 0.65rem 1.25rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  color: var(--purple);
+  cursor: pointer;
 }

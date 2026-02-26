@@ -36,7 +36,12 @@
           <h2>My Stuff</h2>
           <div id="task-tabs" class="task-tabs"></div>
           <div class="task-input-row">
-            <input type="text" id="task-input" placeholder="+ Add Stuff" />
+            <input
+              type="text"
+              id="task-input"
+              placeholder="+ Add Stuff"
+              autocomplete="off"
+            />
             <button id="add-task-btn">+</button>
           </div>
           <ul id="task-list"></ul>
@@ -82,6 +87,23 @@
         <button id="reward-close-btn" class="reward-close-btn">
           Do More Stuff!
         </button>
+      </div>
+    </div>
+    <!-- reset confirm modal -->
+    <div id="reset-overlay" class="reward-overlay is-hidden">
+      <div class="reward-modal">
+        <h2 class="reward-title">🌈 Reset Everything?</h2>
+        <p class="reward-subtitle">
+          This will wipe all your stuff, tabs, and completed tasks!
+        </p>
+        <div class="reset-modal-btns">
+          <button id="reset-confirm-btn" class="reset-confirm-btn">
+            💣 Bye Stuff!
+          </button>
+          <button id="reset-cancel-btn" class="reset-cancel-btn">
+            Nevermind!
+          </button>
+        </div>
       </div>
     </div>
     <!-- reminder popup -->
