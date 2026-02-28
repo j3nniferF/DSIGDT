@@ -269,8 +269,8 @@ function loadTabs() {
     if (savedActive) activeTabId = savedActive;
   } else {
     tabs = [
-      { id: "tab_dumb", name: "DUMB STUFF" },
-      { id: "tab_other", name: "OTHER STUFF" },
+      { id: "tab_dumb", name: "dumb stuff" },
+      { id: "tab_other", name: "other stuff" },
     ];
     saveTabs();
   }
@@ -333,8 +333,46 @@ function initializeTabs() {
 
 // === timer ===
 let timerInterval = null;
+const DIAL_ITEM_HEIGHT = 30;
 let timerSeconds = 0;
 let totalTimerSeconds = 0;
+
+function populateDialColumns() {
+  const minsCol = document.getElementById("dial-mins");
+  const secsCol = document.getElementById("dial-secs");
+
+  // GUARD- only pop once
+  if (minsCol.children.length > 0) return;
+
+  function fillColumn(col, count) {
+    for (let i = 0; i < count; i++) {
+      const item = document.createElement("div");
+      item.className = "dial-item";
+      item.textContent = String(i).padStart(2, "0");
+      col.appendChild(item);
+    }
+  }
+
+  fillColumn(minsCol, 60);
+  fillColumn(secsCol, 60);
+
+  // scroll to 25:00 default after layout renders
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      minsCol.scrollTop = 25 * DIAL_ITEM_HEIGHT;
+    });
+  });
+}
+
+function getDialSeconds() {
+  const mins = Math.round(
+    document.getElementById("dial-mins").scrollTop / DIAL_ITEM_HEIGHT,
+  );
+  const secs = Math.round(
+    document.getElementById("dial-secs").scrollTop / DIAL_ITEM_HEIGHT,
+  );
+  return mins * 60 + secs;
+}
 
 function initializeTimer() {
   const btn = document.getElementById("timer-btn");
@@ -342,7 +380,6 @@ function initializeTimer() {
   const display = document.getElementById("timer-display");
   const startBtn = document.getElementById("timer-start");
   const resetBtn = document.getElementById("timer-reset");
-  const minutesInput = document.getElementById("timer-minutes");
   const closeBtn = document.getElementById("timer-close");
   const taskLabel = document.getElementById("timer-task-label");
   const taskSelect = document.getElementById("timer-task-select");
@@ -355,6 +392,7 @@ function initializeTimer() {
       panel.classList.add("is-entering");
       setTimeout(() => panel.classList.remove("is-entering"), 400);
       populateTimerTasks();
+      populateDialColumns();
     } else {
       panel.classList.add("is-hidden");
     }
@@ -375,15 +413,24 @@ function initializeTimer() {
     }
 
     if (timerSeconds === 0) {
-      timerSeconds = parseInt(minutesInput.value) * 60;
+      timerSeconds = getDialSeconds();
       totalTimerSeconds = timerSeconds;
+      if (timerSeconds <= 0) return;
+      panel.classList.remove("is-done");
+      dialProgress.style.transition = "none";
+      dialProgress.style.strokeDashoffset = 0;
+      void dialProgress.offsetWidth;
+      dialProgress.style.transition = "";
     }
     panel.classList.add("is-running");
 
     startBtn.textContent = "Pause";
     const selectedTask = taskSelect.options[taskSelect.selectedIndex];
     taskLabel.textContent =
-      selectedTask && selectedTask.value ? `${selectedTask.textContent}` : "";
+      selectedTask && selectedTask.value
+        ? selectedTask.textContent.trim()
+        : "✨ any stuff! ✨";
+
     display.classList.add("is-running");
 
     timerInterval = setInterval(() => {
@@ -399,13 +446,10 @@ function initializeTimer() {
         timerInterval = null;
         startBtn.textContent = "Start";
         timerSeconds = 0;
-        display.textContent = "🎉 Done!";
-        display.classList.remove("is-running");
-        setTimeout(() => showReward(), 400);
+        display.textContent = "Done!";
         taskLabel.textContent = "";
-
         panel.classList.remove("is-running");
-        dialProgress.style.strokeDashoffset = 0;
+        panel.classList.add("is-done");
       }
     }, 1000);
   });
@@ -417,10 +461,9 @@ function initializeTimer() {
     timerSeconds = 0;
     startBtn.textContent = "Start";
     display.classList.remove("is-running");
-    const mins = parseInt(minutesInput.value);
-    display.textContent = `${String(mins).padStart(2, "0")}:00`;
-
+    display.textContent = "00:00";
     panel.classList.remove("is-running");
+    panel.classList.remove("is-done");
     dialProgress.style.strokeDashoffset = 0;
   });
 }
@@ -428,7 +471,7 @@ function initializeTimer() {
 // fill task dropdown with incomplete tasks
 function populateTimerTasks() {
   const select = document.getElementById("timer-task-select");
-  select.innerHTML = '<option value="">✨ Choose a task...</option>';
+  select.innerHTML = '<option value="">Choose Stuff!</option>';
 
   tabs.forEach((tab) => {
     const tabTasks = tasks.filter(
@@ -497,8 +540,8 @@ function initializeResetModal() {
     document.getElementById("timer-task-label").textContent = "";
     tasks = [];
     tabs = [
-      { id: "tab_dumb", name: "DUMB STUFF" },
-      { id: "tab_other", name: "OTHER STUFF" },
+      { id: "tab_dumb", name: "dumb stuff" },
+      { id: "tab_other", name: "other stuff" },
     ];
     activeTabId = "tab_dumb";
     saveTasks();

@@ -31,7 +31,7 @@
       #8f8aff 70%,
       #d66aff 100%
     );
-  --purple: #b61fc4;
+  --purple: #1a1a2e;
   --rainbow: linear-gradient(120deg, #ff4fbe 0%, #7fd7ff 44%, #b615f6 100%);
   --title-fill: linear-gradient(to bottom, #ff85d8, #ffe066, #85e8ff, #cc80ff);
   --pbgradient:
@@ -78,54 +78,50 @@ body {
 /* top of page, centered */
 header {
   background: var(--pbgradient);
-  border: 8px solid transparent;
-  border-radius: 77px !important;
-  padding: 1.5rem;
+  border: 13px solid transparent;
+  border-radius: 88px !important;
+  padding: 1rem;
   text-align: center;
   margin-bottom: 2rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 30px rgba(193, 77, 204, 0.35);
+  box-shadow:
+    0 0 0 3px #1a1a2e,
+    0 4px 30px rgba(193, 77, 204, 0.35);
   background-size:
     100% 100%,
     300% 300%;
   animation: border-drift 8s ease-in-out infinite alternate;
+  box-shadow:
+    0 0 0 4.5px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    0 4px 30px rgba(193, 77, 204, 0.35);
 }
 
 /* big rainbow title dsigdt */
 h1 {
   font-family: "Popstar", sans-serif;
+  font-weight: 700;
   paint-order: stroke fill;
-  background: linear-gradient(
-    to top right,
-    #ff85d8,
-    #85e8ff,
-    #cc80ff,
-    #ff68c6,
-    #ff9d8b,
-    #ffe070,
-    #87ebff,
-    #8f98ff,
-    #d98fff
-  );
+  background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.1px;
   background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(255, 79, 190, 3.9));
   display: flex;
   flex-direction: column;
   align-items: center;
-  line-height: 1.2;
-  gap: 0.2em;
+  line-height: 1;
+  gap: 0.1em;
 }
 
 .title-main {
-  font-size: 4.9rem;
-  letter-spacing: 0.12em;
+  font-size: 6.3rem;
+  letter-spacing: 0.1em;
 }
 
 .title-sub {
-  font-size: 2.3rem;
-  letter-spacing: 0.25em;
+  font-size: 3rem;
+  letter-spacing: 0.29em;
 }
 
 /* card that holds the stuff */
@@ -133,11 +129,14 @@ h1 {
   position: relative;
   isolation: isolate;
   background: var(--pbgradient);
-  border: 4px solid transparent;
+  border: 9px solid transparent;
   border-radius: 16px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 30px rgba(193, 77, 204, 0.35);
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    0 4px 30px rgba(193, 77, 204, 0.35);
   background-size:
     100% 100%,
     300% 300%;
@@ -160,27 +159,30 @@ h1 {
 h2 {
   position: relative;
   font-family: "Popstar", sans-serif;
-  background: linear-gradient(65deg, #ff68c6, #ffe070, #87ebff, #b615f6);
+  width: fit-content;
+  background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 2.3rem;
-  font-weight: 100;
-  width: fit-content;
+  font-size: 3rem;
   text-align: center;
-  margin: 0 auto 1rem;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 0.3px;
+  margin: 0 auto 2rem;
   border-radius: 999px;
-  padding: 6px 22px;
-  box-shadow: 0 4px 15px rgba(193, 77, 204, 0.2);
+  padding: 0.2px 22px;
 }
 
 h2::before {
   content: "";
   position: absolute;
-  inset: -3px;
+  inset: -8px;
   border-radius: 999px;
   background: linear-gradient(65deg, #ff68c6, #ffe070, #87ebff, #b615f6);
   z-index: -2;
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    0 8px 20px rgba(26, 26, 46, 0.45);
 }
 
 h2::after {
@@ -190,6 +192,7 @@ h2::after {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.65);
   z-index: -1;
+  box-shadow: 0 0 0 2px #1a1a2e;
 }
 
 /* tab btns */
@@ -198,21 +201,22 @@ h2::after {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  justify-content: center;
 }
 
 .tab-btn {
-  flex: 1;
   text-align: center;
   background: var(--pbgradient);
   background-size:
     100% 100%,
     300% 300%;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-radius: 999px;
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem 1.5rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
-  font-weight: 300;
+  font-weight: 100;
+  width: fit-content;
   letter-spacing: 0.06em;
   cursor: pointer;
   color: var(--purple);
@@ -221,13 +225,16 @@ h2::after {
 
 /* active tab: white fill, solid bright border */
 .tab-btn.active {
-  background:
-    rgba(255, 255, 255, 0.92) padding-box,
-    linear-gradient(120deg, #ff4fbe, #b615f6) border-box;
-  border: 3px solid transparent;
+  border: 5px solid transparent;
   color: var(--purple);
-  font-weight: 500;
+  box-shadow: 0 0 0 1.5px #1a1a2e;
+  font-weight: 400;
+  width: fit-content;
   animation: none;
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    inset 0 0 0 1px #1a1a2e,
+    0 4px 30px rgba(193, 77, 204, 0.35);
 }
 
 /* tab rename input (matches tab btn size and style!) */
@@ -474,6 +481,10 @@ h2::after {
   background-size:
     100% 100%,
     300% 300%;
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    0 4px 30px rgba(193, 77, 204, 0.35);
 }
 
 /* about btn: blue & indigo */
@@ -485,6 +496,10 @@ h2::after {
   background-size:
     100% 100%,
     300% 300%;
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    0 4px 30px rgba(193, 77, 204, 0.35);
 }
 
 /* timer panel (pops up above btn) */
@@ -498,12 +513,14 @@ h2::after {
   background-size:
     100% 100%,
     300% 300%;
-  border: 4px solid transparent;
+  border: 10px solid transparent;
   border-radius: 16px;
   padding: 1.5rem;
   z-index: 998;
   text-align: center;
-  box-shadow: 0 4px 30px rgba(193, 77, 204, 0.35);
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    0 4px 30px rgba(193, 77, 204, 0.35);
   min-width: 220px;
   isolation: isolate;
   animation: border-drift 6s ease-in-out infinite alternate;
@@ -523,12 +540,13 @@ h2::after {
 /* drag handle title bar */
 .timer-drag-handle {
   font-family: "Popstar", sans-serif;
-  background: linear-gradient(65deg, #ff68c6, #ffe070, #87ebff, #b615f6);
+  background: url("assets/textures/prettybg.png") center / cover;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 0.1px !important;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 1.6em;
-  font-weight: 100;
+  font-size: 3.3em;
   letter-spacing: 0.05em;
   margin-bottom: 0.75rem;
   cursor: grab;
@@ -574,12 +592,13 @@ h2::after {
 
 /* big countdown arc dial timer */
 .timer-display {
+  font-family: "Popstar";
+  font-weight: 100 !important;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 2.4rem;
-  font-weight: 800;
   letter-spacing: 0.05em;
   background: linear-gradient(
     25deg,
@@ -593,6 +612,9 @@ h2::after {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 .timer-controls {
@@ -633,14 +655,13 @@ h2::after {
   padding: 0.5rem 1.4rem;
   font-size: 0.9rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 600;
+  font-weight: 300;
   letter-spacing: 0.04em;
   cursor: pointer;
   animation: border-drift 4s ease-in-out infinite alternate;
 }
 
 /* close X button */
-
 .timer-close-btn {
   position: absolute;
   top: 0.75rem;
@@ -656,10 +677,94 @@ h2::after {
   height: 28px;
   font-size: 1rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1;
   cursor: pointer;
   animation: border-drift 4s ease-in-out infinite alternate;
+}
+
+/* drum roll dial */
+.dial-picker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.3rem;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.dial-col-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.dial-column {
+  height: 90px;
+  width: 44px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  scroll-snap-type: y mandatory;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 30%,
+    black 70%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 30%,
+    black 70%,
+    transparent 100%
+  );
+}
+
+.dial-column::-webkit-scrollbar {
+  display: none;
+}
+
+.dial-column::before,
+.dial-column::after {
+  content: "";
+  display: block;
+  height: 30px;
+}
+
+.dial-item {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  font-family: "Popstar", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 100;
+  color: var(--purple);
+  cursor: pointer;
+}
+
+.dial-label {
+  font-size: 0.6rem;
+  color: var(--purple);
+  opacity: 0.5;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.dial-sep {
+  font-family: "Popstar", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 100;
+  color: var(--purple);
+  opacity: 0.35;
+  margin-top: 34px;
+  line-height: 1;
 }
 
 /* task dropdown */
@@ -717,7 +822,16 @@ h2::after {
   font-size: 0.8rem;
   opacity: 0.6;
   text-align: center;
+  width: 100%;
   margin: 0 0 0.15rem;
+}
+
+#timer-task-label {
+  color: var(--purple);
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.75rem;
 }
 
 #timer-task-label {
@@ -740,8 +854,33 @@ h2::after {
   display: block;
 }
 
-.timer-panel.is-running .timer-controls,
+.timer-panel.is-running .dial-picker {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.timer-panel.is-running .timer-display {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .timer-panel.is-running .timer-task-select {
+  display: none;
+}
+
+/* timer done state */
+.timer-panel.is-done .timer-display {
+  opacity: 1;
+  pointer-events: none;
+}
+
+.timer-panel.is-done .dial-picker {
+  opacity: 0;
+  pointer-events: none;
+  transition: none;
+}
+
+.timer-panel.is-done .timer-task-select {
   display: none;
 }
 

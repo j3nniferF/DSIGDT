@@ -13,7 +13,7 @@
     <!-- timer panel -->
 <div id="timer-panel" class="timer-panel is-hidden">
   <button id="timer-close" class="timer-close-btn">×</button>
-  <h3 class="timer-drag-handle">✦ Focus Timer ✦</h3>
+  <h3 class="timer-drag-handle">TIMER</h3>
 
   <div class="timer-dial-wrapper">
     <svg class="timer-dial-svg" viewBox="0 0 120 120">
@@ -28,19 +28,30 @@
       <circle class="dial-bg" cx="60" cy="60" r="50"/>
       <circle class="dial-progress" id="dial-progress" cx="60" cy="60" r="50"/>
     </svg>
+
+    <!-- idle: roller inside circle -->
+    <div class="dial-picker" id="dial-picker">
+      <div class="dial-col-wrap">
+        <div class="dial-column" id="dial-mins"></div>
+        <span class="dial-label">MIN</span>
+      </div>
+      <span class="dial-sep">:</span>
+      <div class="dial-col-wrap">
+        <div class="dial-column" id="dial-secs"></div>
+        <span class="dial-label">SEC</span>
+      </div>
+    </div>
+
+    <!-- running: countdown -->
     <div class="timer-display" id="timer-display">25:00</div>
   </div>
 
   <!-- idle: task picker + min input -->
   <select id="timer-task-select" class="timer-task-select">
-    <option value="">✨ Choose a task...</option>
+    <option value="">Choose Stuff</option>
   </select>
-  <div class="timer-controls">
-    <input type="number" id="timer-minutes" value="25" min="1" max="90" />
-    <span>min</span>
-  </div>
 
-  <!-- running: "left to work on / task name" -->
+  <!-- running: "left to work on 'X'" -->
   <p class="timer-working-label" id="timer-working-label">left to work on</p>
   <p class="timer-task-label" id="timer-task-label"></p>
 
@@ -81,7 +92,7 @@
           <button id="reset-btn">Reset All Stuff</button>
         </section>
         <section class="tasks-card" id="completed-card">
-          <h2>Dumb Stuff I Got Done Today</h2>
+          <h2>Stuff I Got Done</h2>
           <p id="stats-summary" class="stats-summary">
             + Add some STUFF to get started!
           </p>

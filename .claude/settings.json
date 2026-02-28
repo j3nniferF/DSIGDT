@@ -3,7 +3,10 @@
     "allow": [
       "Read(//Users/jenniferhandel/Documents/GitHub/dsigdt-prebake/**)",
       "Read(//Users/jenniferhandel/Documents/GitHub/dumbit/js/**)",
-      "Read(//Users/jenniferhandel/Documents/GitHub/dumbit/**)"
+      "Read(//Users/jenniferhandel/Documents/GitHub/dumbit/**)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)"
     ]
   }
 }
