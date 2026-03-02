@@ -70,7 +70,9 @@ function renderTasks() {
   list.innerHTML = "";
 
   const visibleTasks = tasks.filter(
-    (task) => task.tabId === activeTabId && !task.completed,
+    (task) =>
+      (activeTabId === "__all_tasks__" || task.tabId === activeTabId) &&
+      !task.completed,
   );
 
   if (visibleTasks.length === 0) {
@@ -112,7 +114,9 @@ function renderCompleted() {
   list.innerHTML = "";
 
   const completedTasks = tasks.filter(
-    (task) => task.tabId === activeTabId && task.completed,
+    (task) =>
+      (activeTabId === "__all_tasks__" || task.tabId === activeTabId) &&
+      task.completed,
   );
 
   if (completedTasks.length === 0) {
@@ -228,7 +232,7 @@ function renderChart() {
   } else if (completed === total) {
     summary.textContent = `🎉 All ${total} / ${total} stuff done! Amazing!`;
   } else {
-    summary.textContent = `${completed} / ${total} stuff done!`;
+    summary.textContent = `${completed} / ${total} done!`;
   }
 
   // if chart already exists, update the numbers
@@ -270,6 +274,7 @@ function loadTabs() {
   } else {
     tabs = [
       { id: "tab_dumb", name: "dumb stuff" },
+      { id: "tab_today", name: "gotta do today" },
       { id: "tab_other", name: "other stuff" },
     ];
     saveTabs();
@@ -329,6 +334,22 @@ function initializeTabs() {
 
     container.appendChild(btn);
   });
+
+  // permanent "all stuff" tab — cannot be renamed or deleted
+  const allBtn = document.createElement("button");
+  allBtn.textContent = "all stuff";
+  allBtn.className =
+    activeTabId === "__all_tasks__" ? "tab-btn active" : "tab-btn";
+  allBtn.addEventListener("click", () => {
+    activeTabId = "__all_tasks__";
+    saveTabs();
+    container
+      .querySelectorAll(".tab-btn")
+      .forEach((b) => b.classList.remove("active"));
+    allBtn.classList.add("active");
+    renderTasks();
+  });
+  container.appendChild(allBtn);
 }
 
 // === timer ===
@@ -541,6 +562,7 @@ function initializeResetModal() {
     tasks = [];
     tabs = [
       { id: "tab_dumb", name: "dumb stuff" },
+      { id: "tab_today", name: "gotta do today" },
       { id: "tab_other", name: "other stuff" },
     ];
     activeTabId = "tab_dumb";

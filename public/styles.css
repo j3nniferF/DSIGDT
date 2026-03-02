@@ -44,12 +44,12 @@
       padding-box,
     linear-gradient(
         to top right,
-        #ff68c6,
-        #ff9d8b,
-        #ffe070,
-        #87ebff,
-        #8f98ff,
-        #d98fff
+        #ff3388,
+        #dd44ff,
+        #5599ff,
+        #44ddaa,
+        #ffdd44,
+        #ff3388
       )
       border-box;
 }
@@ -64,95 +64,114 @@
 body {
   background: url("assets/textures/pretty.png") center / cover fixed;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
+  font-weight: 100;
   min-height: 100vh;
 }
 
 /* centers how wide */
 .container {
-  max-width: 800px;
+  max-width: 1111px;
   margin: 0 auto;
   padding: 2rem;
 }
 
 /* top of page, centered */
 header {
-  background: var(--pbgradient);
-  border: 13px solid transparent;
-  border-radius: 88px !important;
+  position: relative;
+  isolation: isolate;
+  filter: drop-shadow(3px 8px 16px purple);
+  background:
+    url("assets/textures/prettybg.png") center / cover padding-box,
+    linear-gradient(rgba(235, 215, 255, 0.88), rgba(235, 215, 255, 0.88)) padding-box,
+    linear-gradient(
+        to top right,
+        #ff3388,
+        #dd44ff,
+        #5599ff,
+        #44ddaa,
+        #ffdd44,
+        #ff3388
+      )
+      border-box;
+  border: 10px solid transparent;
   padding: 1rem;
   text-align: center;
-  margin-bottom: 2rem;
   margin-bottom: 1.5rem;
   box-shadow:
-    0 0 0 3px #1a1a2e,
-    0 4px 30px rgba(193, 77, 204, 0.35);
-  background-size:
-    100% 100%,
-    300% 300%;
-  animation: border-drift 8s ease-in-out infinite alternate;
-  box-shadow:
-    0 0 0 4.5px #1a1a2e,
+    0 0 0 3.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 30px rgba(193, 77, 204, 0.35);
+    0 6px 40px rgba(193, 77, 204, 0.65);
+  border-radius: 30px;
+  background-size: cover, 100% 100%, 300% 300%;
+  animation: card-border-drift 10s ease-in-out infinite alternate;
+}
+
+header::before {
+  content: none;
 }
 
 /* big rainbow title dsigdt */
 h1 {
   font-family: "Popstar", sans-serif;
-  font-weight: 700;
+  font-weight: 600;
   paint-order: stroke fill;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0.1px;
+  -webkit-text-stroke: 0.1px #1a1a2e;
   background-clip: text;
   display: flex;
   flex-direction: column;
   align-items: center;
   line-height: 1;
+  filter: saturate(1.6) drop-shadow(2px 4px 6px purple)
+    drop-shadow(3px 6px 14px rgba(60, 20, 100, 0.5));
   gap: 0.1em;
 }
 
 .title-main {
-  font-size: 6.3rem;
+  font-size: clamp(2.8rem, 13vw, 6rem);
   letter-spacing: 0.1em;
 }
 
 .title-sub {
-  font-size: 3rem;
-  letter-spacing: 0.29em;
+  font-size: clamp(1.4rem, 7.8vw, 3.75rem);
+  letter-spacing: 0.15em;
 }
 
 /* card that holds the stuff */
 .tasks-card {
+  filter: drop-shadow(2px 6px 22px rgba(130, 60, 200, 0.7));
   position: relative;
   isolation: isolate;
-  background: var(--pbgradient);
+  background:
+    url("assets/textures/prettybg.png") center / cover padding-box,
+    linear-gradient(rgba(235, 225, 255, 0.88), rgba(235, 225, 255, 0.88)) padding-box,
+    linear-gradient(
+        to top right,
+        #ff3388,
+        #dd44ff,
+        #5599ff,
+        #44ddaa,
+        #ffdd44,
+        #ff3388
+      )
+      border-box;
   border: 9px solid transparent;
-  border-radius: 16px;
+  border-radius: 80px;
   padding: 1.5rem;
+  padding-top: 0.5rem;
   margin-bottom: 1.5rem;
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 30px rgba(193, 77, 204, 0.35);
-  background-size:
-    100% 100%,
-    300% 300%;
-  animation: border-drift 8s ease-in-out infinite alternate;
+    0 4px 20px rgba(193, 77, 204, 0.3);
+  background-size: cover, 100% 100%, 300% 300%;
+  animation: card-border-drift 10s ease-in-out infinite alternate;
 }
 
-/* prettybg texture sits behind card content but inside the rainbow border */
 .tasks-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 12px;
-  background: url("assets/textures/prettybg.png") center / cover;
-  opacity: 0.4;
-  z-index: -1;
-  pointer-events: none;
+  content: none;
 }
 
 /* section headings - pill badge style */
@@ -164,35 +183,14 @@ h2 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 3rem;
+  font-size: 3.5rem;
   text-align: center;
   paint-order: stroke fill;
-  -webkit-text-stroke: 0.3px;
-  margin: 0 auto 2rem;
+  -webkit-text-stroke: 0.1px;
+  margin: 0.2rem auto 0.8rem;
   border-radius: 999px;
   padding: 0.2px 22px;
-}
-
-h2::before {
-  content: "";
-  position: absolute;
-  inset: -8px;
-  border-radius: 999px;
-  background: linear-gradient(65deg, #ff68c6, #ffe070, #87ebff, #b615f6);
-  z-index: -2;
-  box-shadow:
-    0 0 0 2.5px #1a1a2e,
-    0 8px 20px rgba(26, 26, 46, 0.45);
-}
-
-h2::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.65);
-  z-index: -1;
-  box-shadow: 0 0 0 2px #1a1a2e;
+  filter: drop-shadow(2px 4px 6px purple);
 }
 
 /* tab btns */
@@ -206,35 +204,37 @@ h2::after {
 
 .tab-btn {
   text-align: center;
-  background: var(--pbgradient);
-  background-size:
-    100% 100%,
-    300% 300%;
-  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1.5px solid rgba(26, 26, 46, 0.2);
   border-radius: 999px;
   padding: 0.5rem 1.5rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.8rem;
-  font-weight: 100;
+  font-weight: 300;
   width: fit-content;
   letter-spacing: 0.06em;
   cursor: pointer;
   color: var(--purple);
-  animation: border-drift 6s ease-in-out infinite alternate;
 }
 
-/* active tab: white fill, solid bright border */
+/* active tab: muted rainbow fill, double thin dark border */
 .tab-btn.active {
-  border: 5px solid transparent;
-  color: var(--purple);
-  box-shadow: 0 0 0 1.5px #1a1a2e;
-  font-weight: 400;
-  width: fit-content;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.35),
+      rgba(255, 217, 61, 0.35),
+      rgba(107, 255, 154, 0.35),
+      rgba(107, 180, 255, 0.35),
+      rgba(195, 107, 255, 0.35)
+    ),
+    rgba(255, 255, 255, 0.85);
+  border: 1px solid #1a1a2e;
+  box-shadow: inset 0 0 0 1.5px #1a1a2e;
+  color: #1a1a2e;
+  font-weight: 600;
+  filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
   animation: none;
-  box-shadow:
-    0 0 0 2.5px #1a1a2e,
-    inset 0 0 0 1px #1a1a2e,
-    0 4px 30px rgba(193, 77, 204, 0.35);
 }
 
 /* tab rename input (matches tab btn size and style!) */
@@ -266,29 +266,38 @@ h2::after {
 #task-input {
   flex: 1;
   padding: 0.6rem 1.2rem;
-  background:
-    rgba(255, 255, 255, 0.85) padding-box,
-    linear-gradient(
-        120deg,
-        #ff68c6,
-        #ff9d8b,
-        #ffe070,
-        #87ebff,
-        #8f98ff,
-        #d98fff
-      )
-      border-box;
-  border: 2px solid transparent;
+  background: linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.22),
+      rgba(255, 217, 61, 0.22),
+      rgba(107, 255, 154, 0.22),
+      rgba(107, 180, 255, 0.22),
+      rgba(195, 107, 255, 0.22)
+    )
+    border-box;
+  border: 2px solid;
   border-radius: 999px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 300;
   color: var(--purple);
   outline: none;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.35),
+      rgba(255, 217, 61, 0.35),
+      rgba(107, 255, 154, 0.35),
+      rgba(107, 180, 255, 0.35),
+      rgba(195, 107, 255, 0.35)
+    ),
+    rgba(255, 255, 255, 0.85);
+  filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
 }
 
 #task-input::placeholder {
-  color: #d4a8e0;
+  color: #562764;
+  font-weight: 100;
 }
 
 /* input glows on focus */
@@ -302,24 +311,23 @@ h2::after {
   width: 38px;
   height: 38px;
   background:
-    rgba(255, 255, 255, 0.85) padding-box,
     linear-gradient(
-        120deg,
-        #ff68c6,
-        #ff9d8b,
-        #ffe070,
-        #87ebff,
-        #8f98ff,
-        #d98fff
-      )
-      border-box;
-  border: 2px solid transparent;
+      135deg,
+      rgba(255, 107, 107, 0.22),
+      rgba(255, 217, 61, 0.22),
+      rgba(107, 255, 154, 0.22),
+      rgba(107, 180, 255, 0.22),
+      rgba(195, 107, 255, 0.22)
+    ),
+    rgba(255, 255, 255, 0.9);
+  border: 2px solid #1a1a2e;
   border-radius: 8px;
   font-size: 1.2rem;
-  color: var(--purple);
+  color: #1a1a2e;
   cursor: pointer;
   display: flex;
   align-items: center;
+  filter: drop-shadow(1px 3px 6px rgba(0, 0, 0, 0.25));
   justify-content: center;
   padding: 0;
 }
@@ -328,24 +336,6 @@ h2::after {
 #task-list {
   list-style: none;
   margin-bottom: 1rem;
-}
-
-/* reset btn - small, bottom right */
-#reset-btn {
-  display: block;
-  margin-left: auto;
-  background:
-    rgba(255, 255, 255, 0.7) padding-box,
-    linear-gradient(120deg, #ff68c6, #d98fff) border-box;
-  border: 1.5px solid transparent;
-  border-radius: 999px;
-  padding: 0.3rem 0.9rem;
-  cursor: pointer;
-  color: #bbb;
-  font-size: 0.78rem;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.04em;
 }
 
 /* stuff, label, delete flex */
@@ -402,8 +392,17 @@ h2::after {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  background: white;
-  border: 2px solid var(--purple);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.55),
+      rgba(255, 217, 61, 0.55),
+      rgba(107, 255, 154, 0.55),
+      rgba(107, 180, 255, 0.55),
+      rgba(195, 107, 255, 0.55)
+    ),
+    rgba(255, 255, 255, 0.9);
+  border: 2px solid;
   border-radius: 16px;
   padding: 1rem 1.5rem;
   box-shadow: 0 4px 20px rgba(193, 77, 204, 0.3);
@@ -415,11 +414,22 @@ h2::after {
 
 /* dismiss btn */
 #reminder-dismiss {
-  background: var(--purple);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.4rem 0.8rem;
+  box-shadow:
+    0 0 0 0 #1a1a2e,
+    inset 0 0 0 0 #1a1a2e,
+    0 0 0 rgba(193, 77, 204, 0);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.22),
+      rgba(255, 217, 61, 0.22),
+      rgba(107, 255, 154, 0.22),
+      rgba(107, 180, 255, 0.22),
+      rgba(195, 107, 255, 0.22)
+    ),
+    rgba(255, 255, 255, 0.5) !important;
+  border-radius: 99px;
+  padding: 0.5rem 0.8rem;
   cursor: pointer;
   white-space: nowrap;
 }
@@ -460,46 +470,99 @@ h2::after {
   justify-content: center;
   gap: 0.75rem;
   margin-bottom: 1.5rem;
+  filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
 }
 
 .header-icon-btn {
   border: 4px solid transparent;
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  font-size: 1.3rem;
+  width: 52px;
+  height: 52px;
+  font-size: 1.4rem;
   cursor: pointer;
-  animation: border-drift 4s ease-in-out infinite alternate;
+  animation: border-drift 10s ease-in-out infinite alternate;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
-/* timer btn: warm pink & yellow */
-.timer-btn-color {
+/* header icon btn rainbow set */
+/* timer — blue */
+.btn-purple {
   background:
-    linear-gradient(120deg, rgba(255, 200, 230, 0.9), rgba(255, 240, 200, 0.9))
+    linear-gradient(120deg, rgba(185, 215, 255, 0.9), rgba(165, 220, 255, 0.9))
       padding-box,
-    linear-gradient(120deg, #ff68c6, #ffe070) border-box;
+    linear-gradient(120deg, #5599ff, #44ddff) border-box;
   background-size:
     100% 100%,
     300% 300%;
+  filter: drop-shadow(2px 4px 6px rgba(68, 130, 255, 0.5));
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 30px rgba(193, 77, 204, 0.35);
+    0 4px 20px rgba(68, 130, 255, 0.4);
 }
 
-/* about btn: blue & indigo */
-.about-btn-color {
+/* sound — green */
+.btn-blue {
   background:
-    linear-gradient(120deg, rgba(200, 240, 255, 0.9), rgba(200, 210, 255, 0.9))
+    linear-gradient(120deg, rgba(170, 255, 215, 0.9), rgba(155, 245, 205, 0.9))
       padding-box,
-    linear-gradient(120deg, #87ebff, #8f98ff) border-box;
+    linear-gradient(120deg, #44ddaa, #55ffcc) border-box;
   background-size:
     100% 100%,
     300% 300%;
+  filter: drop-shadow(2px 4px 6px rgba(0, 180, 120, 0.45));
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 30px rgba(193, 77, 204, 0.35);
+    0 4px 20px rgba(0, 180, 120, 0.35);
+}
+
+/* reminders — yellow */
+.btn-green {
+  background:
+    linear-gradient(120deg, rgba(255, 248, 190, 0.9), rgba(255, 235, 165, 0.9))
+      padding-box,
+    linear-gradient(120deg, #ffdd44, #ffcc22) border-box;
+  background-size:
+    100% 100%,
+    300% 300%;
+  filter: drop-shadow(2px 4px 6px rgba(200, 150, 0, 0.4));
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    0 4px 20px rgba(200, 160, 0, 0.35);
+}
+
+/* about — purple */
+.btn-yellow {
+  background:
+    linear-gradient(120deg, rgba(230, 200, 255, 0.9), rgba(210, 180, 255, 0.9))
+      padding-box,
+    linear-gradient(120deg, #dd44ff, #9966ff) border-box;
+  background-size:
+    100% 100%,
+    300% 300%;
+  filter: drop-shadow(2px 4px 6px rgba(180, 50, 255, 0.45));
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    0 4px 20px rgba(180, 50, 255, 0.35);
+}
+
+/* reset — hot pink */
+.btn-pink {
+  background:
+    linear-gradient(120deg, rgba(255, 185, 220, 0.9), rgba(255, 165, 210, 0.9))
+      padding-box,
+    linear-gradient(120deg, #dd6798, #ea6896) border-box;
+  background-size:
+    100% 100%,
+    300% 300%;
+  filter: drop-shadow(2px 4px 6px rgba(220, 30, 60, 0.45));
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    0 4px 20px rgba(220, 30, 60, 0.4);
 }
 
 /* timer panel (pops up above btn) */
@@ -523,7 +586,7 @@ h2::after {
     0 4px 30px rgba(193, 77, 204, 0.35);
   min-width: 220px;
   isolation: isolate;
-  animation: border-drift 6s ease-in-out infinite alternate;
+  animation: border-drift 10s ease-in-out infinite alternate;
 }
 
 .timer-panel::before {
@@ -532,7 +595,7 @@ h2::after {
   inset: 0;
   border-radius: 12px;
   background: url("assets/textures/prettybg.png") center / cover;
-  opacity: 0.4;
+  opacity: 0.65;
   z-index: -1;
   pointer-events: none;
 }
@@ -551,6 +614,7 @@ h2::after {
   margin-bottom: 0.75rem;
   cursor: grab;
   user-select: none;
+  filter: drop-shadow(2px 4px 6px purple);
 }
 
 .timer-drag-handle:active {
@@ -645,20 +709,25 @@ h2::after {
 }
 
 .timer-buttons button {
-  background: var(--pbgradient);
-  background-size:
-    100% 100%,
-    300% 300%;
+  border: 2px solid #1a1a2e;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.22),
+      rgba(255, 217, 61, 0.22),
+      rgba(107, 255, 154, 0.22),
+      rgba(107, 180, 255, 0.22),
+      rgba(195, 107, 255, 0.22)
+    ),
+    rgba(255, 255, 255, 0.9);
   color: var(--purple);
-  border: 3px solid transparent;
-  border-radius: 999px;
+  border-radius: 9px;
   padding: 0.5rem 1.4rem;
   font-size: 0.9rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 300;
   letter-spacing: 0.04em;
   cursor: pointer;
-  animation: border-drift 4s ease-in-out infinite alternate;
 }
 
 /* close X button */
@@ -666,12 +735,18 @@ h2::after {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  background: var(--pbgradient);
-  background-size:
-    100% 100%,
-    300% 300%;
-  color: var(--purple);
-  border: 3px solid transparent;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.22),
+      rgba(255, 217, 61, 0.22),
+      rgba(107, 255, 154, 0.22),
+      rgba(107, 180, 255, 0.22),
+      rgba(195, 107, 255, 0.22)
+    ),
+    rgba(255, 255, 255, 0.9);
+  color: #1a1a2e;
+  border: 2px solid #1a1a2e;
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -680,7 +755,7 @@ h2::after {
   font-weight: 400;
   line-height: 1;
   cursor: pointer;
-  animation: border-drift 4s ease-in-out infinite alternate;
+  animation: border-drift 10s ease-in-out infinite alternate;
 }
 
 /* drum roll dial */
@@ -894,6 +969,22 @@ footer {
   letter-spacing: 0.03em;
 }
 
+/* shimmer sweep across title text */
+@keyframes title-shimmer {
+  0%,
+  25% {
+    background-position:
+      -150% center,
+      center center;
+  }
+  75%,
+  100% {
+    background-position:
+      250% center,
+      center center;
+  }
+}
+
 /* the drifting animation - 2 layer */
 @keyframes border-drift {
   0% {
@@ -924,18 +1015,21 @@ footer {
   }
 }
 
-/* mobile- under 600px wide */
 @media (max-width: 600px) {
   .container {
     padding: 1rem;
   }
 
   .title-main {
-    font-size: 2.5rem;
+    letter-spacing: 0.04em;
   }
 
   .title-sub {
-    font-size: 1.4rem;
+    letter-spacing: 0.1em;
+  }
+
+  h2 {
+    font-size: 2.8rem;
   }
 
   .reminder-popup {
@@ -974,7 +1068,7 @@ footer {
   background-size:
     100% 100%,
     300% 300%;
-  animation: border-drift 6s ease-in-out infinite alternate;
+  animation: border-drift 10s ease-in-out infinite alternate;
 }
 
 /* X btn top right corner */
@@ -1062,7 +1156,7 @@ footer {
   letter-spacing: 0.05em;
   cursor: pointer;
   width: 100%;
-  animation: border-drift 4s ease-in-out infinite alternate;
+  animation: border-drift 10s ease-in-out infinite alternate;
 }
 
 /* reset modal buttons row */
@@ -1085,7 +1179,7 @@ footer {
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  animation: border-drift 4s ease-in-out infinite alternate;
+  animation: border-drift 10s ease-in-out infinite alternate;
 }
 
 /* nevermind - ghost style */

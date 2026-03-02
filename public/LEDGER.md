@@ -27,3 +27,28 @@ Per-tab completed breakdown
 ♥ Wellness reminders pop up to keep you human
 
 [Got it! Close button]
+
+btn bg from silly lighter...
+background: linear-gradient(
+135deg,
+rgba(255, 107, 107, 0.22),
+rgba(255, 217, 61, 0.22),
+rgba(107, 255, 154, 0.22),
+rgba(107, 180, 255, 0.22),
+rgba(195, 107, 255, 0.22)
+),
+rgba(255, 255, 255, 0.9) !important;
+
+darker...
+background:
+linear-gradient(
+135deg,
+rgba(255, 107, 107, 0.55),
+rgba(255, 217, 61, 0.55),
+rgba(107, 255, 154, 0.55),
+rgba(107, 180, 255, 0.55),
+rgba(195, 107, 255, 0.55)
+),
+rgba(255, 255, 255, 0.9) !important;
+border: 2px solid transparent;
+border: 5px solid transparent;
