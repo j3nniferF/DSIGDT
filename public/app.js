@@ -6,12 +6,12 @@ let editingTabId = null;
 
 // reminder popup msgs
 const reminderMessages = [
-  "Unclench your jaw! 💜",
-  "Drink some water! 💧",
-  "Take a deep breath! 🌬️",
-  "Get yourself a snack! 🥤🥗🍔🍟",
-  "Stretch your shoulders! 🙆",
-  "Check your posture! ⬆️",
+  "♡ Unclench your jaw! ♡",
+  "♡ Drink some water! ♡",
+  "♡ Take a deep breath! ♡",
+  "♡ Get yourself a snack! ♡",
+  "♡ Stretch your shoulders! ♡",
+  "♡ Check your posture! ♡",
 ];
 
 // dom content block
@@ -158,39 +158,61 @@ function renderCompleted() {
   const empty = document.getElementById("completed-empty");
   list.innerHTML = "";
 
-  const completedTasks = tasks.filter(
-    (task) =>
-      (activeTabId === "__all_tasks__" || task.tabId === activeTabId) &&
-      task.completed,
-  );
+  const anyCompleted = tasks.some((t) => t.completed);
 
-  if (completedTasks.length === 0) {
+  if (!anyCompleted) {
     empty.classList.remove("is-hidden");
-  } else {
-    empty.classList.add("is-hidden");
-    completedTasks.forEach((task) => {
-      const li = document.createElement("li");
-      li.className = "task-item completed";
-
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.checked = true;
-      checkbox.addEventListener("change", () => toggleTask(task.id));
-
-      const label = document.createElement("label");
-      label.textContent = task.text;
-
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "x";
-      deleteBtn.className = "delete-btn";
-      deleteBtn.addEventListener("click", () => deleteTask(task.id));
-
-      li.appendChild(checkbox);
-      li.appendChild(label);
-      li.appendChild(deleteBtn);
-      list.appendChild(li);
-    });
+    return;
   }
+
+  empty.classList.add("is-hidden");
+
+  const totalAll = tasks.length;
+  const doneAll = tasks.filter((t) => t.completed).length;
+
+  const allGroup = document.createElement("div");
+  allGroup.className = "completed-group completed-group--all";
+  allGroup.innerHTML = `
+    <div class="completed-group-header">
+      <span class="completed-tab-name">ALL STUFF</span>
+      <span class="completed-stat">${doneAll} / ${totalAll} ♡</span>
+    </div>
+  `;
+  list.appendChild(allGroup);
+
+  tabs.forEach((tab) => {
+    const tabTotal = tasks.filter((t) => t.tabId === tab.id).length;
+    const tabDone = tasks.filter(
+      (t) => t.tabId === tab.id && t.completed,
+    ).length;
+
+    if (tabDone === 0) return;
+
+    const group = document.createElement("div");
+    group.className = "completed-group";
+
+    const header = document.createElement("div");
+    header.className = "completed-group-header";
+    header.innerHTML = `
+      <span class="completed-tab-name">${tab.name.toUpperCase()}</span>
+      <span class="completed-stat">${tabDone} / ${tabTotal} </span>
+    `;
+    group.appendChild(header);
+
+    header.addEventListener("click", () => {
+      group.classList.toggle("is-open");
+    });
+
+    tasks
+      .filter((t) => t.tabId === tab.id && t.completed)
+      .forEach((task) => {
+        const li = buildTaskItem(task);
+        li.classList.add("completed");
+        group.appendChild(li);
+      });
+
+    list.appendChild(group);
+  });
 }
 
 // toggle + delete + save + load
@@ -238,7 +260,7 @@ async function loadQuote() {
     const data = await response.json();
     quoteEl.textContent = data.affirmation;
   } catch {
-    quoteEl.textContent = "✨You're doing awesome! 🌟 Keep it up!✨";
+    quoteEl.textContent = "✨You're awesome! 🌟 Keep it up!✨";
   }
 }
 
