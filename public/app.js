@@ -2,6 +2,7 @@ let tasks = [];
 let chart = null;
 let tabs = [];
 let activeTabId = "tab_dumb";
+let editingTabId = null;
 
 // reminder popup msgs
 const reminderMessages = [
@@ -24,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeTimer();
   initializeReward();
   initializeResetModal();
+  initializeTabEditModal();
 });
 
 // add + render tasks
@@ -63,11 +65,72 @@ function addTask() {
   input.value = "";
 }
 
+// return single <li> task in normal and all stuff views
+function buildTaskItem(task) {
+  const li = document.createElement("li");
+  li.className = "task-item";
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = task.completed;
+  checkbox.addEventListener("change", () => toggleTask(task.id));
+
+  const label = document.createElement("label");
+  label.textContent = task.text;
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "x";
+  deleteBtn.className = "delete-btn";
+  deleteBtn.addEventListener("click", () => deleteTask(task.id));
+
+  li.appendChild(checkbox);
+  li.appendChild(label);
+  li.appendChild(deleteBtn);
+  return li;
+}
+
 // render tasks to page
 function renderTasks() {
   const list = document.getElementById("task-list");
   const empty = document.getElementById("tasks-empty");
+  const input = document.getElementById("task-input");
+  const addBtn = document.getElementById("add-task-btn");
   list.innerHTML = "";
+
+  // ALL STUFF grouped and add disabled
+  if (activeTabId === "__all_tasks__") {
+    input.disabled = true;
+    input.placeholder = "Viewing all stuff - select a tab to add";
+    addBtn.disabled = true;
+    empty.classList.add("is-hidden");
+
+    // loop through tabs
+    tabs.forEach((tab) => {
+      const tabTasks = tasks.filter((t) => t.tabId === tab.id && !t.completed);
+      if (tabTasks.length === 0) return; //skips empty tabs
+
+      // tab name header
+      const header = document.createElement("p");
+      header.className = "all-stuff-tab-header";
+      header.textContent = tab.name.toUpperCase();
+      list.appendChild(header);
+
+      // tasks for this tab
+      tabTasks.forEach((task) => {
+        const li = buildTaskItem(task);
+        list.appendChild(li);
+      });
+    });
+
+    renderChart();
+    renderCompleted();
+    return; //exit early!
+  }
+
+  // normal tab reenable add
+  input.disabed = false;
+  input.placeholder = "+ Add Stuff";
+  input.disabled = false;
 
   const visibleTasks = tasks.filter(
     (task) =>
@@ -82,25 +145,7 @@ function renderTasks() {
   }
 
   visibleTasks.forEach((task) => {
-    const li = document.createElement("li");
-    li.className = "task-item";
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = task.completed;
-    checkbox.addEventListener("change", () => toggleTask(task.id));
-
-    const label = document.createElement("label");
-    label.textContent = task.text;
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "x";
-    deleteBtn.className = "delete-btn";
-    deleteBtn.addEventListener("click", () => deleteTask(task.id));
-
-    li.appendChild(checkbox);
-    li.appendChild(label);
-    li.appendChild(deleteBtn);
-    list.appendChild(li);
+    list.appendChild(buildTaskItem(task));
   });
 
   renderChart();
@@ -298,6 +343,9 @@ function initializeTabs() {
     btn.className = tab.id === activeTabId ? "tab-btn active" : "tab-btn";
     btn.addEventListener("click", () => {
       activeTabId = tab.id;
+      if (activeTabId !== "__all_tasks__") {
+        document.getElementById("task-input").focus();
+      }
       saveTabs();
       container
         .querySelectorAll(".tab-btn")
@@ -306,31 +354,7 @@ function initializeTabs() {
       renderTasks();
     });
 
-    btn.addEventListener("dblclick", () => {
-      const input = document.createElement("input");
-      input.type = "text";
-      input.value = tab.name;
-      input.className = "tab-rename-input";
-      btn.replaceWith(input);
-      input.focus();
-      input.select();
-
-      function saveRename() {
-        const newName = input.value.trim();
-        if (newName) tab.name = newName;
-        saveTabs();
-        initializeTabs();
-      }
-
-      input.addEventListener("blur", saveRename);
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") input.blur();
-        if (e.key === "Escape") {
-          input.removeEventListener("blur", saveRename);
-          initializeTabs();
-        }
-      });
-    });
+    btn.addEventListener("dblclick", () => openTabEditModal(tab.id));
 
     container.appendChild(btn);
   });
@@ -349,7 +373,94 @@ function initializeTabs() {
     allBtn.classList.add("active");
     renderTasks();
   });
+  allBtn.addEventListener("dblclick", () => openTabEditModal("__all_tasks__"));
+
   container.appendChild(allBtn);
+}
+
+function addTab(name) {
+  const newTab = {
+    id: "tab_" + Date.now(),
+    name: name || "new stuff",
+  };
+  tabs.push(newTab);
+  activeTabId = newTab.id;
+  saveTabs();
+  initializeTabs();
+  renderTasks();
+  document.getElementById("task-input").focus();
+}
+
+function openTabEditModal(tabId) {
+  editingTabId = tabId;
+  const isAllStuff = tabId === "__all_tasks__";
+  const renameSection = document.getElementById("tab-edit-rename-section");
+  const saveBtn = document.getElementById("tab-edit-save");
+  const deleteBtn = document.getElementById("tab-edit-delete");
+  const addNewBtn = document.getElementById("tab-edit-add-new");
+  const title = document.querySelector("#tab-edit-overlay .reward-title");
+
+  if (isAllStuff) {
+    title.textContent = "Add a New Tab?";
+    renameSection.classList.remove("is-hidden");
+    saveBtn.classList.add("is-hidden");
+    deleteBtn.classList.add("is-hidden");
+    addNewBtn.classList.remove("is-hidden");
+    document.getElementById("tab-edit-input").value = "";
+    document.getElementById("tab-edit-input").placeholder = "Tab name...";
+  } else {
+    title.textContent = "Edit Tab";
+    renameSection.classList.remove("is-hidden");
+    saveBtn.classList.remove("is-hidden");
+    deleteBtn.classList.remove("is-hidden");
+    addNewBtn.classList.add("is-hidden");
+    document.getElementById("tab-edit-input").value =
+      tabs.find((t) => t.id === tabId)?.name || "";
+    document.getElementById("tab-edit-input").placeholder = "";
+  }
+
+  document.getElementById("tab-edit-overlay").classList.remove("is-hidden");
+  document.getElementById("tab-edit-input").focus();
+}
+
+function initializeTabEditModal() {
+  document.getElementById("tab-edit-save").addEventListener("click", () => {
+    const newName = document.getElementById("tab-edit-input").value.trim();
+    if (newName) {
+      const tab = tabs.find((t) => t.id === editingTabId);
+      if (tab) tab.name = newName;
+      saveTabs();
+      initializeTabs();
+    }
+    document.getElementById("tab-edit-overlay").classList.add("is-hidden");
+  });
+
+  document.getElementById("tab-edit-delete").addEventListener("click", () => {
+    if (tabs.length <= 1) {
+      alert("You need at least one tab!");
+      return;
+    }
+    tabs = tabs.filter((t) => t.id !== editingTabId);
+    tasks.forEach((task) => {
+      if (task.tabId === editingTabId) task.tabId = tabs[0].id;
+    });
+    activeTabId = tabs[0].id;
+    saveTabs();
+    saveTasks();
+    initializeTabs();
+    renderTasks();
+    document.getElementById("tab-edit-overlay").classList.add("is-hidden");
+  });
+
+  document.getElementById("tab-edit-close").addEventListener("click", () => {
+    document.getElementById("tab-edit-overlay").classList.add("is-hidden");
+  });
+
+  document.getElementById("tab-edit-add-new").addEventListener("click", () => {
+    const name = document.getElementById("tab-edit-input").value.trim();
+    document.getElementById("tab-edit-overlay").classList.add("is-hidden");
+    addTab(name);
+  });
 }
 
 // === timer ===
@@ -565,6 +676,7 @@ function initializeResetModal() {
       { id: "tab_today", name: "gotta do today" },
       { id: "tab_other", name: "other stuff" },
     ];
+
     activeTabId = "tab_dumb";
     saveTasks();
     saveTabs();
