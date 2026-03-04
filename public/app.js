@@ -5,14 +5,19 @@ let activeTabId = "tab_dumb";
 let editingTabId = null;
 
 // reminder popup msgs
-const reminderMessages = [
-  "♡ Unclench your jaw! ♡",
-  "♡ Drink some water! ♡",
-  "♡ Take a deep breath! ♡",
-  "♡ Get yourself a snack! ♡",
-  "♡ Stretch your shoulders! ♡",
-  "♡ Check your posture! ♡",
-];
+let reminderSettings = {
+  frequency: 20,
+  messages: [
+    "♡ Unclench your jaw! ♡",
+    "♡ Drink some water! ♡",
+    "♡ Take a deep breath! ♡",
+    "♡ Get yourself a snack! ♡",
+    "♡ Stretch your shoulders! ♡",
+    "♡ Check your posture! ♡",
+  ],
+};
+let reminderIntervalId = null;
+let reminderAutoHide = null;
 
 // dom content block
 document.addEventListener("DOMContentLoaded", () => {
@@ -21,10 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeTasks();
   initializeTabs();
   loadQuote();
+  loadReminderSettings();
   initializeReminders();
   initializeTimer();
   initializeReward();
   initializeResetModal();
+  initializeRemindersSettings();
   initializeTabEditModal();
 });
 
@@ -264,25 +271,91 @@ async function loadQuote() {
   }
 }
 
-// reminder popups: picks random msg, shows on timer, hides on dismiss
-function initializeReminders() {
-  const popup = document.getElementById("reminder-popup");
-  const message = document.getElementById("reminder-message");
-  const dismissBtn = document.getElementById("reminder-dismiss");
+// reminder popups
+function showReminderBanner() {
+  if (reminderSettings.messages.length === 0) return;
+  const msg =
+    reminderSettings.messages[
+      Math.floor(Math.random() * reminderSettings.messages.length)
+    ];
+  document.getElementById("reminder-message").textContent = msg;
+  document.getElementById("reminder-popup").classList.add("is-showing");
+  clearTimeout(reminderAutoHide);
+  reminderAutoHide = setTimeout(hideReminderBanner, 10000);
+}
 
-  // show random reminder every X secs
-  setInterval(
-    () => {
-      const randomIndex = Math.floor(Math.random() * reminderMessages.length);
-      message.textContent = reminderMessages[randomIndex];
-      popup.classList.remove("is-hidden");
-    },
-    20 * 60 * 1000,
+function hideReminderBanner() {
+  document.getElementById("reminder-popup").classList.remove("is-showing");
+}
+
+function startReminderInterval() {
+  if (reminderIntervalId) clearInterval(reminderIntervalId);
+  reminderIntervalId = setInterval(
+    showReminderBanner,
+    reminderSettings.frequency * 60 * 1000,
   );
+}
 
-  // hide when dismissed
-  dismissBtn.addEventListener("click", () => {
-    popup.classList.add("is-hidden");
+function initializeReminders() {
+  document
+    .getElementById("reminder-dismiss")
+    .addEventListener("click", hideReminderBanner);
+  startReminderInterval();
+}
+
+function renderRemindersList() {
+  const list = document.getElementById("reminders-list");
+  list.innerHTML = "";
+  reminderSettings.messages.forEach((msg, index) => {
+    const li = document.createElement("li");
+    const span = document.createElement("span");
+    span.textContent = msg;
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "x";
+    deleteBtn.className = "delete-btn";
+    deleteBtn.addEventListener("click", () => {
+      reminderSettings.messages.splice(index, 1);
+      saveReminderSettings();
+      renderRemindersList();
+    });
+    li.appendChild(span);
+    li.appendChild(deleteBtn);
+    list.appendChild(li);
+  });
+}
+
+function initializeRemindersSettings() {
+  document.getElementById("reminders-btn").addEventListener("click", () => {
+    document.getElementById("reminders-frequency").value =
+      reminderSettings.frequency;
+    renderRemindersList();
+    document.getElementById("reminders-overlay").classList.remove("is-hidden");
+  });
+
+  document.getElementById("reminders-close").addEventListener("click", () => {
+    document.getElementById("reminders-overlay").classList.add("is-hidden");
+  });
+
+  document
+    .getElementById("reminders-frequency")
+    .addEventListener("change", (e) => {
+      reminderSettings.frequency = parseInt(e.target.value);
+      saveReminderSettings();
+      startReminderInterval();
+    });
+
+  const addInput = document.getElementById("reminders-new-input");
+  document.getElementById("reminders-add-btn").addEventListener("click", () => {
+    const text = addInput.value.trim();
+    if (!text) return;
+    reminderSettings.messages.push(text);
+    saveReminderSettings();
+    renderRemindersList();
+    addInput.value = "";
+  });
+
+  addInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") document.getElementById("reminders-add-btn").click();
   });
 }
 
@@ -352,6 +425,17 @@ function loadTabs() {
 function saveTabs() {
   localStorage.setItem("dsigdt_tabs", JSON.stringify(tabs));
   localStorage.setItem("dsigdt_active_tab", activeTabId);
+}
+
+// load reminder settings from localStorage
+function loadReminderSettings() {
+  const saved = localStorage.getItem("dsigdt_reminders");
+  if (saved) reminderSettings = JSON.parse(saved);
+}
+
+// save reminder settings to localStorage
+function saveReminderSettings() {
+  localStorage.setItem("dsigdt_reminders", JSON.stringify(reminderSettings));
 }
 
 // render tab bts + handle clicks
