@@ -22,15 +22,6 @@
 
 /* my colors */
 :root {
-  --section-title-gradient: linear-gradient to top
-    right(
-      120deg,
-      #ff4fbe 0%,
-      #ff8fd8 18%,
-      #7fd7ff 44%,
-      #8f8aff 70%,
-      #d66aff 100%
-    );
   --purple: #1a1a2e;
   --rainbow: linear-gradient(120deg, #ff4fbe 0%, #7fd7ff 44%, #b615f6 100%);
   --title-fill: linear-gradient(to bottom, #ff85d8, #ffe066, #85e8ff, #cc80ff);
@@ -93,7 +84,7 @@ header {
       )
       border-box;
   background-color: #1f1f1f;
-  background-blend-mode: hard-light, normal;
+  background-blend-mode: hard-light, normal, normal;
   background-size:
     cover,
     300% 300%;
@@ -143,7 +134,7 @@ h1 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: clamp(1.4rem, 7.8vw, 3rem);
   letter-spacing: 0.1em;
-  -webkit-text-stroke: 3px #1a1a2e;
+  -webkit-text-stroke: 2px #1a1a2e;
 }
 
 /* card that holds the stuff */
@@ -164,7 +155,7 @@ h1 {
         #ff3388
       )
       border-box;
-  background-blend-mode: screen, normal, normal;
+  background-blend-mode: screen normal;
   background-size:
     cover,
     100% 100%,
@@ -194,61 +185,132 @@ h2 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 3.5rem;
+  font-size: clamp(1.6rem, 4.5vw, 2.4rem);
   text-align: center;
   paint-order: stroke fill;
   -webkit-text-stroke: 0.1px;
   margin: 0.2rem auto 0.8rem;
+  white-space: nowrap;
   border-radius: 999px;
   padding: 0.15em 0.75em;
   filter: brightness(1) saturate(3) drop-shadow(6px 8px 10px purple);
 
   /* box-shadow:
     0 0 0 2.5px #1a1a2e,
-    inset 0 0 0 2px #1a1a2e; */
+    inset 0 0 0 2px #1a1a2e;    */
 }
 
-/* tab btns */
+/* tab slider btns! */
 .task-tabs {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  justify-content: center;
-}
-
-.tab-btn {
-  text-align: center;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1))
+    linear-gradient(
+        to top right,
+        rgba(255, 233, 248, 0.95),
+        rgba(212, 246, 255, 0.95),
+        rgba(232, 219, 255, 0.95)
+      )
       padding-box,
-    linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+    linear-gradient(
+        to right,
+        #ff3388,
+        #dd44ff,
+        #5599ff,
+        #44ddaa,
+        #ffdd44,
+        #ff3388
+      )
       border-box;
-  border: 1px solid transparent;
+  border: 3px solid transparent;
   border-radius: 999px;
-  padding: 0.5rem 1.5rem;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.8rem;
-  font-weight: 200;
-  width: fit-content;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  color: gray;
+  padding: 5px;
+  gap: 2px;
+  margin: 0 auto 1rem;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-/* active tab: glassy + slightly more opaque + rainbow border */
+/* tab btns transparent */
+.tab-btn {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.5rem 0.75rem;
+  font-family: "Popstar", sans-serif;
+  font-size: clamp(0.7rem, 2.5vw, 0.95rem);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transition: filter 0.2s ease;
+}
+
+/* active tab full opc */
 .tab-btn.active {
+  filter: drop-shadow(1px 2px 4px rgba(193, 77, 204, 0.4));
+}
+
+/* the sliding highlight pill */
+.tab-indicator {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  height: calc(100% - 10px);
   background:
-    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1))
+    linear-gradient(
+        to top right,
+        rgba(255, 233, 248, 0.97),
+        rgba(212, 246, 255, 0.97),
+        rgba(232, 219, 255, 0.97)
+      )
       padding-box,
-    linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+    linear-gradient(
+        to right,
+        #ff3388,
+        #dd44ff,
+        #5599ff,
+        #44ddaa,
+        #ffdd44,
+        #ff3388
+      )
       border-box;
-  border: 4px solid transparent;
-  backdrop-filter: blur(10px);
-  color: #1a1a2e;
-  font-weight: 400;
-  filter: drop-shadow(3px 6px 9px rgba(0, 0, 0, 0.55));
-  animation: none;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1),
+    width 0.3s ease;
+  pointer-events: none;
+  filter: drop-shadow(1px 3px 6px rgba(193, 77, 204, 0.5));
+}
+
+/* inactive tab text: rainbow gradient */
+.tab-btn span {
+  background: linear-gradient(
+    to right,
+    #ff3388,
+    #dd44ff,
+    #5599ff,
+    #44ddaa,
+    #ffdd44
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* active tab text: prettybg sparkle */
+.tab-btn.active span {
+  background: url("assets/textures/prettybg.png") center / cover;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: brightness(1) saturate(3) drop-shadow(1px 2px 4px purple);
 }
 
 /* + tab btn darker to stand out */
@@ -1140,14 +1202,6 @@ h2 {
   text-align: center;
   width: 100%;
   margin: 0 0 0.15rem;
-}
-
-#timer-task-label {
-  color: var(--purple);
-  font-size: 1rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 0.75rem;
 }
 
 #timer-task-label {

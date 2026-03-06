@@ -135,7 +135,7 @@ function renderTasks() {
   }
 
   // normal tab reenable add
-  input.disabed = false;
+  input.disabled = false;
   input.placeholder = "+ Add Stuff";
   input.disabled = false;
 
@@ -438,14 +438,31 @@ function saveReminderSettings() {
   localStorage.setItem("dsigdt_reminders", JSON.stringify(reminderSettings));
 }
 
+// moving slider for active tab
+function moveTabIndicator() {
+  const container = document.getElementById("task-tabs");
+  const indicator = document.getElementById("tab-indicator");
+  const active = container ? container.querySelector(".tab-btn.active") : null;
+  if (!active || !indicator) return;
+  indicator.style.width = active.offsetWidth + "px";
+  indicator.style.transform = `translateX(${active.offsetLeft}px)`;
+}
+
 // render tab bts + handle clicks
 function initializeTabs() {
   const container = document.getElementById("task-tabs");
   container.innerHTML = ""; // clear old buttons before re-rendering!
 
+  const indicator = document.createElement("div");
+  indicator.id = "tab-indicator";
+  indicator.className = "tab-indicator";
+  container.appendChild(indicator);
+
   tabs.forEach((tab) => {
     const btn = document.createElement("button");
-    btn.textContent = tab.name;
+    const span = document.createElement("span");
+    span.textContent = tab.name;
+    btn.appendChild(span);
     btn.className = tab.id === activeTabId ? "tab-btn active" : "tab-btn";
     btn.addEventListener("click", () => {
       activeTabId = tab.id;
@@ -458,16 +475,17 @@ function initializeTabs() {
         .forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       renderTasks();
+      moveTabIndicator();
     });
-
-    btn.addEventListener("dblclick", () => openTabEditModal(tab.id));
-
     container.appendChild(btn);
+    btn.addEventListener("dblclick", () => openTabEditModal(tab.id));
   });
 
   // permanent "all stuff" tab — cannot be renamed or deleted
   const allBtn = document.createElement("button");
-  allBtn.textContent = "all stuff";
+  const allSpan = document.createElement("span");
+  allSpan.textContent = "all stuff";
+  allBtn.appendChild(allSpan);
   allBtn.className =
     activeTabId === "__all_tasks__" ? "tab-btn active" : "tab-btn";
   allBtn.addEventListener("click", () => {
@@ -478,13 +496,16 @@ function initializeTabs() {
       .forEach((b) => b.classList.remove("active"));
     allBtn.classList.add("active");
     renderTasks();
+    moveTabIndicator();
   });
-  allBtn.addEventListener("dblclick", () => openTabEditModal("__all_tasks__"));
 
   container.appendChild(allBtn);
+
+  requestAnimationFrame(moveTabIndicator);
 }
 
 function addTab(name) {
+  if (tabs.length >= 3) return;
   const newTab = {
     id: "tab_" + Date.now(),
     name: name || "new stuff",
