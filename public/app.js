@@ -413,9 +413,9 @@ function loadTabs() {
     if (savedActive) activeTabId = savedActive;
   } else {
     tabs = [
-      { id: "tab_dumb", name: "dumb stuff" },
-      { id: "tab_today", name: "gotta do today" },
-      { id: "tab_other", name: "other stuff" },
+      { id: "tab_dumb", name: "GOTTA" },
+      { id: "tab_today", name: "WANNA" },
+      { id: "tab_other", name: "OTHER" },
     ];
     saveTabs();
   }
@@ -484,7 +484,7 @@ function initializeTabs() {
   // permanent "all stuff" tab — cannot be renamed or deleted
   const allBtn = document.createElement("button");
   const allSpan = document.createElement("span");
-  allSpan.textContent = "all stuff";
+  allSpan.textContent = "ALL";
   allBtn.appendChild(allSpan);
   allBtn.className =
     activeTabId === "__all_tasks__" ? "tab-btn active" : "tab-btn";
@@ -799,9 +799,9 @@ function initializeResetModal() {
     document.getElementById("timer-task-label").textContent = "";
     tasks = [];
     tabs = [
-      { id: "tab_dumb", name: "dumb stuff" },
-      { id: "tab_today", name: "gotta do today" },
-      { id: "tab_other", name: "other stuff" },
+      { id: "tab_dumb", name: "GOTTA" },
+      { id: "tab_today", name: "WANNA" },
+      { id: "tab_other", name: "OTHER" },
     ];
 
     activeTabId = "tab_dumb";

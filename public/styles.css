@@ -97,7 +97,7 @@ header {
     inset 0 0 0 2px #1a1a2e,
     0 6px 40px rgba(193, 77, 204, 0.95);
   border-radius: 999px;
-  animation: card-border-drift 10s ease-in-out infinite alternate;
+  /* animation: card-border-drift 10s ease-in-out infinite alternate; */
 }
 
 header::before {
@@ -118,11 +118,10 @@ h1 {
   flex-direction: column;
   align-items: center;
   line-height: 1;
-  filter: saturate(1.6) drop-shadow(2px 4px 6px purple)
-    drop-shadow(3px 6px 14px rgba(60, 20, 100, 0.5));
+  filter: brightness(1) saturate(3)
+    drop-shadow(4px 6px 14px rgba(80, 0, 120, 0.7));
   gap: 0.1em;
   letter-spacing: 0.1em;
-  filter: brightness(1) saturate(3) drop-shadow(6px 8px 10px purple);
 }
 
 .title-main {
@@ -137,14 +136,13 @@ h1 {
   -webkit-text-stroke: 2px #1a1a2e;
 }
 
-/* card that holds the stuff */
+/* cards thats holds the stuffs */
 .tasks-card {
   filter: drop-shadow(2px 6px 22px rgba(130, 60, 200, 0.7));
   position: relative;
   isolation: isolate;
   background:
     url("assets/textures/prettybg.png") center / cover padding-box,
-    linear-gradient(#1f1f1f, #1f1f1f) padding-box,
     linear-gradient(
         to top right,
         #ff3388,
@@ -155,21 +153,21 @@ h1 {
         #ff3388
       )
       border-box;
-  background-blend-mode: screen normal;
   background-size:
     cover,
-    100% 100%,
     300% 300%;
   border: 9px solid transparent;
   border-radius: 30px;
   padding: 1.5rem;
-  padding-top: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.75rem;
   margin-bottom: 1.5rem;
+  box-shadow: 0 4px 24px rgba(193, 77, 204, 0.35);
   box-shadow:
-    0 0 0 2.5px #1a1a2e,
+    0 0 0 3.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(193, 77, 204, 0.3);
-  animation: card-border-drift 10s ease-in-out infinite alternate;
+    0 6px 40px rgba(193, 77, 204, 0.95);
+  /* animation: card-border-drift 10s ease-in-out infinite alternate; */
 }
 
 .tasks-card::before {
@@ -185,111 +183,92 @@ h2 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+  font-size: clamp(1.4rem, 5vw, 2.6rem);
   text-align: center;
   paint-order: stroke fill;
-  -webkit-text-stroke: 0.1px;
+  -webkit-text-stroke: 0.3px rgba(60, 0, 100, 0.4);
   margin: 0.2rem auto 0.8rem;
   white-space: nowrap;
   border-radius: 999px;
   padding: 0.15em 0.75em;
-  filter: brightness(1) saturate(3) drop-shadow(6px 8px 10px purple);
-
+  filter: brightness(1) saturate(3)
+    drop-shadow(2px 3px 8px rgba(120, 0, 180, 0.5));
   /* box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e;    */
 }
 
-/* tab slider btns! */
+/* floating label ? sits on the top border of the card */
+.tasks-card > h2 {
+  position: absolute;
+  font-size: clamp(1.4rem, 4.5vw, 2.4rem);
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  margin: 0;
+}
+
+.tasks-card > h2::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 999px;
+  z-index: -1;
+}
+
+/* tab btns — no container, just floating labels */
 .task-tabs {
   position: relative;
   display: flex;
-  background:
-    linear-gradient(
-        to top right,
-        rgba(255, 233, 248, 0.95),
-        rgba(212, 246, 255, 0.95),
-        rgba(232, 219, 255, 0.95)
-      )
-      padding-box,
-    linear-gradient(
-        to right,
-        #ff3388,
-        #dd44ff,
-        #5599ff,
-        #44ddaa,
-        #ffdd44,
-        #ff3388
-      )
-      border-box;
-  border: 3px solid transparent;
-  border-radius: 999px;
-  padding: 5px;
-  gap: 2px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0.25rem 0;
+  gap: 4px;
   margin: 0 auto 1rem;
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
+  justify-content: center;
 }
 
-/* tab btns transparent */
+/* tab btns — plain floating labels */
 .tab-btn {
-  flex: 1;
-  min-width: 0;
-  border: none;
+  flex: 0 0 auto;
+  border: 1.5px solid transparent;
   background: transparent;
   border-radius: 999px;
-  padding: 0.5rem 0.75rem;
-  font-family: "Popstar", sans-serif;
-  font-size: clamp(0.7rem, 2.5vw, 0.95rem);
-  letter-spacing: 0.04em;
+  padding: 0.25rem 0.85rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(0.85rem, 2.8vw, 1.1rem);
+  letter-spacing: 0.08em;
   white-space: nowrap;
   cursor: pointer;
   position: relative;
   z-index: 1;
-  transition: filter 0.2s ease;
+  font-weight: 900;
+  -webkit-text-stroke: 0.5px rgba(26, 26, 46, 0.35);
+  transition: all 0.2s ease;
+  opacity: 0.6;
 }
 
-/* active tab full opc */
+/* active tab: light pill, full opacity */
 .tab-btn.active {
-  filter: drop-shadow(1px 2px 4px rgba(193, 77, 204, 0.4));
+  background: rgba(255, 255, 255, 0.82);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  filter: drop-shadow(0 1px 5px rgba(193, 77, 204, 0.4));
+  opacity: 1;
 }
 
-/* the sliding highlight pill */
+/* sliding indicator — hidden, active tab uses border instead */
 .tab-indicator {
-  position: absolute;
-  top: 5px;
-  left: 0;
-  height: calc(100% - 10px);
-  background:
-    linear-gradient(
-        to top right,
-        rgba(255, 233, 248, 0.97),
-        rgba(212, 246, 255, 0.97),
-        rgba(232, 219, 255, 0.97)
-      )
-      padding-box,
-    linear-gradient(
-        to right,
-        #ff3388,
-        #dd44ff,
-        #5599ff,
-        #44ddaa,
-        #ffdd44,
-        #ff3388
-      )
-      border-box;
-  border: 2px solid transparent;
-  border-radius: 999px;
-  transition:
-    transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1),
-    width 0.3s ease;
-  pointer-events: none;
-  filter: drop-shadow(1px 3px 6px rgba(193, 77, 204, 0.5));
+  display: none;
 }
 
-/* inactive tab text: rainbow gradient */
+/* inactive tab text: prettybg sparkle, muted by parent opacity */
 .tab-btn span {
   background: linear-gradient(
     to right,
@@ -301,10 +280,10 @@ h2 {
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
+  filter: saturate(1.5) drop-shadow(0 1px 4px rgba(200, 80, 255, 0.35));
 }
 
-/* active tab text: prettybg sparkle */
+/* active tab text: bold rainbow gradient OR INACTiVE?! */
 .tab-btn.active span {
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
@@ -546,7 +525,7 @@ h2 {
     100% 100%,
     100% 100%,
     300% 300%;
-  animation: card-border-drift 8s ease-in-out infinite alternate;
+  /* animation: card-border-drift 8s ease-in-out infinite alternate; */
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -792,7 +771,7 @@ h2 {
   height: 52px;
   font-size: 1.4rem;
   cursor: pointer;
-  animation: border-drift 10s ease-in-out infinite alternate;
+  /* animation: border-drift 10s ease-in-out infinite alternate; */
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
@@ -898,7 +877,7 @@ h2 {
     0 4px 30px rgba(193, 77, 204, 0.35);
   min-width: 220px;
   isolation: isolate;
-  animation: border-drift 10s ease-in-out infinite alternate;
+  /* animation: border-drift 10s ease-in-out infinite alternate; */
 }
 
 .timer-panel::before {
@@ -1281,7 +1260,7 @@ footer {
 }
 
 /* the drifting animation - 2 layer */
-@keyframes border-drift {
+/* @keyframes border-drift {
   0% {
     background-position:
       0 0,
@@ -1292,10 +1271,10 @@ footer {
       0 0,
       100% 50%;
   }
-}
+} */
 
 /* the drifting animation - 3 layer (for cards with texture) */
-@keyframes card-border-drift {
+/* @keyframes card-border-drift {
   0% {
     background-position:
       0 0,
@@ -1308,11 +1287,18 @@ footer {
       center,
       100% 50%;
   }
-}
+} */
 
 @media (max-width: 600px) {
   .container {
     padding: 1rem;
+  }
+
+  .tab-btn {
+    flex: 0 0 auto;
+    padding: 0.4rem 0.55rem;
+    letter-spacing: 0.02em;
+    font-size: clamp(0.65rem, 3.5vw, 0.9rem);
   }
 
   .title-main {
@@ -1364,7 +1350,7 @@ footer {
   background-size:
     100% 100%,
     300% 300%;
-  animation: border-drift 10s ease-in-out infinite alternate;
+  /* animation: border-drift 10s ease-in-out infinite alternate; */
 }
 
 .reward-modal::before {
@@ -1401,7 +1387,7 @@ footer {
 /* reward title to override the h2 pill badge style */
 .reward-title {
   font-family: "Popstar", sans-serif;
-  font-size: 3rem;
+  font-size: clamp(1.4rem, 4vw, 2.6rem);
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1420,7 +1406,7 @@ footer {
 /* reward subtitle */
 .reward-subtitle {
   color: var(--purple);
-  font-size: 2rem;
+  font-size: clamp(1.4rem, 4vw, 2.6rem);
   margin-bottom: 1rem;
 }
 
@@ -1498,7 +1484,7 @@ footer {
       padding-box,
     linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
       border-box;
-  border: 4px solid transparent;
+  border: 2px solid transparent;
   backdrop-filter: blur(6px);
   color: var(--purple);
   border-radius: 999px;
