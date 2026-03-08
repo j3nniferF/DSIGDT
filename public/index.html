@@ -8,58 +8,67 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
-    <!-- floating timer button -->
 
-    <!-- timer panel -->
-<div id="timer-panel" class="timer-panel is-hidden">
-  <button id="timer-close" class="timer-close-btn">×</button>
-  <h3 class="timer-drag-handle">TIMER</h3>
+<!-- TIMER modal (overlay)-->
+<div id="timer-overlay" class="reward-overlay is-hidden">
+  <div id="timer-modal" class="reward-modal timer-modal is-setup">
+    <button id="timer-close" class="reward-close-X">×</button>
 
-  <div class="timer-dial-wrapper">
-    <svg class="timer-dial-svg" viewBox="0 0 120 120">
-      <defs>
-        <linearGradient id="dialGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#ff68c6"/>
-          <stop offset="33%" stop-color="#ffe070"/>
-          <stop offset="66%" stop-color="#87ebff"/>
-          <stop offset="100%" stop-color="#b615f6"/>
-        </linearGradient>
-      </defs>
-      <circle class="dial-bg" cx="60" cy="60" r="50"/>
-      <circle class="dial-progress" id="dial-progress" cx="60" cy="60" r="50"/>
-    </svg>
+    <!-- 1: SETUP -->
+    <div class="timer-setup-view">
+      <h2 class="reward-title timer-drag-handle">⏱️ TIMER</h2>
 
-    <!-- idle: roller inside circle -->
-    <div class="dial-picker" id="dial-picker">
-      <div class="dial-col-wrap">
-        <div class="dial-column" id="dial-mins"></div>
-        <span class="dial-label">MIN</span>
+      <p class="timer-section-label">choose some stuff:</p>
+      <select id="timer-task-select" class="timer-task-select">
+        <option value="">— pick a task —</option>
+      </select>
+
+      <p class="timer-section-label">choose some time:</p>
+      <div class="dial-picker" id="dial-picker">
+        <div class="dial-col-wrap">
+          <div class="dial-column" id="dial-mins"></div>
+          <span class="dial-label">MIN</span>
+        </div>
+        <span class="dial-sep">:</span>
+        <div class="dial-col-wrap">
+          <div class="dial-column" id="dial-secs"></div>
+          <span class="dial-label">SEC</span>
+        </div>
       </div>
-      <span class="dial-sep">:</span>
-      <div class="dial-col-wrap">
-        <div class="dial-column" id="dial-secs"></div>
-        <span class="dial-label">SEC</span>
+
+      <div class="timer-buttons">
+        <button id="timer-start" class="timer-action-btn">Start</button>
       </div>
     </div>
 
-    <!-- running: countdown -->
-    <div class="timer-display" id="timer-display">25:00</div>
-  </div>
+    <!-- 2: RUNNING -->
+    <div class="timer-running-view">
+      <p class="timer-working-label timer-drag-handle">working on</p>
+      <p class="timer-task-label" id="timer-task-label"></p>
 
-  <!-- idle: task picker + min input -->
-  <select id="timer-task-select" class="timer-task-select">
-    <option value="">Choose Stuff</option>
-  </select>
+      <div class="timer-display" id="timer-display">25:00</div>
 
-  <!-- running: "left to work on 'X'" -->
-  <p class="timer-working-label" id="timer-working-label">left to work on</p>
-  <p class="timer-task-label" id="timer-task-label"></p>
-
-  <div class="timer-buttons">
-    <button id="timer-start">Start</button>
-    <button id="timer-reset">Reset</button>
+      <div class="timer-buttons">
+        <button id="timer-pause" class="timer-action-btn">Pause</button>
+        <button id="timer-done" class="timer-action-btn">Done!</button>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- time's up! -->
+<div id="timesup-overlay" class="reward-overlay is-hidden">
+  <div class="reward-modal timesup-modal">
+    <h2 class="reward-title">Time's Up!</h2>
+    <p class="timesup-question">Done with</p>
+    <p id="timesup-task-name" class="timesup-task-name"></p>
+    <div class="timesup-buttons">
+      <button id="timesup-done-btn" class="timer-action-btn">Yes</button>
+      <button id="timesup-more-btn" class="timer-action-btn">+5 Min</button>
+    </div>
+  </div>
+</div>
+
     <div class="container">
       <header>
         <h1>
@@ -131,21 +140,71 @@
         </button>
       </div>
     </div>
+    <!-- about modal -->
+    <div id="about-overlay" class="reward-overlay is-hidden">
+      <div class="reward-modal about-modal">
+        <button id="about-close" class="reward-close-X">X</button>
+        <div class="about-header">
+          <span class="about-emoji">🤓</span>
+          <h2 class="reward-title">How To Use</h2>
+        </div>
+        <p class="about-intro">Keep all your dumb stuff organized in one cute place.</p>
+        <div class="about-sections">
+          <section class="about-section">
+            <h3>Tabs + Stuff</h3>
+            <ul>
+              <li>GOTTA, WANNA, OTHER tabs to start</li>
+              <li>Hit + or Enter to add</li>
+              <li>Double-click a tab to edit or delete</li>
+              <li>Double-click ALL to add a tab</li>
+            </ul>
+          </section>
+          <section class="about-section">
+            <h3>Timer</h3>
+            <ul>
+              <li>Scroll the dial, pick a task, go</li>
+              <li>Arc drains — yellow then pink</li>
+              <li>Goober visits when you're done</li>
+            </ul>
+          </section>
+          <section class="about-section">
+            <h3>Rewards</h3>
+            <ul>
+              <li>Clear a whole tab for a surprise</li>
+              <li>Finish the timer for a bonus visit</li>
+            </ul>
+          </section>
+          <section class="about-section">
+            <h3>Reminders</h3>
+            <ul>
+              <li>Click 🔔 to set wellness popups</li>
+              <li>Custom interval + your own messages</li>
+            </ul>
+          </section>
+          <section class="about-section">
+            <h3>Stats</h3>
+            <ul>
+              <li>Doughnut chart — done vs. to-do</li>
+              <li>Updates live as you go</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
+
     <!-- reset confirm modal -->
     <div id="reset-overlay" class="reward-overlay is-hidden">
       <div class="reward-modal">
-        <h2 class="reward-title">🌈 Reset Everything? ✨</h2>
+        <h2 class="reward-title">Reset Everything?</h2>
         <p class="reward-subtitle">
            This will wipe and reset ALL your STUFF!
         </p>
-        <div class="reset-modal-btns">
-          <button id="reset-confirm-btn" class="reset-confirm-btn">
-            💣 Bye Stuff!
-          </button>
-          <button id="reset-cancel-btn" class="reset-cancel-btn">
-            Nevermind!
-          </button>
-        </div>
+        <button id="reset-cancel-btn" class="reset-x-btn">X</button>
+<div class="reset-modal-btns">
+  <button id="reset-confirm-btn" class="reset-confirm-btn">
+    💣 Bye Stuff!
+  </button>
+</div>
       </div>
     </div>
     <!-- tab edit modal -->

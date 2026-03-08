@@ -23,6 +23,7 @@
 /* my colors */
 :root {
   --purple: #1a1a2e;
+
   --rainbow: linear-gradient(120deg, #ff4fbe 0%, #7fd7ff 44%, #b615f6 100%);
   --title-fill: linear-gradient(to bottom, #ff85d8, #ffe066, #85e8ff, #cc80ff);
   --pbgradient:
@@ -186,13 +187,13 @@ h2 {
   font-size: clamp(1.4rem, 5vw, 2.6rem);
   text-align: center;
   paint-order: stroke fill;
-  -webkit-text-stroke: 0.3px rgba(60, 0, 100, 0.4);
+  -webkit-text-stroke: .4px;
   margin: 0.2rem auto 0.8rem;
   white-space: nowrap;
   border-radius: 999px;
   padding: 0.15em 0.75em;
   filter: brightness(1) saturate(3)
-    drop-shadow(2px 3px 8px rgba(120, 0, 180, 0.5));
+    drop-shadow(2px 3px 8px rgba(120, 0, 180, 0.5)); */
   /* box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e;    */
@@ -201,7 +202,7 @@ h2 {
 /* floating label ? sits on the top border of the card */
 .tasks-card > h2 {
   position: absolute;
-  font-size: clamp(1.4rem, 4.5vw, 2.4rem);
+  font-size: clamp(2.4rem, 4.5vw, 3.7rem);
   top: 0;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -213,7 +214,7 @@ h2 {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.78);
+  /* background: rgba(255, 255, 255, 0.78); */
   border-radius: 999px;
   z-index: -1;
 }
@@ -243,7 +244,7 @@ h2 {
   border-radius: 999px;
   padding: 0.25rem 0.85rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(0.85rem, 2.8vw, 1.1rem);
+  font-size: clamp(1.3rem, 2.8vw, 1.1rem);
   letter-spacing: 0.08em;
   white-space: nowrap;
   cursor: pointer;
@@ -257,7 +258,7 @@ h2 {
 
 /* active tab: light pill, full opacity */
 .tab-btn.active {
-  background: rgba(255, 255, 255, 0.82);
+  background: rgb(26 26 46 / 30%);
   border: 1.5px solid rgba(255, 255, 255, 0.5);
   filter: drop-shadow(0 1px 5px rgba(193, 77, 204, 0.4));
   opacity: 1;
@@ -288,6 +289,7 @@ h2 {
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1.5px;
   background-clip: text;
   filter: brightness(1) saturate(3) drop-shadow(1px 2px 4px purple);
 }
@@ -856,39 +858,126 @@ h2 {
     0 4px 20px rgba(220, 30, 60, 0.4);
 }
 
-/* timer panel (pops up above btn) */
-.timer-panel {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  min-width: min(280px, calc(100vw - 2rem));
-  background: var(--pbgradient);
-  background-size:
-    100% 100%,
-    300% 300%;
-  border: 10px solid transparent;
-  border-radius: 16px;
-  padding: 1.5rem;
-  z-index: 998;
-  text-align: center;
-  box-shadow:
-    0 0 0 2.5px #1a1a2e,
-    0 4px 30px rgba(193, 77, 204, 0.35);
-  min-width: 220px;
-  isolation: isolate;
-  /* animation: border-drift 10s ease-in-out infinite alternate; */
+/* timer modal — blue*/
+#timer-overlay .reward-modal {
+  background:
+    linear-gradient(135deg, rgba(185, 215, 255, 0.97), rgba(165, 200, 255, 0.97)) padding-box,
+    linear-gradient(120deg, #5599ff, #44ddff) border-box;
+      max-width: min(320px, calc(100vw - 2rem));
+  padding: 1.5rem 1.25rem;
 }
 
-.timer-panel::before {
+/* draining border — shows when timer is running */
+.timer-modal.is-running::after {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 12px;
-  background: url("assets/textures/prettybg.png") center / cover;
-  opacity: 0.65;
+  inset: -6px;
+  border-radius: 22px;
+  background: conic-gradient(
+    from -90deg,
+    #5599ff calc(var(--timer-pct, 100) * 1%),
+    rgba(185, 215, 255, 0.25) calc(var(--timer-pct, 100) * 1%)
+  );
   z-index: -1;
-  pointer-events: none;
+}
+
+/* warning — half time gone, goes yellow */
+.timer-modal.is-warning::after {
+  background: conic-gradient(
+    from -90deg,
+    #ffcc00 calc(var(--timer-pct, 100) * 1%),
+    rgba(255, 220, 100, 0.2) calc(var(--timer-pct, 100) * 1%)
+  );
+}
+
+/* danger — 20% left, goes red and pulses */
+.timer-modal.is-danger::after {
+  background: conic-gradient(
+    from -90deg,
+    #ff3388 calc(var(--timer-pct, 100) * 1%),
+    rgba(255, 50, 100, 0.2) calc(var(--timer-pct, 100) * 1%)
+  );
+  animation: timerPulse 0.7s ease-in-out infinite;
+}
+
+/* kill prettybg texture — clean blue bg only */
+#timer-overlay .reward-modal::before {
+  display: none;
+}
+
+/* blue X close button */
+#timer-overlay .reward-close-X {
+  background:
+    linear-gradient(135deg, rgba(185, 215, 255, 0.9), rgba(165, 200, 255, 0.9)) padding-box,
+    linear-gradient(120deg, #5599ff, #44ddff) border-box;
+  color: #1a1a2e;
+}
+
+/* state-based view switching — classes live on #timer-modal */
+.timer-modal.is-setup .timer-running-view   { display: none; }
+.timer-modal.is-running .timer-setup-view   { display: none; }
+
+/* shared timer action buttons */
+.timer-action-btn {
+  background:
+    linear-gradient(rgba(185, 215, 255, 0.5), rgba(165, 200, 255, 0.8)) padding-box,
+    linear-gradient(120deg, #5599ff, #44ddff) border-box;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+  font-weight: 600;
+  color: #1a1a2e;
+  cursor: pointer;
+  filter: drop-shadow(1px 3px 5px rgba(50, 100, 255, 0.25));
+}
+
+/* heartbeat animation on the countdown numbers */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.08); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.05); }
+  70%       { transform: scale(1); }
+}
+
+.timer-display.is-running {
+  animation: heartbeat 1s ease-in-out infinite;
+}
+
+/* timesup modal — blue themed */
+#timesup-overlay .reward-modal {
+  background:
+    linear-gradient(135deg, rgba(185, 215, 255, 0.97), rgba(165, 200, 255, 0.97)) padding-box,
+    linear-gradient(120deg, #5599ff, #44ddff) border-box;
+}
+
+#timesup-overlay .reward-modal::before {
+  display: none;
+}
+
+#timesup-overlay .reward-title {
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+}
+
+.timesup-question {
+  color: #1a1a2e;
+  font-size: 0.85rem;
+  margin: 0.25rem 0 0;
+}
+
+.timesup-task-name {
+  font-weight: 700;
+  color: #1a3a6e;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  margin: 0.1rem 0 1rem;
+}
+
+.timesup-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
 }
 
 /* drag handle title bar */
@@ -915,8 +1004,8 @@ h2 {
 /* arc dial wrapper */
 .timer-dial-wrapper {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 140px;
+  height: 140px;
   margin: 0.5rem auto 1rem;
 }
 
@@ -945,29 +1034,42 @@ h2 {
   transition: stroke-dashoffset 1s linear;
 }
 
+/* warning state timer half gone */
+.dial-progress.is-warning {
+  stroke: #ffcc00;
+}
+
+/* danger! almost out of time! */
+.dial-progress.is-danger {
+  stroke: #ff3388;
+  animation: timerPulse 0.7s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
 /* big countdown arc dial timer */
 .timer-display {
   font-family: "Popstar";
   font-weight: 100 !important;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: block;
+  text-align: center;
+  margin: 0.5rem auto 1rem;
   font-size: 2.4rem;
   letter-spacing: 0.05em;
-  background: linear-gradient(
-    25deg,
-    #df2aa0,
-    #c04cee,
-    #8ea1ff,
-    #c04cee,
-    #df2aa0
-  );
+  background: linear-gradient(25deg, #5599ff, #1a3a6e, #44ddff, #1a3a6e, #5599ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   white-space: nowrap;
-  opacity: 0;
+  opacity: 1;
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
@@ -1000,15 +1102,12 @@ h2 {
 }
 
 .timer-buttons button {
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.25))
-      padding-box,
-    linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
-      border-box;
+    background:
+    linear-gradient(rgba(200, 225, 255, 0.9), rgba(180, 210, 255, 0.9)) padding-box,
+    linear-gradient(120deg, #5599ff, #44ddff) border-box;
   border: 2px solid transparent;
-  backdrop-filter: blur(6px);
-  color: var(--purple);
-  border-radius: 9px;
+  color: #1a3a6e;
+  border-radius: 999px;
   padding: 0.5rem 1.4rem;
   font-size: 0.9rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1042,13 +1141,11 @@ h2 {
 
 /* drum roll dial */
 .dial-picker {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   display: flex;
   align-items: flex-start;
+  justify-content: center;
   gap: 0.3rem;
+  margin: 0.75rem auto;
   opacity: 1;
   transition: opacity 0.3s ease;
 }
@@ -1058,6 +1155,11 @@ h2 {
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
+  background: rgba(200, 225, 255, 0.9);
+  border: 2px solid #5599ff;
+  border-radius: 12px;
+  padding: 0.4rem 0.6rem;
+  min-width: 56px;
 }
 
 .dial-column {
@@ -1099,9 +1201,9 @@ h2 {
   align-items: center;
   justify-content: center;
   scroll-snap-align: center;
-  font-family: "Popstar", sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.2rem;
-  font-weight: 100;
+  font-weight: 200;
   color: var(--purple);
   cursor: pointer;
 }
@@ -1124,17 +1226,31 @@ h2 {
   line-height: 1;
 }
 
+/* "choose some stuff:" / "choose some time:" */
+.timer-section-label {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1a3a6e;
+  text-align: left;
+  width: 100%;
+  margin: 0.6rem 0 0.2rem;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
 /* task dropdown */
 .timer-task-select {
   width: 100%;
-  padding: 0.4rem 0.6rem;
-  background: rgba(255, 255, 255, 0.85);
-  border: 2px solid var(--purple);
+  padding: 0.5rem 0.8rem;
+  background: rgba(200, 225, 255, 0.9);
+  border: 2px solid #5599ff;
   border-radius: 999px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.8rem;
-  color: var(--purple);
-  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #1a3a6e;
+  margin-bottom: 0.5rem;
   outline: none;
   cursor: pointer;
 }
@@ -1198,38 +1314,12 @@ h2 {
 }
 
 /* when timer running shows labels, hides input cntls */
-.timer-panel.is-running .timer-working-label,
-.timer-panel.is-running #timer-task-label {
+.timer-modal.is-running .timer-working-label,
+.timer-modal.is-running #timer-task-label {
   display: block;
 }
 
-.timer-panel.is-running .dial-picker {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.timer-panel.is-running .timer-display {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.timer-panel.is-running .timer-task-select {
-  display: none;
-}
-
-/* timer done state */
-.timer-panel.is-done .timer-display {
-  opacity: 1;
-  pointer-events: none;
-}
-
-.timer-panel.is-done .dial-picker {
-  opacity: 0;
-  pointer-events: none;
-  transition: none;
-}
-
-.timer-panel.is-done .timer-task-select {
+.timer-modal.is-running .timer-task-select {
   display: none;
 }
 
@@ -1334,6 +1424,203 @@ footer {
 /* specificity fix: combined selector beats .is-hidden alone */
 .reward-overlay.is-hidden {
   display: none;
+}
+
+/* per-modal color theming — matches header icon border colors */
+#about-overlay .reward-modal {
+  background:
+    linear-gradient(
+        135deg,
+        rgba(235, 210, 255, 0.97),
+        rgba(215, 185, 255, 0.97)
+      )
+      padding-box,
+    linear-gradient(120deg, #dd44ff, #9966ff) border-box;
+}
+
+/* kill prettybg texture for about modal */
+#about-overlay .reward-modal::before {
+  display: none;
+}
+
+/* about modal size + scroll */
+.about-modal {
+  max-width: 480px;
+  max-height: 82vh;
+  overflow-y: auto;
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+
+/* emoji above title, not inside gradient text */
+.about-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.about-emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+/* intro blurb */
+.about-intro {
+  font-size: 0.85rem;
+  color: #4a2060;
+  text-align: center;
+  margin: 0 0 0.75rem;
+}
+
+/* 2-column grid, last odd section spans full width */
+.about-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.about-section:last-child:nth-child(odd) {
+  grid-column: span 2;
+}
+
+/* each section = card with purple border */
+.about-section {
+  border: 2px solid #cc66ff;
+  border-radius: 12px;
+  padding: 0.6rem 0.75rem 0.65rem;
+  background: rgba(255, 255, 255, 0.35);
+  display: flex;
+  flex-direction: column;
+}
+
+/* section title — Popstar sparkle, no pill */
+.about-section h3 {
+  font-family: "Popstar", sans-serif;
+  font-size: clamp(0.85rem, 2.2vw, 1rem);
+  background: url("assets/textures/prettybg.png") center / cover;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: brightness(1) saturate(3) drop-shadow(1px 2px 3px purple);
+  text-align: center;
+  margin: 0 0 0.4rem;
+}
+
+/* list card — whitish purple bg + shadow */
+.about-sections ul {
+  margin: 0;
+  padding: 0.45rem 0.6rem 0.45rem 1.3rem;
+  list-style: none;
+  background: rgba(245, 235, 255, 0.75);
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(140, 40, 200, 0.25);
+}
+
+.about-sections li {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #4a2060;
+  margin-bottom: 0.1rem;
+  padding-left: 0.75rem;
+  position: relative;
+  text-align: left;
+}
+
+/* single column on mobile */
+@media (max-width: 500px) {
+  .about-sections {
+    grid-template-columns: 1fr;
+  }
+  .about-section:last-child:nth-child(odd) {
+    grid-column: span 1;
+  }
+}
+
+.about-sections li::before {
+  content: "♡";
+  position: absolute;
+  left: 0;
+  color: #9933cc;
+}
+
+/* about modal X button — purple themed */
+#about-overlay .reward-close-X {
+  background:
+    linear-gradient(135deg, rgba(235, 210, 255, 0.9), rgba(215, 185, 255, 0.9))
+      padding-box,
+    linear-gradient(120deg, #dd44ff, #9966ff) border-box;
+  color: #1a1a1a;
+}
+
+#reminders-overlay .reward-modal {
+  background:
+    linear-gradient(
+        135deg,
+        rgba(255, 252, 210, 0.97),
+        rgba(255, 242, 175, 0.97)
+      )
+      padding-box,
+    linear-gradient(120deg, #ffdd44, #ffcc22) border-box;
+}
+
+#reset-overlay .reward-modal {
+  background:
+    linear-gradient(
+        135deg,
+        rgba(255, 215, 235, 0.97),
+        rgba(255, 195, 220, 0.97)
+      )
+      padding-box,
+    linear-gradient(120deg, #dd6798, #ea6896) border-box;
+}
+
+/* kill prettybg texture for reset modal */
+#reset-overlay .reward-modal::before {
+  display: none;
+}
+
+/* reset title — reasonable size */
+#reset-overlay .reward-title {
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+}
+
+/* reset subtitle — much smaller than default */
+#reset-overlay .reward-subtitle {
+  font-size: clamp(1.35rem, 2.5vw, 1rem);
+  margin-bottom: 0.5rem;
+}
+
+/* reset modal — tighter on mobile */
+#reset-overlay .reward-modal {
+  max-width: 280px;
+  padding: 1.5rem 1.25rem;
+}
+
+/* reset title — smaller than default reward-title */
+#reset-overlay .reward-title {
+  font-size: clamp(1.6rem, 3vw, 1.5rem);
+}
+
+/* X btn for pink reset modal */
+.reset-x-btn {
+  position: absolute;
+  top: .2rem;
+  right: .2rem;
+  background:
+    linear-gradient(rgba(255, 215, 235, 0.9), rgba(255, 195, 220, 0.9)) padding-box,
+    linear-gradient(120deg, #dd6798, #ea6896) border-box;
+  border: 2px solid transparent;
+  color: #1a1a1a;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* reward modal card */
@@ -1480,20 +1767,17 @@ footer {
 /* bye stuff */
 .reset-confirm-btn {
   background:
-    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1))
-      padding-box,
-    linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
-      border-box;
+    linear-gradient(rgba(255, 215, 235, 0.6), rgba(255, 195, 220, 0.9)) padding-box,
+    linear-gradient(120deg, #dd6798, #ea6896) border-box;
   border: 2px solid transparent;
-  backdrop-filter: blur(6px);
-  color: var(--purple);
+  color: #1a1a1a;
   border-radius: 999px;
-  padding: 0.65rem 1.25rem;
+  padding: 0.5rem 1.25rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2.5vw, 0.95rem);
   font-weight: 500;
   cursor: pointer;
-  filter: drop-shadow(2px 4px 6px rgba(117, 8, 113, 0.55));
+  filter: drop-shadow(1px 3px 5px rgba(180, 50, 100, 0.35));
 }
 
 /* nevermind */

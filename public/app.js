@@ -1,7 +1,6 @@
 let tasks = [];
 let chart = null;
 let tabs = [];
-let activeTabId = "tab_dumb";
 let editingTabId = null;
 
 // reminder popup msgs
@@ -29,8 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loadReminderSettings();
   initializeReminders();
   initializeTimer();
+  initializeTimerDrag();
+  initializeTimesUpModal();
   initializeReward();
   initializeResetModal();
+  initializeAboutModal();
   initializeRemindersSettings();
   initializeTabEditModal();
 });
@@ -135,7 +137,6 @@ function renderTasks() {
   }
 
   // normal tab reenable add
-  input.disabled = false;
   input.placeholder = "+ Add Stuff";
   input.disabled = false;
 
@@ -236,8 +237,15 @@ function toggleTask(id) {
   saveTasks();
   renderTasks();
 
-  if (!wasCompleted && isTabFullyCompleted(task.tabId)) {
-    setTimeout(() => showReward(), 400);
+  if (!wasCompleted) {
+    // ..everyone likes prizes, so here's some fun confetti after finishing any single task..
+    confetti({ particleCount: 666, spread: 50, origin: { y: 0.6 } });
+
+    // ..but only get the pleasure to gaze upon the greatness that is..
+    // ..the mighty Goober whenever finishing ALL the tasks in a tab!!
+    if (isTabFullyCompleted(task.tabId)) {
+      setTimeout(() => showReward(), 400);
+    }
   }
 }
 
@@ -475,7 +483,6 @@ function initializeTabs() {
         .forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       renderTasks();
-      moveTabIndicator();
     });
     container.appendChild(btn);
     btn.addEventListener("dblclick", () => openTabEditModal(tab.id));
@@ -496,7 +503,6 @@ function initializeTabs() {
       .forEach((b) => b.classList.remove("active"));
     allBtn.classList.add("active");
     renderTasks();
-    moveTabIndicator();
   });
 
   container.appendChild(allBtn);
@@ -633,97 +639,200 @@ function getDialSeconds() {
   return mins * 60 + secs;
 }
 
+// tracks which task ID is running in the timer
+let selectedTimerTaskId = null;
+
+// helper: resets everything and goes back to setup view
+function goToSetup() {
+  const modal = document.getElementById("timer-modal");
+  const display = document.getElementById("timer-display");
+
+  // reset drag position
+  modal.style.cssText = "";
+  document.getElementById("timer-overlay").style.alignItems = "";
+  document.getElementById("timer-overlay").style.justifyContent = "";
+
+  const pauseBtn = document.getElementById("timer-pause");
+
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerSeconds = 0;
+  totalTimerSeconds = 0;
+  selectedTimerTaskId = null;
+
+  display.classList.remove("is-running");
+  display.textContent = "25:00";
+  if (pauseBtn) pauseBtn.textContent = "Pause";
+
+  // swap state classes on the modal inner div
+  modal.classList.remove("is-running");
+  modal.classList.add("is-setup");
+
+  // reset draining border back to full
+  modal.style.setProperty("--timer-pct", 100);
+  modal.classList.remove("is-warning", "is-danger");
+
+  populateTimerTasks();
+}
+
+// the actual countdown tick — extracted so +5 min can reuse it
+function startCountdown() {
+  const display = document.getElementById("timer-display");
+
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    const mins = Math.floor(timerSeconds / 60);
+    const secs = timerSeconds % 60;
+    display.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+
+    // update draining border — ratio goes from 1.0 down to 0
+    const ratio = timerSeconds / totalTimerSeconds;
+    const modal = document.getElementById("timer-modal");
+    modal.style.setProperty("--timer-pct", Math.round(ratio * 100));
+
+    // color state on the card border
+    if (ratio <= 0.2) {
+      modal.classList.remove("is-warning");
+      modal.classList.add("is-danger");
+    } else if (ratio <= 0.5) {
+      modal.classList.remove("is-danger");
+      modal.classList.add("is-warning");
+    } else {
+      modal.classList.remove("is-warning", "is-danger");
+    }
+
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      display.classList.remove("is-running");
+      showTimesUp();
+    }
+  }, 1000);
+}
+
+// show the time's up modal with task info filled in
+function showTimesUp() {
+  const timerOverlay = document.getElementById("timer-overlay");
+  const timesupOverlay = document.getElementById("timesup-overlay");
+  const taskNameEl = document.getElementById("timesup-task-name");
+
+  const task = tasks.find((t) => t.id === parseInt(selectedTimerTaskId));
+  if (task) {
+    const tab = tabs.find((t) => t.id === task.tabId);
+    taskNameEl.textContent = `"${task.text}"${tab ? " from " + tab.name : ""}`;
+  } else {
+    taskNameEl.textContent = "your timer session";
+  }
+
+  // hide timer, show timesup
+  timerOverlay.classList.add("is-hidden");
+  timesupOverlay.classList.remove("is-hidden");
+}
+
 function initializeTimer() {
   const btn = document.getElementById("timer-btn");
-  const panel = document.getElementById("timer-panel");
+  const overlay = document.getElementById("timer-overlay"); // show/hide
+  const modal = document.getElementById("timer-modal"); // state classes
   const display = document.getElementById("timer-display");
   const startBtn = document.getElementById("timer-start");
-  const resetBtn = document.getElementById("timer-reset");
+  const pauseBtn = document.getElementById("timer-pause");
   const closeBtn = document.getElementById("timer-close");
   const taskLabel = document.getElementById("timer-task-label");
   const taskSelect = document.getElementById("timer-task-select");
-  const dialProgress = document.getElementById("dial-progress");
 
-  // open panel + tasks, X panel
+  // open/close the overlay
   btn.addEventListener("click", () => {
-    if (panel.classList.contains("is-hidden")) {
-      panel.classList.remove("is-hidden");
-      panel.classList.add("is-entering");
-      setTimeout(() => panel.classList.remove("is-entering"), 400);
+    if (overlay.classList.contains("is-hidden")) {
+      overlay.classList.remove("is-hidden");
       populateTimerTasks();
       populateDialColumns();
     } else {
-      panel.classList.add("is-hidden");
+      overlay.classList.add("is-hidden");
     }
   });
 
   closeBtn.addEventListener("click", () => {
-    panel.classList.add("is-hidden");
+    overlay.classList.add("is-hidden");
   });
 
-  // start or pause
+  // START: read the dial, switch to running view, begin countdown
   startBtn.addEventListener("click", () => {
+    timerSeconds = getDialSeconds();
+    totalTimerSeconds = timerSeconds;
+    if (timerSeconds <= 0) return;
+
+    // remember which task was chosen
+    const selectedOption = taskSelect.options[taskSelect.selectedIndex];
+    selectedTimerTaskId =
+      selectedOption && selectedOption.value ? selectedOption.value : null;
+
+    // set the "working on" label
+    taskLabel.textContent =
+      selectedOption && selectedOption.value
+        ? selectedOption.textContent.trim()
+        : "✨ any stuff! ✨";
+
+     // reset draining border to full before countdown starts
+    modal.style.setProperty("--timer-pct", 100);
+    modal.classList.remove("is-warning", "is-danger");
+
+    // switch to running view — state classes live on the inner modal div
+    modal.classList.remove("is-setup");
+    modal.classList.add("is-running");
+    display.classList.add("is-running");
+
+    startCountdown();
+  });
+
+  // PAUSE / RESUME toggle
+  pauseBtn.addEventListener("click", () => {
     if (timerInterval) {
       clearInterval(timerInterval);
       timerInterval = null;
-      startBtn.textContent = "Start";
+      pauseBtn.textContent = "Resume";
       display.classList.remove("is-running");
-      return;
+    } else {
+      pauseBtn.textContent = "Pause";
+      display.classList.add("is-running");
+      startCountdown();
     }
-
-    if (timerSeconds === 0) {
-      timerSeconds = getDialSeconds();
-      totalTimerSeconds = timerSeconds;
-      if (timerSeconds <= 0) return;
-      panel.classList.remove("is-done");
-      dialProgress.style.transition = "none";
-      dialProgress.style.strokeDashoffset = 0;
-      void dialProgress.offsetWidth;
-      dialProgress.style.transition = "";
-    }
-    panel.classList.add("is-running");
-
-    startBtn.textContent = "Pause";
-    const selectedTask = taskSelect.options[taskSelect.selectedIndex];
-    taskLabel.textContent =
-      selectedTask && selectedTask.value
-        ? selectedTask.textContent.trim()
-        : "✨ any stuff! ✨";
-
-    display.classList.add("is-running");
-
-    timerInterval = setInterval(() => {
-      timerSeconds--;
-      const mins = Math.floor(timerSeconds / 60);
-      const secs = timerSeconds % 60;
-      display.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-      dialProgress.style.strokeDashoffset =
-        314 * (1 - timerSeconds / totalTimerSeconds);
-
-      if (timerSeconds <= 0) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        startBtn.textContent = "Start";
-        timerSeconds = 0;
-        display.textContent = "Done!";
-        taskLabel.textContent = "";
-        panel.classList.remove("is-running");
-        panel.classList.add("is-done");
-      }
-    }, 1000);
   });
 
-  // reset
-  resetBtn.addEventListener("click", () => {
-    clearInterval(timerInterval);
-    timerInterval = null;
-    timerSeconds = 0;
-    startBtn.textContent = "Start";
-    display.classList.remove("is-running");
-    display.textContent = "00:00";
-    panel.classList.remove("is-running");
-    panel.classList.remove("is-done");
-    dialProgress.style.strokeDashoffset = 0;
+  // DONE! — triggers the timesup modal immediately (same flow as running out of time)
+  document.getElementById("timer-done").addEventListener("click", showTimesUp);
+}
+
+// wire up the time's up modal buttons
+function initializeTimesUpModal() {
+  // YES, DONE — mark the task complete and go home
+  document.getElementById("timesup-done-btn").addEventListener("click", () => {
+    if (selectedTimerTaskId) {
+      const taskId = parseInt(selectedTimerTaskId);
+      const task = tasks.find((t) => t.id === taskId);
+      // toggleTask marks it complete + checks if tab is fully done → Goober
+      if (task && !task.completed) toggleTask(taskId);
+    }
+    document.getElementById("timesup-overlay").classList.add("is-hidden");
+    goToSetup();
+  });
+
+  // +5 MIN — add 5 minutes and keep going
+  document.getElementById("timesup-more-btn").addEventListener("click", () => {
+    timerSeconds = 300;
+    totalTimerSeconds = 300;
+
+    const display = document.getElementById("timer-display");
+    const timerOverlay = document.getElementById("timer-overlay");
+    const modal = document.getElementById("timer-modal");
+    modal.style.setProperty("--timer-pct", 100);
+    modal.classList.remove("is-warning", "is-danger");
+    display.textContent = "05:00";
+    display.classList.add("is-running");
+
+    document.getElementById("timesup-overlay").classList.add("is-hidden");
+    timerOverlay.classList.remove("is-hidden");
+
+    startCountdown();
   });
 }
 
@@ -762,8 +871,8 @@ function isTabFullyCompleted(tabId) {
 function showReward() {
   const overlay = document.getElementById("reward-overlay");
   const gif = document.getElementById("reward-gif");
+  gif.onload = () => overlay.classList.remove("is-hidden");
   gif.src = CONFIG.gooberGif;
-  overlay.classList.remove("is-hidden");
   confetti({
     particleCount: 150,
     spread: 80,
@@ -815,4 +924,66 @@ function initializeResetModal() {
   document.getElementById("reset-cancel-btn").addEventListener("click", () => {
     overlay.classList.add("is-hidden");
   });
+}
+
+// about modal
+function initializeAboutModal() {
+  document.getElementById("about-btn").addEventListener("click", () => {
+    document.getElementById("about-overlay").classList.remove("is-hidden");
+  });
+  document.getElementById("about-close").addEventListener("click", () => {
+    document.getElementById("about-overlay").classList.add("is-hidden");
+  });
+}
+
+// drag the timer modal by its TIMER title
+function initializeTimerDrag() {
+  const overlay = document.getElementById("timer-overlay");
+  const modal = document.getElementById("timer-modal");
+  // grab BOTH drag handles (setup view + running view both have one)
+  const handles = modal.querySelectorAll(".timer-drag-handle");
+
+  let dragging = false;
+  let startMouseX, startMouseY, startLeft, startTop;
+
+  function onDragStart(e) {
+    const rect = modal.getBoundingClientRect();
+    startMouseX = e.clientX;
+    startMouseY = e.clientY;
+    startLeft = rect.left;
+    startTop = rect.top;
+    dragging = true;
+    // switch from flex-centered to fixed with exact coordinates
+    modal.style.position = "fixed";
+    modal.style.left = startLeft + "px";
+    modal.style.top = startTop + "px";
+    modal.style.margin = "0";
+    modal.style.transform = "none";
+    overlay.style.alignItems = "flex-start";
+    overlay.style.justifyContent = "flex-start";
+    e.preventDefault();
+  }
+
+  function onDragMove(e) {
+    if (!dragging) return;
+    modal.style.left = startLeft + e.clientX - startMouseX + "px";
+    modal.style.top = startTop + e.clientY - startMouseY + "px";
+  }
+
+  function onDragEnd() {
+    dragging = false;
+  }
+
+  handles.forEach((h) => {
+    h.addEventListener("mousedown", onDragStart);
+    h.addEventListener("touchstart", (e) => onDragStart(e.touches[0]), {
+      passive: false,
+    });
+  });
+  document.addEventListener("mousemove", onDragMove);
+  document.addEventListener("touchmove", (e) => onDragMove(e.touches[0]), {
+    passive: false,
+  });
+  document.addEventListener("mouseup", onDragEnd);
+  document.addEventListener("touchend", onDragEnd);
 }
