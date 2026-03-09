@@ -394,6 +394,7 @@ function renderChart() {
 
   // first time: create the chart
   const ctx = document.getElementById("stats-chart").getContext("2d");
+  if (typeof Chart === "undefined") return;
   chart = new Chart(ctx, {
     type: "doughnut",
     data: {
@@ -1019,7 +1020,6 @@ function playChime(type = "task") {
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.5);
-
   } else if (type === "timer") {
     // little C-E-G melody for timer done
     [523, 659, 784].forEach((freq, i) => {
@@ -1030,7 +1030,10 @@ function playChime(type = "task") {
       osc.frequency.value = freq;
       osc.type = "sine";
       gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.18);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.35);
+      gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        ctx.currentTime + i * 0.18 + 0.35,
+      );
       osc.start(ctx.currentTime + i * 0.18);
       osc.stop(ctx.currentTime + i * 0.18 + 0.35);
     });
@@ -1045,5 +1048,3 @@ function initializeSounds() {
     updateSoundBtn();
   });
 }
-
-
