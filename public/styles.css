@@ -112,6 +112,7 @@ h1 {
   paint-order: stroke fill;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   -webkit-text-stroke: 0.1px #1a1a2e;
   background-clip: text;
@@ -223,17 +224,18 @@ h2 {
 .task-tabs {
   position: relative;
   display: flex;
-  background: transparent;
-  border: none;
-  border-radius: 0;
+  border-radius: 999px;
   padding: 0.25rem 0;
   gap: 4px;
   margin: 0 auto 1rem;
-  width: 100%;
+  width: stretch;
   max-width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
   justify-content: center;
+  background: linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
+  border: 2px solid transparent;
+  filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
 }
 
 /* tab btns — plain floating labels */
@@ -258,10 +260,10 @@ h2 {
 
 /* active tab: light pill, full opacity */
 .tab-btn.active {
-  background: rgb(26 26 46 / 30%);
-  border: 1.5px solid rgba(255, 255, 255, 0.5);
-  filter: drop-shadow(0 1px 5px rgba(193, 77, 204, 0.4));
-  opacity: 1;
+    border: 1px solid rgb(255 255 255 / 11%);
+    filter: drop-shadow(2 3px 5px rgba(193, 77, 204, 0.4));
+    opacity: 1;
+    background: linear-gradient(rgb(255 255 255 / 65%), rgb(255 255 255 / 29%)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
 }
 
 /* sliding indicator — hidden, active tab uses border instead */
@@ -289,7 +291,7 @@ h2 {
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 1.5px;
+  -webkit-text-stroke: 1px;
   background-clip: text;
   filter: brightness(1) saturate(3) drop-shadow(1px 2px 4px purple);
 }
@@ -341,12 +343,8 @@ h2 {
 #task-input {
   flex: 1;
   padding: 0.6rem 1.2rem;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.96))
-      padding-box,
-    linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
-      border-box;
-  border: 2px solid transparent;
+  background: linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
+  border: 3px solid transparent;
   border-radius: 999px;
   font-size: 1rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -666,16 +664,12 @@ h2 {
 
 /* each tab's completed group card */
 .completed-group {
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1))
-      padding-box,
-    linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
-      border-box;
-  border: 3px solid transparent;
   border-radius: 16px;
   padding: 0.75rem;
   backdrop-filter: blur(6px);
   animation: none;
+  background: linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
+  border: 5px solid transparent;
 }
 
 /* tasks hidden until group is clicked open */
@@ -1327,9 +1321,23 @@ h2 {
 footer {
   text-align: center;
   padding: 1.5rem;
-  font-size: 0.95rem;
-  color: #9b59b6;
-  font-style: normal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#quote {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.5rem 1.5rem;
+  border-radius: 999px;
+  background:
+    linear-gradient(rgba(255,255,255,0.82), rgba(255,255,255,0.82)) padding-box,
+    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
+  border: 5px solid transparent;
+  font-family: "Popstar", sans-serif;
+  font-size: 0.88rem;
+  color: #7b3fa0;
   letter-spacing: 0.03em;
 }
 

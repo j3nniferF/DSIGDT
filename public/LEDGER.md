@@ -178,3 +178,44 @@ Input / UX Improvements
 input suggestions
 reminders popup edits suggestions or add ins?
 -task sugesstions
+
+        <!-- 2.9 -->
+
+DO NEXT (in order)
+
+Footer quote — rainbow text treatment
+Chart.js + stats tracking (dumbit_stats object)
+Tab edit modal CSS polish
+About modal polish
+All popups/modals cohesive styling pass
+Timer bugs
+
+Conic drain triangle visible behind modal
+Card titles weird/hard to read in running view
+No Reset button during running state
+Close X conflicts with drag cursor
+Timer numbers need to be bigger
+No confetti after Done!
+Full-screen focus mode
+"Done or 5 more minutes?" before reward
+Active bugs
+
+Reset modal: "Nevermind!" → X button
+About modal auto-close bug
+Footer quote rainbow styling
+Reminders banner style + UX
+Delete test-tabs.html
+Wishlist (after required stuff)
+
+Stats: dumbit_stats object, donut→line chart, "BIG 13/29 DONE!" banner
+Random task + "PICK ME A RANDOM TASK!" button
+Dblclick task → opens timer pre-selected
+Timer: standalone popup, full-screen focus mode, drum roller
+Done! confetti
+Welcome/first-run screen
+Cohesive style system (borders, buttons, titles, icons, modals)
+Colorized gradient titles per modal
+Mobile layout restyling pass
+Animations: icon shake, tab swing, card pops, text tracking-out, heartbeat timer, border animations
+Slow shimmer + pink on h1 title
+Advanced sounds, dark mode
