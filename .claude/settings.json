@@ -7,7 +7,8 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:api.github.com)",
-      "WebFetch(domain:codepen.io)"
+      "WebFetch(domain:codepen.io)",
+      "Bash(gh api repos/j3nniferF/DSIGDT-prebake/contents/public/index.html --jq '.content')"
     ]
   }
 }

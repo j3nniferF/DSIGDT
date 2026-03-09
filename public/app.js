@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeReward();
   initializeResetModal();
   initializeAboutModal();
+  initializeSounds();
   initializeRemindersSettings();
   initializeTabEditModal();
 });
@@ -238,6 +239,7 @@ function toggleTask(id) {
   renderTasks();
 
   if (!wasCompleted) {
+    playChime("task");
     // ..everyone likes prizes, so here's some fun confetti after finishing any single task..
     confetti({ particleCount: 666, spread: 50, origin: { y: 0.6 } });
 
@@ -639,6 +641,9 @@ function getDialSeconds() {
   return mins * 60 + secs;
 }
 
+// sound toggle — saved to localStorage so it remembers between visits
+let soundEnabled = JSON.parse(localStorage.getItem("dsigdt_sound") ?? "true");
+
 // tracks which task ID is running in the timer
 let selectedTimerTaskId = null;
 
@@ -712,6 +717,7 @@ function startCountdown() {
 
 // show the time's up modal with task info filled in
 function showTimesUp() {
+  playChime("timer");
   const timerOverlay = document.getElementById("timer-overlay");
   const timesupOverlay = document.getElementById("timesup-overlay");
   const taskNameEl = document.getElementById("timesup-task-name");
@@ -772,7 +778,7 @@ function initializeTimer() {
         ? selectedOption.textContent.trim()
         : "✨ any stuff! ✨";
 
-     // reset draining border to full before countdown starts
+    // reset draining border to full before countdown starts
     modal.style.setProperty("--timer-pct", 100);
     modal.classList.remove("is-warning", "is-danger");
 
@@ -928,7 +934,8 @@ function initializeResetModal() {
 
 // about modal
 function initializeAboutModal() {
-  document.getElementById("about-btn").addEventListener("click", () => {
+  document.getElementById("about-btn").addEventListener("click", (e) => {
+    e.stopPropagation();
     document.getElementById("about-overlay").classList.remove("is-hidden");
   });
   document.getElementById("about-close").addEventListener("click", () => {
@@ -987,3 +994,56 @@ function initializeTimerDrag() {
   document.addEventListener("mouseup", onDragEnd);
   document.addEventListener("touchend", onDragEnd);
 }
+
+// update the sound button to show on/off state visually
+function updateSoundBtn() {
+  const btn = document.getElementById("sound-btn");
+  btn.style.opacity = soundEnabled ? "1" : "0.4";
+  btn.title = soundEnabled ? "Sound: ON" : "Sound: OFF";
+}
+
+// play a chime using the Web Audio API — no files needed!
+function playChime(type = "task") {
+  if (!soundEnabled) return;
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+  if (type === "task") {
+    // single soft chime for task complete
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 523; // C5
+    osc.type = "sine";
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.5);
+
+  } else if (type === "timer") {
+    // little C-E-G melody for timer done
+    [523, 659, 784].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.35);
+      osc.start(ctx.currentTime + i * 0.18);
+      osc.stop(ctx.currentTime + i * 0.18 + 0.35);
+    });
+  }
+}
+
+function initializeSounds() {
+  updateSoundBtn();
+  document.getElementById("sound-btn").addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem("dsigdt_sound", JSON.stringify(soundEnabled));
+    updateSoundBtn();
+  });
+}
+
+
