@@ -1,6 +1,7 @@
 let tasks = [];
 let chart = null;
 let tabs = [];
+let activeTabId = "tab_dumb";
 let editingTabId = null;
 
 // reminder popup msgs
