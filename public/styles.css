@@ -225,16 +225,16 @@ h2 {
   position: relative;
   display: flex;
   border-radius: 999px;
-  padding: 0.25rem 0;
+  padding: 0.25rem 0.3rem;
   gap: 4px;
   margin: 0 auto 1rem;
-  width: stretch;
+  width: fit-content;
   max-width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
   justify-content: center;
   background: linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
-  border: 2px solid transparent;
+  border: 3px solid transparent;
   filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
 }
 
@@ -245,7 +245,7 @@ h2 {
   background: transparent;
   border-radius: 999px;
   padding: 0.25rem 0.85rem;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Popstar';
   font-size: clamp(1.3rem, 2.8vw, 1.1rem);
   letter-spacing: 0.08em;
   white-space: nowrap;
@@ -253,17 +253,18 @@ h2 {
   position: relative;
   z-index: 1;
   font-weight: 900;
-  -webkit-text-stroke: 0.5px rgba(26, 26, 46, 0.35);
+  -webkit-text-stroke: 0.1px rgb(64 64 241 / 35%);
   transition: all 0.2s ease;
   opacity: 0.6;
 }
 
 /* active tab: light pill, full opacity */
 .tab-btn.active {
-    border: 1px solid rgb(255 255 255 / 11%);
-    filter: drop-shadow(2 3px 5px rgba(193, 77, 204, 0.4));
-    opacity: 1;
-    background: linear-gradient(rgb(255 255 255 / 65%), rgb(255 255 255 / 29%)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
+  border: 2px solid rgba(231, 9, 172, 0.377);
+  filter: drop-shadow(2 3px 5px rgba(193, 77, 204, 0.4));
+  opacity: 1;
+  background: linear-gradient(rgb(255 255 255 / 74%), rgb(255 255 255 / 98%)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
+  filter: drop-shadow(1.8px 3.7px 8.6px rgba(247, 68, 214, 0.589));
 }
 
 /* sliding indicator — hidden, active tab uses border instead */
@@ -291,7 +292,7 @@ h2 {
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 1px;
+  -webkit-text-stroke: .55px;
   background-clip: text;
   filter: brightness(1) saturate(3) drop-shadow(1px 2px 4px purple);
 }
@@ -1335,10 +1336,24 @@ footer {
     linear-gradient(rgba(255,255,255,0.82), rgba(255,255,255,0.82)) padding-box,
     linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
   border: 5px solid transparent;
-  font-family: "Popstar", sans-serif;
-  font-size: 0.88rem;
-  color: #7b3fa0;
+  /* font-family: "Popstar", sans-serif;         maybe? too much? */
+  font-size: 1.30rem;
+  background: url("assets/textures/prettybg.png") center / cover padding-box,
+    linear-gradient(
+        to top right,
+        #ff3388,
+        #dd44ff,
+        #5599ff,
+        #44ddaa,
+        #ffdd44,
+        #ff3388
+      )
+      border-box;
+  filter: drop-shadow(2px 6px 22px rgba(130, 60, 200, 0.7));
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   letter-spacing: 0.03em;
+  font-weight: 200;
+
 }
 
 /* shimmer sweep across title text */
@@ -1394,7 +1409,7 @@ footer {
 
   .tab-btn {
     flex: 0 0 auto;
-    padding: 0.4rem 0.55rem;
+    padding: 0.01rem 0.55rem;
     letter-spacing: 0.02em;
     font-size: clamp(0.65rem, 3.5vw, 0.9rem);
   }
