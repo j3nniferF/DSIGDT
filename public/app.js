@@ -177,19 +177,6 @@ function renderCompleted() {
 
   empty.classList.add("is-hidden");
 
-  const totalAll = tasks.length;
-  const doneAll = tasks.filter((t) => t.completed).length;
-
-  const allGroup = document.createElement("div");
-  allGroup.className = "completed-group completed-group--all";
-  allGroup.innerHTML = `
-    <div class="completed-group-header">
-      <span class="completed-tab-name">ALL STUFF</span>
-      <span class="completed-stat">${doneAll} / ${totalAll} ♡</span>
-    </div>
-  `;
-  list.appendChild(allGroup);
-
   tabs.forEach((tab) => {
     const tabTotal = tasks.filter((t) => t.tabId === tab.id).length;
     const tabDone = tasks.filter(
@@ -198,31 +185,90 @@ function renderCompleted() {
 
     if (tabDone === 0) return;
 
-    const group = document.createElement("div");
-    group.className = "completed-group";
+    // outside shell
+    const card = document.createElement("div");
+    card.className = "flip-card";
 
-    const header = document.createElement("div");
-    header.className = "completed-group-header";
-    header.innerHTML = `
-      <span class="completed-tab-name">${tab.name.toUpperCase()}</span>
-      <span class="completed-stat">${tabDone} / ${tabTotal} </span>
+    // rotating bits
+    const inner = document.createElement("div");
+    inner.className = "flip-card-inner";
+
+    // front
+    const front = document.createElement("div");
+    front.className = "flip-card-front";
+    front.innerHTML = `
+      <span class="flip-card-heart">♡</span>
+      <div class="flip-card-tab-pill">
+        <span class="flip-card-tab-name">${tab.name}</span>
+      </div>
+      <span class="flip-card-count">${tabDone} of ${tabTotal}</span>
     `;
-    group.appendChild(header);
 
-    header.addEventListener("click", () => {
-      group.classList.toggle("is-open");
-    });
+    // back face
+    const back = document.createElement("div");
+    back.className = "flip-card-back";
 
     tasks
       .filter((t) => t.tabId === tab.id && t.completed)
       .forEach((task) => {
-        const li = buildTaskItem(task);
-        li.classList.add("completed");
-        group.appendChild(li);
+        const item = buildTaskItem(task);
+        item.classList.add("completed");
+        back.appendChild(item);
       });
 
-    list.appendChild(group);
+    // click card anywhere → toggle flip
+    card.addEventListener("click", () => {
+      card.classList.toggle("is-flipped");
+    });
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    card.appendChild(inner);
+    list.appendChild(card);
   });
+
+  // ALL card — summary of everything completed across all tabs
+  const allTotal = tasks.length;
+  const allDone = tasks.filter((t) => t.completed).length;
+
+  if (allDone > 0) {
+    const card = document.createElement("div");
+    card.className = "flip-card flip-card--all";
+
+    const inner = document.createElement("div");
+    inner.className = "flip-card-inner";
+
+    const front = document.createElement("div");
+    front.className = "flip-card-front";
+    front.innerHTML = `
+      <span class="flip-card-heart">♡</span>
+      <div class="flip-card-tab-pill">
+        <span class="flip-card-tab-name">ALL</span>
+      </div>
+      <span class="flip-card-count">${allDone} of ${allTotal}</span>
+    `;
+
+    const back = document.createElement("div");
+    back.className = "flip-card-back";
+
+    tasks
+      .filter((t) => t.completed)
+      .forEach((task) => {
+        const item = buildTaskItem(task);
+        item.classList.add("completed");
+        back.appendChild(item);
+      });
+
+    // click card anywhere → toggle flip
+    card.addEventListener("click", () => {
+      card.classList.toggle("is-flipped");
+    });
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    card.appendChild(inner);
+    list.appendChild(card);
+  }
 }
 
 // toggle + delete + save + load
@@ -394,7 +440,9 @@ function renderChart() {
   }
 
   // first time: create the chart
-  const ctx = document.getElementById("stats-chart").getContext("2d");
+  const canvasEl = document.getElementById("stats-chart");
+  if (!canvasEl) return;
+  const ctx = canvasEl.getContext("2d");
   if (typeof Chart === "undefined") return;
   chart = new Chart(ctx, {
     type: "doughnut",

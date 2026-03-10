@@ -16,7 +16,7 @@
 
     <!-- 1: SETUP -->
     <div class="timer-setup-view">
-      <h2 class="reward-title timer-drag-handle">⏱️ TIMER</h2>
+      <h2 class="reward-title timer-drag-handle">TIMER</h2>
 
       <p class="timer-section-label">choose some stuff:</p>
       <select id="timer-task-select" class="timer-task-select">
@@ -85,7 +85,7 @@
 </div>
       <main id="app">
         <section class="tasks-card">
-          <h2>✨ My Stuff ✨</h2>
+          <h2>My Stuff</h2>
           <div id="task-tabs" class="task-tabs"></div>
           <div class="task-input-row">
             <input
@@ -97,20 +97,14 @@
             <button id="add-task-btn">+</button>
           </div>
           <ul id="task-list"></ul>
-          <p id="tasks-empty" class="empty-state">
-            ✨ Add some stuff above! ✨
-          </p>
+          <p id="tasks-empty" class="empty-state"></p>
         </section>
         <section class="tasks-card" id="completed-card">
-          <h2>✨ Stuff I Got Done ✨</h2>
-          <p id="stats-summary" class="stats-summary">
-            + Add some STUFF to get started!
-          </p>
-          <canvas id="stats-chart"></canvas>
+          <h2>Done</h2>
+          <p id="stats-summary" class="stats-summary"></p>
+          <!-- <canvas id="stats-chart"></canvas> -->
           <div id="completed-list"></div>
-          <p id="completed-empty" class="empty-state">
-            ✨ Get some stuff done! ✨
-          </p>
+          <p id="completed-empty" class="empty-state"></p>
         </section>
       </main>
       <footer>
@@ -195,7 +189,7 @@
     <!-- reset confirm modal -->
     <div id="reset-overlay" class="reward-overlay is-hidden">
       <div class="reward-modal">
-        <h2 class="reward-title">Reset Everything?</h2>
+        <h2 class="reward-title">Reset <br> Everything?</h2>
         <p class="reward-subtitle">
            This will wipe and reset ALL your STUFF!
         </p>

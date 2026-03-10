@@ -90,9 +90,10 @@ header {
     cover,
     300% 300%;
   border: 10px solid transparent;
-  padding: 1rem;
+  padding: 0.75rem 2rem;
   text-align: center;
-  margin-bottom: 1.5rem;
+  width: fit-content;
+  margin: 0 auto 1.5rem;
   box-shadow:
     0 0 0 3.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
@@ -113,8 +114,10 @@ h1 {
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   background-clip: text;
+  background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0.1px #1a1a2e;
+  -webkit-text-stroke: 0.7px #1a1a2e;
   background-clip: text;
   display: flex;
   flex-direction: column;
@@ -161,9 +164,8 @@ h1 {
   border: 9px solid transparent;
   border-radius: 30px;
   padding: 1.5rem;
-  margin-top: 1.5rem;
-  padding-top: 1.75rem;
-  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
   box-shadow: 0 4px 24px rgba(193, 77, 204, 0.35);
   box-shadow:
     0 0 0 3.5px #1a1a2e,
@@ -182,89 +184,94 @@ h2 {
   font-family: "Popstar", sans-serif;
   width: fit-content;
   background: url("assets/textures/prettybg.png") center / cover;
-  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.1px #1a1a2e;
   background-clip: text;
   font-size: clamp(1.4rem, 5vw, 2.6rem);
   text-align: center;
   paint-order: stroke fill;
-  -webkit-text-stroke: .4px;
+  -webkit-text-stroke: 0.4px;
   margin: 0.2rem auto 0.8rem;
   white-space: nowrap;
   border-radius: 999px;
   padding: 0.15em 0.75em;
-  filter: brightness(1) saturate(3)
-    drop-shadow(2px 3px 8px rgba(120, 0, 180, 0.5)); */
-  /* box-shadow:
-    0 0 0 2.5px #1a1a2e,
-    inset 0 0 0 2px #1a1a2e;    */
 }
 
-/* floating label ? sits on the top border of the card */
+/* banner strip — spans full card width at the top */
 .tasks-card > h2 {
-  position: absolute;
-  font-size: clamp(2.4rem, 4.5vw, 3.7rem);
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  margin: 0;
+  position: relative;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(3rem, 6vw, 4rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 0 0.75rem 0;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(
+    to right,
+    #ff6eb4,
+    #dd44ff,
+    #5599ff,
+    #44ddaa,
+    #ffdd44
+  );
+  width: inherit;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-text-stroke: 2px #1a1a2e;
+  filter: brightness(1.1) saturate(1.2);
+  filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.45));
 }
 
 .tasks-card > h2::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* background: rgba(255, 255, 255, 0.78); */
-  border-radius: 999px;
-  z-index: -1;
+  content: none;
 }
 
 /* tab btns — no container, just floating labels */
 .task-tabs {
   position: relative;
   display: flex;
-  border-radius: 999px;
-  padding: 0.25rem 0.3rem;
-  gap: 4px;
+  padding: 0.25rem 0;
+  gap: 0;
   margin: 0 auto 1rem;
-  width: fit-content;
-  max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
-  justify-content: center;
-  background: linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
-  border: 3px solid transparent;
-  filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
+  width: 100%;
+  justify-content: space-around;
+  background: transparent;
+  border: none;
 }
 
-/* tab btns — plain floating labels */
+/* tab btns — all get individual pill, like flip card tabs */
 .tab-btn {
-  flex: 0 0 auto;
-  border: 1.5px solid transparent;
-  background: transparent;
+  flex: 1 1 1;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(rgb(255 255 255 / 50%), rgb(255 255 255 / 65%)) padding-box,
+    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+      border-box;
   border-radius: 999px;
-  padding: 0.25rem 0.85rem;
-  font-family: 'Popstar';
-  font-size: clamp(1.3rem, 2.8vw, 1.1rem);
-  letter-spacing: 0.08em;
+  padding: 0rem 1.3rem !important;
+  font-family: "Popstar";
+  font-size: clamp(1.3rem, 2.8vw, 1.9rem);
+  letter-spacing: 0.05em;
   white-space: nowrap;
   cursor: pointer;
   position: relative;
   z-index: 1;
   font-weight: 900;
-  -webkit-text-stroke: 0.1px rgb(64 64 241 / 35%);
   transition: all 0.2s ease;
-  opacity: 0.6;
+  opacity: 0.65;
+  filter: drop-shadow(1px 3px 6px rgba(0, 0, 0, 0.3));
 }
 
-/* active tab: light pill, full opacity */
+/* active tab: more opaque pill, full opacity, stronger shadow */
 .tab-btn.active {
-  border: 2px solid rgba(231, 9, 172, 0.377);
-  filter: drop-shadow(2 3px 5px rgba(193, 77, 204, 0.4));
   opacity: 1;
-  background: linear-gradient(rgb(255 255 255 / 74%), rgb(255 255 255 / 98%)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
-  filter: drop-shadow(1.8px 3.7px 8.6px rgba(247, 68, 214, 0.589));
+  background:
+    linear-gradient(rgb(255 255 255 / 80%), rgb(255 255 255 / 95%)) padding-box,
+    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+      border-box;
+  filter: drop-shadow(1.8px 3.7px 10px rgba(247, 68, 214, 0.6));
 }
 
 /* sliding indicator — hidden, active tab uses border instead */
@@ -272,29 +279,22 @@ h2 {
   display: none;
 }
 
-/* inactive tab text: prettybg sparkle, muted by parent opacity */
+/* tab text: popstar sparkle + thin black stroke */
 .tab-btn span {
-  background: linear-gradient(
-    to right,
-    #ff3388,
-    #dd44ff,
-    #5599ff,
-    #44ddaa,
-    #ffdd44
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: saturate(1.5) drop-shadow(0 1px 4px rgba(200, 80, 255, 0.35));
-}
-
-/* active tab text: bold rainbow gradient OR INACTiVE?! */
-.tab-btn.active span {
+  font-family: "Popstar", sans-serif;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: .55px;
   background-clip: text;
-  filter: brightness(1) saturate(3) drop-shadow(1px 2px 4px purple);
+  paint-order: stroke fill;
+  -webkit-text-stroke: 0.8px #1a1a2e;
+  filter: brightness(1.1) saturate(4);
+}
+
+/* active tab text: brighter, stronger stroke */
+.tab-btn.active span {
+  filter: brightness(1.2) saturate(5);
+  -webkit-text-stroke: 0.8px #1a1a2e;
 }
 
 /* + tab btn darker to stand out */
@@ -344,7 +344,11 @@ h2 {
 #task-input {
   flex: 1;
   padding: 0.6rem 1.2rem;
-  background: linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82))
+      padding-box,
+    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+      border-box;
   border: 3px solid transparent;
   border-radius: 999px;
   font-size: 1rem;
@@ -458,12 +462,6 @@ h2 {
   height: 18px;
   accent-color: var(--purple);
   cursor: pointer;
-}
-
-/* X + grey when stuff completed */
-.task-item.completed label {
-  /* text-decoration: line-through; */
-  color: #777575;
 }
 
 /* ♡ on completed tasks in groups */
@@ -635,7 +633,7 @@ h2 {
   max-height: 220px;
   max-width: 220px;
   margin: 0 auto;
-  display: block;
+  display: none; /* hidden while testing flip cards */
 }
 
 /* empty message when no completed task yet */
@@ -653,97 +651,168 @@ h2 {
   font-size: 1.1rem;
   margin-bottom: 1rem;
   letter-spacing: 0.03em;
+  display: none; /* hidden while testing flip cards */
 }
 
-/* completed groups grid */
+/* flip card for completed */
 #completed-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-  margin-top: 0.75rem;
-}
-
-/* each tab's completed group card */
-.completed-group {
-  border-radius: 16px;
-  padding: 0.75rem;
-  backdrop-filter: blur(6px);
-  animation: none;
-  background: linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box, linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
-  border: 5px solid transparent;
-}
-
-/* tasks hidden until group is clicked open */
-.completed-group .task-item {
-  display: none;
-}
-
-.completed-group.is-open .task-item {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.5rem 0.25rem 1rem;
 }
 
-.completed-group-header {
+/* outside shell */
+.flip-card {
+  flex: 1 1 140px;
+  height: 210px;
+  perspective: 1000px;
   cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
-.completed-group-header::after {
-  content: "▸";
-  color: var(--purple);
-  opacity: 0.5;
-  font-size: 0.8rem;
-  transition: transform 0.2s;
+.flip-card:hover {
+  transform: scale(1.04) translateY(-3px);
 }
 
-.completed-group.is-open .completed-group-header::after {
-  transform: rotate(90deg);
+/* flippy bit! */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.completed-group--all .completed-group-header {
-  cursor: default;
+/* js for click */
+.flip-card.is-flipped .flip-card-inner {
+  transform: rotateY(180deg);
 }
 
-.completed-group--all .completed-group-header::after {
-  content: "";
-}
-
-/* tab name + stat row */
-.completed-group-header {
+/* keeps styles */
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
+    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+      border-box;
+  backface-visibility: hidden;
   display: flex;
-  align-items: center;
   flex-direction: column;
-  margin-bottom: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  gap: 0.5rem;
 }
 
-/* tab name: matches h2 style, smaller */
-.completed-tab-name {
+/* back starts rotated */
+.flip-card-back {
+  transform: rotateY(180deg);
+  justify-content: flex-start;
+  padding-top: 0.75rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+/* active-tab-style pill wrapper around the name */
+.flip-card-tab-pill {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(rgb(255 255 255 / 74%), rgb(255 255 255 / 98%)) padding-box,
+    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+      border-box;
+  padding: 0.2rem 0.9rem;
+  filter: drop-shadow(1.8px 3.7px 8.6px rgba(247, 68, 214, 0.45));
+  width: 90%;
+  text-align: center;
+}
+
+/* tab name on front */
+.flip-card-tab-name {
   font-family: "Popstar", sans-serif;
-  font-size: 2rem;
+  font-size: 2.4rem;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: brightness(1.2) saturate(5);
+  text-align: center;
   paint-order: stroke fill;
-  -webkit-text-stroke: 1px;
-  filter: brightness(1) saturate(3) drop-shadow(2px 3px 5px purple);
+  -webkit-text-stroke: 1.8px #1a1a2e;
 }
 
-/* x/y ♡ badge */
-.completed-stat {
-  font-size: 1.2rem;
-  color: var(--purple);
-  opacity: 0.6;
-  font-weight: 400;
+/* single decorative heart above name */
+.flip-card-heart {
+  font-size: 2rem;
+  background: linear-gradient(
+    to right,
+    #ff6eb4,
+    #dd44ff,
+    #5599ff,
+    #44ddaa,
+    #ffdd44
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* mobile: stack to 1 col */
-@media (max-width: 500px) {
-  #completed-list {
-    grid-template-columns: 1fr;
-  }
+/* "X of Y" count — big, rainbow, faded */
+.flip-card-count {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+  background: linear-gradient(
+    to right,
+    #ff6eb4,
+    #dd44ff,
+    #5599ff,
+    #44ddaa,
+    #ffdd44
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.8;
 }
 
-/* hide check in completed ♡ is the bullet */
-.completed-group .task-item input[type="checkbox"] {
+/* flip back btn hidden — click card to flip back instead */
+.flip-back-btn {
+  display: none;
+}
+
+/* ALL card gets a gold shimmer border */
+.flip-card--all .flip-card-front,
+.flip-card--all .flip-card-back {
+  background:
+    linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
+    linear-gradient(to right, #ffd700, #ff8c00, #ff69b4, #da70d6, #ffd700)
+      border-box;
+}
+
+/* tasks on back */
+.flip-card-back .task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #555;
+  width: 100%;
+}
+
+.flip-card-back .task-item label::before {
+  content: "♡  ";
+  color: #ff68c6;
+}
+
+.flip-card-back .task-item input[type="checkbox"] {
   display: none;
 }
 
@@ -856,9 +925,14 @@ h2 {
 /* timer modal — blue*/
 #timer-overlay .reward-modal {
   background:
-    linear-gradient(135deg, rgba(185, 215, 255, 0.97), rgba(165, 200, 255, 0.97)) padding-box,
+    linear-gradient(
+        135deg,
+        rgba(185, 215, 255, 0.97),
+        rgba(165, 200, 255, 0.97)
+      )
+      padding-box,
     linear-gradient(120deg, #5599ff, #44ddff) border-box;
-      max-width: min(320px, calc(100vw - 2rem));
+  max-width: min(320px, calc(100vw - 2rem));
   padding: 1.5rem 1.25rem;
 }
 
@@ -903,19 +977,25 @@ h2 {
 /* blue X close button */
 #timer-overlay .reward-close-X {
   background:
-    linear-gradient(135deg, rgba(185, 215, 255, 0.9), rgba(165, 200, 255, 0.9)) padding-box,
+    linear-gradient(135deg, rgba(185, 215, 255, 0.9), rgba(165, 200, 255, 0.9))
+      padding-box,
     linear-gradient(120deg, #5599ff, #44ddff) border-box;
   color: #1a1a2e;
 }
 
 /* state-based view switching — classes live on #timer-modal */
-.timer-modal.is-setup .timer-running-view   { display: none; }
-.timer-modal.is-running .timer-setup-view   { display: none; }
+.timer-modal.is-setup .timer-running-view {
+  display: none;
+}
+.timer-modal.is-running .timer-setup-view {
+  display: none;
+}
 
 /* shared timer action buttons */
 .timer-action-btn {
   background:
-    linear-gradient(rgba(185, 215, 255, 0.5), rgba(165, 200, 255, 0.8)) padding-box,
+    linear-gradient(rgba(185, 215, 255, 0.5), rgba(165, 200, 255, 0.8))
+      padding-box,
     linear-gradient(120deg, #5599ff, #44ddff) border-box;
   border: 2px solid transparent;
   border-radius: 999px;
@@ -930,11 +1010,22 @@ h2 {
 
 /* heartbeat animation on the countdown numbers */
 @keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  14%       { transform: scale(1.08); }
-  28%       { transform: scale(1); }
-  42%       { transform: scale(1.05); }
-  70%       { transform: scale(1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.08);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(1);
+  }
 }
 
 .timer-display.is-running {
@@ -944,7 +1035,12 @@ h2 {
 /* timesup modal — blue themed */
 #timesup-overlay .reward-modal {
   background:
-    linear-gradient(135deg, rgba(185, 215, 255, 0.97), rgba(165, 200, 255, 0.97)) padding-box,
+    linear-gradient(
+        135deg,
+        rgba(185, 215, 255, 0.97),
+        rgba(165, 200, 255, 0.97)
+      )
+      padding-box,
     linear-gradient(120deg, #5599ff, #44ddff) border-box;
 }
 
@@ -1059,7 +1155,14 @@ h2 {
   margin: 0.5rem auto 1rem;
   font-size: 2.4rem;
   letter-spacing: 0.05em;
-  background: linear-gradient(25deg, #5599ff, #1a3a6e, #44ddff, #1a3a6e, #5599ff);
+  background: linear-gradient(
+    25deg,
+    #5599ff,
+    #1a3a6e,
+    #44ddff,
+    #1a3a6e,
+    #5599ff
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1097,8 +1200,9 @@ h2 {
 }
 
 .timer-buttons button {
-    background:
-    linear-gradient(rgba(200, 225, 255, 0.9), rgba(180, 210, 255, 0.9)) padding-box,
+  background:
+    linear-gradient(rgba(200, 225, 255, 0.9), rgba(180, 210, 255, 0.9))
+      padding-box,
     linear-gradient(120deg, #5599ff, #44ddff) border-box;
   border: 2px solid transparent;
   color: #1a3a6e;
@@ -1330,30 +1434,19 @@ footer {
 #quote {
   display: inline-block;
   width: fit-content;
-  padding: 0.5rem 1.5rem;
+  padding: 0.3rem 1.4rem;
   border-radius: 999px;
+  border: 3px solid transparent;
   background:
-    linear-gradient(rgba(255,255,255,0.82), rgba(255,255,255,0.82)) padding-box,
-    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44) border-box;
-  border: 5px solid transparent;
-  /* font-family: "Popstar", sans-serif;         maybe? too much? */
-  font-size: 1.30rem;
-  background: url("assets/textures/prettybg.png") center / cover padding-box,
-    linear-gradient(
-        to top right,
-        #ff3388,
-        #dd44ff,
-        #5599ff,
-        #44ddaa,
-        #ffdd44,
-        #ff3388
-      )
+    linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
+    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
       border-box;
-  filter: drop-shadow(2px 6px 22px rgba(130, 60, 200, 0.7));
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  letter-spacing: 0.03em;
+  font-size: 0.95rem;
   font-weight: 200;
-
+  letter-spacing: 0.04em;
+  color: #7b3fa0;
+  filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
 }
 
 /* shimmer sweep across title text */
@@ -1407,11 +1500,23 @@ footer {
     padding: 1rem;
   }
 
+  .tasks-card > h2 {
+    font-size: clamp(2.6rem, 7.7vw, 3.7rem);
+    letter-spacing: 0.12em;
+  }
+
+  .task-tabs {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    width: 100%;
+  }
+
   .tab-btn {
     flex: 0 0 auto;
-    padding: 0.01rem 0.55rem;
+    padding: 0.6rem 1.4rem;
     letter-spacing: 0.02em;
-    font-size: clamp(0.65rem, 3.5vw, 0.9rem);
+    font-size: 2rem;
   }
 
   .title-main {
@@ -1622,16 +1727,17 @@ footer {
 
 /* reset title — smaller than default reward-title */
 #reset-overlay .reward-title {
-  font-size: clamp(1.6rem, 3vw, 1.5rem);
+  font-size: clamp(2.4rem, 3vw, 1.5rem);
 }
 
 /* X btn for pink reset modal */
 .reset-x-btn {
   position: absolute;
-  top: .2rem;
-  right: .2rem;
+  top: 0.2rem;
+  right: 0.2rem;
   background:
-    linear-gradient(rgba(255, 215, 235, 0.9), rgba(255, 195, 220, 0.9)) padding-box,
+    linear-gradient(rgba(255, 215, 235, 0.9), rgba(255, 195, 220, 0.9))
+      padding-box,
     linear-gradient(120deg, #dd6798, #ea6896) border-box;
   border: 2px solid transparent;
   color: #1a1a1a;
@@ -1790,7 +1896,8 @@ footer {
 /* bye stuff */
 .reset-confirm-btn {
   background:
-    linear-gradient(rgba(255, 215, 235, 0.6), rgba(255, 195, 220, 0.9)) padding-box,
+    linear-gradient(rgba(255, 215, 235, 0.6), rgba(255, 195, 220, 0.9))
+      padding-box,
     linear-gradient(120deg, #dd6798, #ea6896) border-box;
   border: 2px solid transparent;
   color: #1a1a1a;

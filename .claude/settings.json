@@ -12,7 +12,8 @@
       "Bash(node --check public/app.js)",
       "Bash(git add public/app.js)",
       "Bash(git commit -m \"fix: add missing activeTabId global declaration\")",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(node --check /Users/jenniferhandel/Documents/GitHub/dsigdt/public/app.js)"
     ]
   }
 }
