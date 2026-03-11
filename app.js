@@ -8,12 +8,12 @@ let editingTabId = null;
 let reminderSettings = {
   frequency: 20,
   messages: [
-    "♡ Unclench your jaw! ♡",
-    "♡ Drink some water! ♡",
-    "♡ Take a deep breath! ♡",
-    "♡ Get yourself a snack! ♡",
-    "♡ Stretch your shoulders! ♡",
-    "♡ Check your posture! ♡",
+    "♡ Unclench your jaw!",
+    "♡ Drink some water!",
+    "♡ Take a deep breath!",
+    "♡ Get yourself a snack!",
+    "♡ Stretch your shoulders!",
+    "♡ Check your posture!",
   ],
 };
 let reminderIntervalId = null;
@@ -283,6 +283,14 @@ function toggleTask(id) {
     return t;
   });
   saveTasks();
+
+  if (!wasCompleted) {
+    const stats = loadStats();
+    const today = new Date().toISOString().split("T")[0];
+    stats.completedTasks += 1;
+    stats.completionByDate[today] = (stats.completionByDate[today] || 0) + 1;
+    saveStats(stats);
+  }
   renderTasks();
 
   if (!wasCompleted) {
@@ -314,6 +322,17 @@ function loadTasks() {
     tasks = JSON.parse(saved);
   }
   renderTasks();
+}
+
+function loadStats() {
+  const saved = localStorage.getItem("dsigdt_stats");
+  return saved
+    ? JSON.parse(saved)
+    : { completedTasks: 0, timerSessions: 0, completionByDate: {} };
+}
+
+function saveStats(stats) {
+  localStorage.setItem("dsigdt_stats", JSON.stringify(stats));
 }
 
 // fetch quote from affirmations.dev api

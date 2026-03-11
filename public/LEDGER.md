@@ -116,7 +116,7 @@ Core Functionality
 random tasks in task input and maybe PICK ME A RANDOM TASK! (both suggested tasks and from existing list)
 Selected task state + dblclick task to open timer pre-selected
 Completed section: per-tab summary cards with expand on click
-completed with accordion (SHIT I DID → [Due Today ▾] [Next Up ▾] [When I Can ▾])
+completed with accordion
 timer needs to ask if done or five minutes before reward
 make timer full screen focus mode with task name
 Timer: drum roller idle-state time picker (HTML + CSS + JS)
@@ -152,13 +152,13 @@ icons should be the color palette rainbow text from header title..pop? something
 icon border colors for popup panels (example about = purple)
 Footer quote: rainbow treatment
 dark mode?
--button icon thing pop ups ,,, colorized fradient for title?
+-button icon thing pop ups ,,, colorized gradient for title?
 
 Branding / Title
 slow shimmer title
 add pink to title
-something cool to use the title dumb shit i gotta do today drawing?
--welcom page
+something cool to use the title dumb stuff i gotta do today drawing?
+-welcome page
 
 Animations
 icon shake animation
@@ -184,7 +184,7 @@ reminders popup edits suggestions or add ins?
 DO NEXT (in order)
 
 Footer quote — rainbow text treatment
-Chart.js + stats tracking (dumbit_stats object)
+Chart.js + stats tracking
 Tab edit modal CSS polish
 About modal polish
 All popups/modals cohesive styling pass
@@ -207,7 +207,7 @@ Reminders banner style + UX
 Delete test-tabs.html
 Wishlist (after required stuff)
 
-Stats: dumbit_stats object, donut→line chart, "BIG 13/29 DONE!" banner
+Stats: dumbit stats "BIG 13/29 DONE!" banner
 Random task + "PICK ME A RANDOM TASK!" button
 Dblclick task → opens timer pre-selected
 Timer: standalone popup, full-screen focus mode, drum roller

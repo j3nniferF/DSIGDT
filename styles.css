@@ -20,6 +20,20 @@
     url("assets/fonts/Popstar.woff") format("woff");
 }
 
+@font-face {
+  font-family: "Storyteller";
+  src:
+    url("assets/fonts/Storyteller.woff2") format("woff2"),
+    url("assets/fonts/Storyteller.woff") format("woff");
+}
+
+@font-face {
+  font-family: "jennifer";
+  src:
+    url("assets/fonts/jennifer.woff2") format("woff2"),
+    url("assets/fonts/jennifer.woff") format("woff");
+}
+
 /* my colors */
 :root {
   --purple: #1a1a2e;
@@ -352,8 +366,7 @@ h2 {
   border: 3px solid transparent;
   border-radius: 999px;
   font-size: 1rem;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
+  font-family: "Storyteller", sans-serif;
   color: var(--purple);
   outline: none;
   filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
@@ -454,6 +467,8 @@ h2 {
 .task-item label {
   flex: 1;
   cursor: pointer;
+  font-size: 1.2rem;
+  font-family: "Storyteller", sans-serif;
 }
 
 /* purple checkbox */
@@ -538,8 +553,8 @@ h2 {
 
 #reminder-message {
   color: var(--purple);
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 1.2rem;
+  font-family: "Storyteller", sans-serif;
   margin: 0;
 }
 
@@ -597,8 +612,9 @@ h2 {
   justify-content: space-between;
   align-items: center;
   color: var(--purple);
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   padding: 0.35rem 0;
+  font-family: "Storyteller", sans-serif;
   border-bottom: 1px solid rgba(26, 26, 46, 0.1);
 }
 
@@ -802,7 +818,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.8rem;
+  font-size: 1.2rem;
   color: #555;
   width: 100%;
 }
@@ -1441,9 +1457,8 @@ footer {
     linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
     linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
       border-box;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 200;
+  font-family: "Storyteller", sans-serif;
+  font-size: 1.2rem;
   letter-spacing: 0.04em;
   color: #7b3fa0;
   filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
