@@ -354,7 +354,10 @@ function showReminderBanner() {
     reminderSettings.messages[
       Math.floor(Math.random() * reminderSettings.messages.length)
     ];
-  document.getElementById("reminder-message").textContent = msg;
+  document.getElementById("reminder-message").textContent = msg.replace(
+    /\s*[♡♥]+\s*$/,
+    "",
+  );
   document.getElementById("reminder-popup").classList.add("is-showing");
   clearTimeout(reminderAutoHide);
   reminderAutoHide = setTimeout(hideReminderBanner, 10000);
@@ -385,7 +388,7 @@ function renderRemindersList() {
   reminderSettings.messages.forEach((msg, index) => {
     const li = document.createElement("li");
     const span = document.createElement("span");
-    span.textContent = msg;
+    span.textContent = msg.replace(/\s*[♡♥]+\s*$/, "");
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "x";
     deleteBtn.className = "delete-btn";
@@ -437,47 +440,59 @@ function initializeRemindersSettings() {
 
 // draw or update the chart: done vs to do
 function renderChart() {
-  const completed = tasks.filter((task) => task.completed).length;
-  const remaining = tasks.filter((task) => !task.completed).length;
+  const canvasEl = document.getElementById("stats-chart");
+  if (!canvasEl) return;
+  if (typeof Chart === "undefined") return;
 
-  // update the x/x summary text
-  const summary = document.getElementById("stats-summary");
-  const total = tasks.length;
-  if (total === 0) {
-    summary.textContent = "Add some stuff to get started!";
-  } else if (completed === total) {
-    summary.textContent = `🎉 All ${total} / ${total} stuff done! Amazing!`;
-  } else {
-    summary.textContent = `${completed} / ${total} done!`;
-  }
+  const stats = loadStats();
+  const byDate = stats.completionByDate;
+  const dates = Object.keys(byDate).sort();
 
-  // if chart already exists, update the numbers
+  if (dates.length === 0) return;
+
+  const labels = dates.map((d) => {
+    const date = new Date(d + "T12:00:00");
+    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  });
+
+  const data = dates.map((d) => byDate[d]);
+
   if (chart) {
-    chart.data.datasets[0].data = [completed, remaining];
+    chart.data.labels = labels;
+    chart.data.datasets[0].data = data;
     chart.update();
     return;
   }
 
-  // first time: create the chart
-  const canvasEl = document.getElementById("stats-chart");
-  if (!canvasEl) return;
   const ctx = canvasEl.getContext("2d");
-  if (typeof Chart === "undefined") return;
   chart = new Chart(ctx, {
-    type: "doughnut",
+    type: "line",
     data: {
-      labels: ["To Do Stuff", "Stuff Done"],
+      labels,
       datasets: [
         {
-          data: [completed, remaining],
-          backgroundColor: ["#c14dcc", "#f0e0f5"],
+          label: "tasks done",
+          data,
+          borderColor: "#dd44ff",
+          backgroundColor: "rgba(221, 68, 255, 0.1)",
+          pointBackgroundColor: "#ff6eb4",
+          pointBorderColor: "#fff",
+          pointRadius: 6,
+          tension: 0.4,
+          fill: true,
         },
       ],
     },
     options: {
       responsive: true,
       plugins: {
-        legend: { position: "bottom" },
+        legend: { display: false },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { stepSize: 1 },
+        },
       },
     },
   });
@@ -875,6 +890,11 @@ function initializeTimer() {
 
   // DONE! — triggers the timesup modal immediately (same flow as running out of time)
   document.getElementById("timer-done").addEventListener("click", showTimesUp);
+
+  // RESET — cancels timer and goes back to setup view
+  document
+    .getElementById("timer-reset-btn")
+    .addEventListener("click", goToSetup);
 }
 
 // wire up the time's up modal buttons
@@ -1010,13 +1030,31 @@ function initializeAboutModal() {
   document.getElementById("about-close").addEventListener("click", () => {
     document.getElementById("about-overlay").classList.add("is-hidden");
   });
+
+  // card expand/collapse
+  document.querySelectorAll(".about-card-header").forEach((header) => {
+    header.addEventListener("click", () => {
+      const card = header.parentElement;
+      card.classList.toggle("is-open");
+    });
+  });
 }
+
+// stats stuff!
+document.getElementById("stats-btn").addEventListener("click", () => {
+  document.getElementById("stats-overlay").classList.remove("is-hidden");
+  renderChart();
+});
+
+document.getElementById("stats-close").addEventListener("click", () => {
+  document.getElementById("stats-overlay").classList.add("is-hidden");
+});
 
 // drag the timer modal by its TIMER title
 function initializeTimerDrag() {
   const overlay = document.getElementById("timer-overlay");
   const modal = document.getElementById("timer-modal");
-  // grab BOTH drag handles (setup view + running view both have one)
+  // grab BOTH drag handels (setup view + running view)
   const handles = modal.querySelectorAll(".timer-drag-handle");
 
   let dragging = false;

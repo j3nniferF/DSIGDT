@@ -16,7 +16,8 @@
 
     <!-- 1: SETUP -->
     <div class="timer-setup-view">
-      <h2 class="reward-title timer-drag-handle">TIMER</h2>
+      <p class="modal-emoji">⏱️</p>
+      <h2 class="reward-title timer-drag-handle">Timer</h2>
 
       <p class="timer-section-label">choose some stuff:</p>
       <select id="timer-task-select" class="timer-task-select">
@@ -43,14 +44,14 @@
 
     <!-- 2: RUNNING -->
     <div class="timer-running-view">
+      <div class="timer-display" id="timer-display">25:00</div>
       <p class="timer-working-label timer-drag-handle">working on</p>
       <p class="timer-task-label" id="timer-task-label"></p>
-
-      <div class="timer-display" id="timer-display">25:00</div>
 
       <div class="timer-buttons">
         <button id="timer-pause" class="timer-action-btn">Pause</button>
         <button id="timer-done" class="timer-action-btn">Done!</button>
+        <button id="timer-reset-btn" class="timer-action-btn">Reset</button>
       </div>
     </div>
   </div>
@@ -77,10 +78,11 @@
         </h1>
            </header>
 <div class="header-btns">
-  <button id="about-btn" class="header-icon-btn btn-yellow" title="About">🤓</button>
-  <button id="timer-btn" class="header-icon-btn btn-purple" title="Open Timer">⏱️</button>
-  <button id="sound-btn" class="header-icon-btn btn-blue" title="Sound">🔊</button>
-  <button id="reminders-btn" class="header-icon-btn btn-green" title="Reminders">🔔</button>
+  <button id="about-btn" class="header-icon-btn btn-purple" title="About">🤓</button>
+  <button id="stats-btn" class="header-icon-btn btn-blue" title="Stats">📊</button>
+  <button id="timer-btn" class="header-icon-btn btn-green" title="Open Timer">⏱️</button>
+  <button id="reminders-btn" class="header-icon-btn btn-yellow" title="Reminders">🔔</button>
+  <button id="sound-btn" class="header-icon-btn btn-orange" title="Sound">🔊</button>
   <button id="reset-btn" class="header-icon-btn btn-pink" title="Reset">💣</button>
 </div>
       <main id="app">
@@ -102,7 +104,6 @@
         <section class="tasks-card" id="completed-card">
           <h2>Done</h2>
           <p id="stats-summary" class="stats-summary"></p>
-          <!-- <canvas id="stats-chart"></canvas> -->
           <div id="completed-list"></div>
           <p id="completed-empty" class="empty-state"></p>
         </section>
@@ -116,7 +117,6 @@
       <div id="reward-modal" class="reward-modal">
         <button id="reward-close-X" class="reward-close-X">X</button>
         <h2 class="reward-title">You Did Stuff!</h2>
-        <p class="reward-subtitle">You Get A Prize!</p>
         <ul class="reward-list">
           <li>Go for a nice walk!</li>
           <li>Take a quick nap!</li>
@@ -138,67 +138,129 @@
     <div id="about-overlay" class="reward-overlay is-hidden">
       <div class="reward-modal about-modal">
         <button id="about-close" class="reward-close-X">X</button>
-        <div class="about-header">
-          <span class="about-emoji">🤓</span>
-          <h2 class="reward-title">How To Use</h2>
-        </div>
+        <div class="about-scroll">
+        <p class="modal-emoji">🤓</p>
+        <h2 class="reward-title">About</h2>
         <p class="about-intro">Keep all your dumb stuff organized in one cute place.</p>
-        <div class="about-sections">
-          <section class="about-section">
-            <h3>Tabs + Stuff</h3>
-            <ul>
-              <li>GOTTA, WANNA, OTHER tabs to start</li>
-              <li>Hit + or Enter to add</li>
-              <li>Double-click a tab to edit or delete</li>
-              <li>Double-click ALL to add a tab</li>
-            </ul>
-          </section>
-          <section class="about-section">
-            <h3>Timer</h3>
-            <ul>
-              <li>Scroll the dial, pick a task, go</li>
-              <li>Border drains — yellow then pink as time runs out</li>
-              <li>Goober visits when you're done</li>
-            </ul>
-          </section>
-          <section class="about-section">
-            <h3>Rewards</h3>
-            <ul>
-              <li>Clear a whole tab for a surprise</li>
-              <li>Finish the timer for a bonus visit</li>
-            </ul>
-          </section>
-          <section class="about-section">
-            <h3>Reminders</h3>
-            <ul>
-              <li>Click 🔔 to set wellness popups</li>
-              <li>Custom interval + your own messages</li>
-            </ul>
-          </section>
-          <section class="about-section">
-            <h3>Stats</h3>
-            <ul>
-              <li>Doughnut chart — done vs. to-do</li>
-              <li>Updates live as you go</li>
-            </ul>
-          </section>
-        </div>
-      </div>
+
+
+        <div class="about-cards">
+
+  <div class="about-card">
+    <button class="about-card-header">
+      <span class="about-card-emoji">📑</span>
+      <span class="about-card-title">Tabs &amp; Stuff</span>
+      <span class="about-card-chevron">▼</span>
+    </button>
+    <div class="about-card-body">
+      <ul>
+        <li>GOTTA, WANNA, OTHER tabs to start</li>
+        <li>Hit + or Enter to add a task</li>
+        <li>Double-click a tab to rename or delete</li>
+        <li>Double-click ALL to add a new tab</li>
+      </ul>
     </div>
+  </div>
+
+  <div class="about-card">
+    <button class="about-card-header">
+      <span class="about-card-emoji">⏱️</span>
+      <span class="about-card-title">Timer</span>
+      <span class="about-card-chevron">▼</span>
+    </button>
+    <div class="about-card-body">
+      <ul>
+        <li>Scroll the dial to pick a time</li>
+        <li>Choose a task, hit Start</li>
+        <li>The circle drains as time runs out</li>
+        <li>Goober visits when the timer finishes</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="about-card">
+    <button class="about-card-header">
+      <span class="about-card-emoji">🎉</span>
+      <span class="about-card-title">Rewards</span>
+      <span class="about-card-chevron">▼</span>
+    </button>
+    <div class="about-card-body">
+      <ul>
+        <li>Clear a whole tab to get a surprise</li>
+        <li>Confetti + Goober the cat shows up</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="about-card">
+    <button class="about-card-header">
+      <span class="about-card-emoji">🔔</span>
+      <span class="about-card-title">Reminders</span>
+      <span class="about-card-chevron">▼</span>
+    </button>
+    <div class="about-card-body">
+      <ul>
+        <li>Set wellness popups on a timer</li>
+        <li>Custom interval and your own messages</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="about-card">
+    <button class="about-card-header">
+      <span class="about-card-emoji">📊</span>
+      <span class="about-card-title">Stats</span>
+      <span class="about-card-chevron">▼</span>
+    </button>
+    <div class="about-card-body">
+      <ul>
+        <li>Line chart tracks completions per day</li>
+        <li>Updates live as you finish tasks</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="about-card">
+    <button class="about-card-header">
+      <span class="about-card-emoji">🔊</span>
+      <span class="about-card-title">Sound</span>
+      <span class="about-card-chevron">▼</span>
+    </button>
+    <div class="about-card-body">
+      <ul>
+        <li>Toggle chimes on and off with the sound button</li>
+        <li>Plays when you complete a task or timer</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- stats stuffs -->
+    <div id="stats-overlay" class="reward-overlay is-hidden">
+  <div class="reward-modal stats-modal">
+    <button class="reward-close-X" id="stats-close">✕</button>
+    <p class="modal-emoji">📊</p>
+    <h2 class="reward-title">Stats</h2>
+    <canvas id="stats-chart"></canvas>
+  </div>
+</div>
 
     <!-- reset confirm modal -->
     <div id="reset-overlay" class="reward-overlay is-hidden">
       <div class="reward-modal">
-        <h2 class="reward-title">Reset <br> Everything?</h2>
+        <button id="reset-cancel-btn" class="reward-close-X">✕</button>
+        <p class="modal-emoji">💣</p>
+        <h2 class="reward-title">Reset Everything?</h2>
         <p class="reward-subtitle">
            This will wipe and reset ALL your STUFF!
         </p>
-        <button id="reset-cancel-btn" class="reset-x-btn">X</button>
-<div class="reset-modal-btns">
-  <button id="reset-confirm-btn" class="reset-confirm-btn">
-    💣 Bye Stuff!
-  </button>
-</div>
+        <div class="reset-modal-btns">
+          <button id="reset-confirm-btn" class="reset-confirm-btn">
+            💣 Bye Stuff!
+          </button>
+        </div>
       </div>
     </div>
     <!-- tab edit modal -->
@@ -210,21 +272,22 @@
           <input type="text" id="tab-edit-input" class="tab-edit-input" />
         </div>
         <div class="reset-modal-btns">
-          <button id="tab-edit-save" class="reset-confirm-btn">Save Name</button>
-          <button id="tab-edit-delete" class="reset-cancel-btn">Delete Tab</button>
-          <button id="tab-edit-add-new" class="reset-confirm-btn is-hidden">+ New Tab</button>
+          <button id="tab-edit-save" class="reward-close-btn">Save Name</button>
+          <button id="tab-edit-delete" class="reward-close-btn">Delete Tab</button>
+          <button id="tab-edit-add-new" class="reward-close-btn is-hidden">+ New Tab</button>
         </div>
       </div>
     </div>
     <!-- reminder banner -->
      <div id="reminder-popup" class="reminder-popup">
-      <p id="reminder-message">♡ Unclench your jaw! ♡</p>
+      <p id="reminder-message">♡ Unclench your jaw!</p>
       <button id="reminder-dismiss">I did it!</button></p>
      </div>
      <!-- reminders settings modal -->
 <div id="reminders-overlay" class="reward-overlay is-hidden">
   <div class="reward-modal">
     <button id="reminders-close" class="reward-close-X">X</button>
+    <p class="modal-emoji">🔔</p>
     <h2 class="reward-title">Reminders</h2>
     <div class="reminders-frequency-row">
       <label>Remind me every</label>

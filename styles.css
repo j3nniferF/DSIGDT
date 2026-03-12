@@ -489,10 +489,14 @@ h2 {
 .delete-btn {
   background: none;
   border: none;
-  color: #ccc;
+  color: #bbb;
   cursor: pointer;
-  font-size: 1rem;
-  padding: 0 0.25rem;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.35rem;
+  flex-shrink: 0;
+  line-height: 1;
+  border-radius: 50%;
+  transition: color 0.15s;
 }
 
 /* delete btn pink on hover */
@@ -561,18 +565,18 @@ h2 {
 #reminder-dismiss {
   flex-shrink: 0;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.25))
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.92))
       padding-box,
     linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
       border-box;
-  border: 2px solid transparent;
-  backdrop-filter: blur(6px);
+  border: 3px solid transparent;
   border-radius: 999px;
-  padding: 0.35rem 1rem;
-  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
   color: var(--purple);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /* reminders settings modal */
@@ -861,65 +865,62 @@ h2 {
 /* timer — blue */
 .btn-purple {
   background:
-    linear-gradient(120deg, rgba(185, 215, 255, 0.9), rgba(165, 220, 255, 0.9))
+    linear-gradient(120deg, rgba(210, 175, 255, 0.9), rgba(190, 150, 255, 0.9))
       padding-box,
-    linear-gradient(120deg, #5599ff, #44ddff) border-box;
+    linear-gradient(120deg, #aa44ff, #8833ee) border-box;
   background-size:
     100% 100%,
     300% 300%;
-  filter: drop-shadow(2px 4px 6px rgba(68, 130, 255, 0.5));
+  filter: drop-shadow(2px 4px 6px rgba(140, 50, 255, 0.5));
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(68, 130, 255, 0.4);
+    0 4px 20px rgba(140, 50, 255, 0.4);
 }
 
-/* sound — green */
 .btn-blue {
   background:
-    linear-gradient(120deg, rgba(170, 255, 215, 0.9), rgba(155, 245, 205, 0.9))
+    linear-gradient(120deg, rgba(160, 200, 255, 0.9), rgba(140, 185, 255, 0.9))
       padding-box,
-    linear-gradient(120deg, #44ddaa, #55ffcc) border-box;
+    linear-gradient(120deg, #4488ff, #3366ee) border-box;
   background-size:
     100% 100%,
     300% 300%;
-  filter: drop-shadow(2px 4px 6px rgba(0, 180, 120, 0.45));
+  filter: drop-shadow(2px 4px 6px rgba(50, 100, 255, 0.5));
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(0, 180, 120, 0.35);
+    0 4px 20px rgba(50, 100, 255, 0.4);
 }
 
-/* reminders — yellow */
 .btn-green {
   background:
-    linear-gradient(120deg, rgba(255, 248, 190, 0.9), rgba(255, 235, 165, 0.9))
+    linear-gradient(120deg, rgba(160, 235, 195, 0.9), rgba(140, 220, 175, 0.9))
       padding-box,
-    linear-gradient(120deg, #ffdd44, #ffcc22) border-box;
+    linear-gradient(120deg, #33cc77, #22bb66) border-box;
   background-size:
     100% 100%,
     300% 300%;
-  filter: drop-shadow(2px 4px 6px rgba(200, 150, 0, 0.4));
+  filter: drop-shadow(2px 4px 6px rgba(0, 160, 80, 0.45));
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(200, 160, 0, 0.35);
+    0 4px 20px rgba(0, 160, 80, 0.35);
 }
 
-/* about — purple */
 .btn-yellow {
   background:
-    linear-gradient(120deg, rgba(230, 200, 255, 0.9), rgba(210, 180, 255, 0.9))
+    linear-gradient(120deg, rgba(255, 240, 150, 0.9), rgba(255, 225, 120, 0.9))
       padding-box,
-    linear-gradient(120deg, #dd44ff, #9966ff) border-box;
+    linear-gradient(120deg, #ffcc22, #ffbb00) border-box;
   background-size:
     100% 100%,
     300% 300%;
-  filter: drop-shadow(2px 4px 6px rgba(180, 50, 255, 0.45));
+  filter: drop-shadow(2px 4px 6px rgba(200, 150, 0, 0.45));
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(180, 50, 255, 0.35);
+    0 4px 20px rgba(200, 150, 0, 0.35);
 }
 
 /* reset — hot pink */
@@ -938,51 +939,101 @@ h2 {
     0 4px 20px rgba(220, 30, 60, 0.4);
 }
 
-/* timer modal — blue*/
+.btn-red {
+  background:
+    linear-gradient(120deg, rgba(255, 140, 130, 0.9), rgba(255, 100, 90, 0.9))
+      padding-box,
+    linear-gradient(120deg, #ee2222, #cc1111) border-box;
+  background-size:
+    100% 100%,
+    300% 300%;
+  filter: drop-shadow(2px 4px 6px rgba(200, 0, 0, 0.5));
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    0 4px 20px rgba(200, 0, 0, 0.4);
+}
+
+.btn-orange {
+  background:
+    linear-gradient(120deg, rgba(255, 210, 160, 0.9), rgba(255, 185, 120, 0.9))
+      padding-box,
+    linear-gradient(120deg, #ff9933, #ffbb44) border-box;
+  background-size:
+    100% 100%,
+    300% 300%;
+  filter: drop-shadow(2px 4px 6px rgba(220, 100, 0, 0.45));
+  box-shadow:
+    0 0 0 2.5px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    0 4px 20px rgba(220, 100, 0, 0.4);
+}
+
+/* timer modal — GREEN for setup state */
 #timer-overlay .reward-modal {
   background:
     linear-gradient(
         135deg,
-        rgba(185, 215, 255, 0.97),
-        rgba(165, 200, 255, 0.97)
+        rgba(160, 235, 195, 0.97),
+        rgba(130, 215, 170, 0.97)
       )
       padding-box,
-    linear-gradient(120deg, #5599ff, #44ddff) border-box;
+    linear-gradient(120deg, #33cc77, #22bb66) border-box;
   max-width: min(320px, calc(100vw - 2rem));
   padding: 1.5rem 1.25rem;
 }
 
-/* draining border — shows when timer is running */
+/* timer RUNNING state — rainbow + prettybg */
+#timer-overlay .reward-modal.is-running {
+  background: var(--pbgradient);
+}
+
+/* restore prettybg texture when running */
+#timer-overlay .reward-modal.is-running::before {
+  display: block;
+  opacity: 0.55;
+}
+
+/* rainbow X button when running */
+#timer-overlay .reward-modal.is-running .reward-close-X {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1))
+      padding-box,
+    linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+      border-box;
+  color: var(--purple);
+}
+
+/* draining rainbow border — shows when timer is running */
 .timer-modal.is-running::after {
   content: "";
   position: absolute;
-  inset: -6px;
-  border-radius: 22px;
-  background: conic-gradient(
-    from -90deg,
-    #5599ff calc(var(--timer-pct, 100) * 1%),
-    rgba(185, 215, 255, 0.25) calc(var(--timer-pct, 100) * 1%)
-  );
-  z-index: -1;
-}
-
-/* warning — half time gone, goes yellow */
-.timer-modal.is-warning::after {
-  background: conic-gradient(
-    from -90deg,
-    #ffcc00 calc(var(--timer-pct, 100) * 1%),
-    rgba(255, 220, 100, 0.2) calc(var(--timer-pct, 100) * 1%)
-  );
-}
-
-/* danger — 20% left, goes red and pulses */
-.timer-modal.is-danger::after {
+  inset: -8px;
+  border-radius: 26px;
   background: conic-gradient(
     from -90deg,
     #ff3388 calc(var(--timer-pct, 100) * 1%),
-    rgba(255, 50, 100, 0.2) calc(var(--timer-pct, 100) * 1%)
+    rgba(255, 200, 230, 0.2) calc(var(--timer-pct, 100) * 1%)
   );
-  animation: timerPulse 0.7s ease-in-out infinite;
+  z-index: -1;
+  animation: drain-rainbow 4s linear infinite;
+}
+
+@keyframes drain-rainbow {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* warning — half time gone: no override, keeps rainbow drain */
+/* danger — 20% left: pulses faster */
+.timer-modal.is-danger::after {
+  animation:
+    drain-rainbow 4s linear infinite,
+    timerPulse 0.7s ease-in-out infinite;
 }
 
 /* kill prettybg texture — clean blue bg only */
@@ -990,12 +1041,12 @@ h2 {
   display: none;
 }
 
-/* blue X close button */
+/* green X close button (setup state) */
 #timer-overlay .reward-close-X {
   background:
-    linear-gradient(135deg, rgba(185, 215, 255, 0.9), rgba(165, 200, 255, 0.9))
+    linear-gradient(135deg, rgba(160, 235, 195, 0.9), rgba(130, 215, 170, 0.9))
       padding-box,
-    linear-gradient(120deg, #5599ff, #44ddff) border-box;
+    linear-gradient(120deg, #33cc77, #22bb66) border-box;
   color: #1a1a2e;
 }
 
@@ -1007,21 +1058,30 @@ h2 {
   display: none;
 }
 
-/* shared timer action buttons */
+/* shared timer action buttons — rainbow style */
 .timer-action-btn {
   background:
-    linear-gradient(rgba(185, 215, 255, 0.5), rgba(165, 200, 255, 0.8))
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.92))
       padding-box,
-    linear-gradient(120deg, #5599ff, #44ddff) border-box;
-  border: 2px solid transparent;
+    linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+      border-box;
+  border: 3px solid transparent;
   border-radius: 999px;
-  padding: 0.45rem 1.1rem;
+  padding: 0.5rem 1.4rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(0.8rem, 2.5vw, 0.95rem);
-  font-weight: 600;
-  color: #1a1a2e;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+  font-weight: 400;
+  color: var(--purple);
   cursor: pointer;
-  filter: drop-shadow(1px 3px 5px rgba(50, 100, 255, 0.25));
+}
+
+/* timer SETUP state: Start button = green */
+#timer-overlay .timer-modal.is-setup .timer-action-btn {
+  background:
+    linear-gradient(rgba(160, 235, 195, 0.5), rgba(130, 215, 170, 0.9))
+      padding-box,
+    linear-gradient(120deg, #33cc77, #22bb66) border-box;
+  color: #1a1a2e;
 }
 
 /* heartbeat animation on the countdown numbers */
@@ -1048,37 +1108,34 @@ h2 {
   animation: heartbeat 1s ease-in-out infinite;
 }
 
-/* timesup modal — blue themed */
+/* timesup modal — rainbow + prettybg */
 #timesup-overlay .reward-modal {
-  background:
-    linear-gradient(
-        135deg,
-        rgba(185, 215, 255, 0.97),
-        rgba(165, 200, 255, 0.97)
-      )
-      padding-box,
-    linear-gradient(120deg, #5599ff, #44ddff) border-box;
+  background: var(--pbgradient);
 }
 
+/* let prettybg texture show through */
 #timesup-overlay .reward-modal::before {
-  display: none;
+  display: block;
+  opacity: 0.55;
 }
 
 #timesup-overlay .reward-title {
-  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
 }
 
 .timesup-question {
-  color: #1a1a2e;
-  font-size: 0.85rem;
+  color: var(--purple);
+  font-size: 0.9rem;
+  font-weight: 400;
   margin: 0.25rem 0 0;
 }
 
 .timesup-task-name {
-  font-weight: 700;
-  color: #1a3a6e;
-  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-  margin: 0.1rem 0 1rem;
+  font-weight: 500;
+  font-family: "Storyteller", sans-serif;
+  color: var(--purple);
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  margin: 0.25rem 0 1rem;
 }
 
 .timesup-buttons {
@@ -1162,30 +1219,24 @@ h2 {
   }
 }
 
-/* big countdown arc dial timer */
+/* big countdown display — rainbow Popstar, huge */
 .timer-display {
   font-family: "Popstar";
   font-weight: 100 !important;
   display: block;
   text-align: center;
-  margin: 0.5rem auto 1rem;
-  font-size: 2.4rem;
+  margin: 0.5rem auto 0.75rem;
+  font-size: clamp(3.5rem, 14vw, 5rem);
   letter-spacing: 0.05em;
-  background: linear-gradient(
-    25deg,
-    #5599ff,
-    #1a3a6e,
-    #44ddff,
-    #1a3a6e,
-    #5599ff
-  );
+  background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: brightness(1) saturate(3.5)
+    drop-shadow(2px 4px 8px rgba(255, 50, 200, 0.5));
   white-space: nowrap;
   opacity: 1;
   pointer-events: none;
-  transition: opacity 0.3s ease;
 }
 
 .timer-controls {
@@ -1215,44 +1266,7 @@ h2 {
   justify-content: center;
 }
 
-.timer-buttons button {
-  background:
-    linear-gradient(rgba(200, 225, 255, 0.9), rgba(180, 210, 255, 0.9))
-      padding-box,
-    linear-gradient(120deg, #5599ff, #44ddff) border-box;
-  border: 2px solid transparent;
-  color: #1a3a6e;
-  border-radius: 999px;
-  padding: 0.5rem 1.4rem;
-  font-size: 0.9rem;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-}
-
-/* close X button */
-.timer-close-btn {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.25))
-      padding-box,
-    linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
-      border-box;
-  border: 2px solid transparent;
-  backdrop-filter: blur(6px);
-  color: var(--purple);
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-size: 1rem;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 400;
-  line-height: 1;
-  cursor: pointer;
-}
+/* timer buttons use .timer-action-btn class — no override needed */
 
 /* drum roll dial */
 .dial-picker {
@@ -1270,8 +1284,8 @@ h2 {
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  background: rgba(200, 225, 255, 0.9);
-  border: 2px solid #5599ff;
+  background: rgba(160, 235, 195, 0.7);
+  border: 2px solid #33cc77;
   border-radius: 12px;
   padding: 0.4rem 0.6rem;
   min-width: 56px;
@@ -1354,37 +1368,44 @@ h2 {
   text-transform: lowercase;
 }
 
-/* task dropdown */
+/* task dropdown — green themed */
 .timer-task-select {
   width: 100%;
   padding: 0.5rem 0.8rem;
-  background: rgba(200, 225, 255, 0.9);
-  border: 2px solid #5599ff;
+  background: rgba(160, 235, 195, 0.7);
+  border: 2px solid #33cc77;
   border-radius: 999px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
-  color: #1a3a6e;
+  color: #0a2a0a;
   margin-bottom: 0.5rem;
   outline: none;
   cursor: pointer;
 }
 
-/* timer glow pulse */
-@keyframes timer-pulse {
+/* rainbow pulse for running timer — cycles hue + glows */
+@keyframes rainbow-pulse {
   0%,
   100% {
-    transform: translate(-50%, -50%) scale(1);
-    filter: drop-shadow(0 0 6px rgba(255, 79, 190, 0.5));
+    filter: brightness(1) saturate(4) hue-rotate(0deg)
+      drop-shadow(0 0 10px rgba(255, 50, 150, 0.7));
+    transform: scale(1);
   }
-  50% {
-    transform: translate(-50%, -50%) scale(1.1);
-    filter: drop-shadow(0 0 18px rgba(255, 79, 190, 0.95));
+  33% {
+    filter: brightness(1) saturate(4) hue-rotate(120deg)
+      drop-shadow(0 0 16px rgba(50, 200, 255, 0.7));
+    transform: scale(1.03);
+  }
+  66% {
+    filter: brightness(1) saturate(4) hue-rotate(240deg)
+      drop-shadow(0 0 13px rgba(150, 50, 255, 0.7));
+    transform: scale(1.01);
   }
 }
 
 .timer-display.is-running {
-  animation: timer-pulse 2s ease-in-out infinite;
+  animation: rainbow-pulse 2s ease-in-out infinite;
 }
 
 @keyframes timer-enter {
@@ -1553,7 +1574,7 @@ footer {
   }
 }
 
-/* reward modal overlay (darkens) */
+/* reward modal darken overlay  */
 .reward-overlay {
   position: fixed;
   inset: 0;
@@ -1564,12 +1585,12 @@ footer {
   z-index: 1100;
 }
 
-/* specificity fix: combined selector beats .is-hidden alone */
+/* specificity .. beats .is-hidden alone */
 .reward-overlay.is-hidden {
   display: none;
 }
 
-/* per-modal color theming — matches header icon border colors */
+/* color theming */
 #about-overlay .reward-modal {
   background:
     linear-gradient(
@@ -1586,114 +1607,157 @@ footer {
   display: none;
 }
 
-/* about modal size + scroll */
+/* about size x fixed, infor scrolls */
 .about-modal {
   max-width: 480px;
-  max-height: 82vh;
-  overflow-y: auto;
-  padding: 1.25rem 1.25rem 1.5rem;
-}
-
-/* emoji above title, not inside gradient text */
-.about-header {
+  padding: 0.5rem 0 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.1rem;
-  margin-bottom: 0.4rem;
 }
 
-.about-emoji {
+/* inside scrollable / X button stays above  */
+.about-scroll {
+  overflow-y: auto;
+  max-height: 80vh;
+  padding: 0.5rem 1.25rem 1.5rem;
+  scrollbar-width: thin;
+}
+
+/* emoji at top of icon modals */
+.modal-emoji {
   font-size: 2rem;
+  text-align: center;
+  margin: 0.25rem 0 0.1rem;
   line-height: 1;
 }
 
-/* intro blurb */
+/* about title spacing (wierd?!)  */
+.about-scroll .reward-title {
+  margin-top: 0.1rem;
+  margin-bottom: 0.4rem;
+}
+
+/* intro */
 .about-intro {
-  font-size: 0.85rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
   color: #4a2060;
   text-align: center;
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.9rem;
+  line-height: 1.5;
 }
 
-/* 2-column grid, last odd section spans full width */
-.about-sections {
+/* about grid : 1 mobile, 2 x 2 desktop */
+.about-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
 }
 
-.about-section:last-child:nth-child(odd) {
-  grid-column: span 2;
+@media (min-width: 480px) {
+  .about-cards {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-/* each section = card with purple border */
-.about-section {
-  border: 2px solid #cc66ff;
-  border-radius: 12px;
-  padding: 0.6rem 0.75rem 0.65rem;
-  background: rgba(255, 255, 255, 0.35);
+/* each card */
+.about-card {
+  border: 1.5px solid rgba(140, 40, 200, 0.35);
+  border-radius: 14px;
+  background: rgba(245, 235, 255, 0.6);
+  overflow: hidden;
+}
+
+/* header btn*/
+.about-card-header {
+  width: 100%;
+  background: none;
+  border: none;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
 }
 
-/* section title — Popstar sparkle, no pill */
-.about-section h3 {
+.about-card-emoji {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.about-card-title {
   font-family: "Popstar", sans-serif;
-  font-size: clamp(0.85rem, 2.2vw, 1rem);
+  font-size: clamp(1rem, 3vw, 1.3rem);
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: brightness(1) saturate(3) drop-shadow(1px 2px 3px purple);
-  text-align: center;
-  margin: 0 0 0.4rem;
-}
-
-/* list card — whitish purple bg + shadow */
-.about-sections ul {
-  margin: 0;
-  padding: 0.45rem 0.6rem 0.45rem 1.3rem;
-  list-style: none;
-  background: rgba(245, 235, 255, 0.75);
-  border-radius: 8px;
-  box-shadow: 0 3px 8px rgba(140, 40, 200, 0.25);
-}
-
-.about-sections li {
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: #4a2060;
-  margin-bottom: 0.1rem;
-  padding-left: 0.75rem;
-  position: relative;
+  filter: brightness(1) saturate(3)
+    drop-shadow(1px 2px 4px rgba(140, 40, 200, 0.5));
+  flex: 1;
   text-align: left;
 }
 
-/* single column on mobile */
-@media (max-width: 500px) {
-  .about-sections {
-    grid-template-columns: 1fr;
-  }
-  .about-section:last-child:nth-child(odd) {
-    grid-column: span 1;
-  }
+/* flip when card opens */
+.about-card-chevron {
+  font-size: 0.8rem;
+  color: #9933cc;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
-.about-sections li::before {
+.about-card.is-open .about-card-chevron {
+  transform: rotate(180deg);
+}
+
+/* hidden / animates open */
+.about-card-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  padding: 0 1rem;
+}
+
+.about-card.is-open .about-card-body {
+  max-height: 300px;
+  padding-bottom: 0.75rem;
+}
+
+.about-card-body ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-card-body li {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(0.82rem, 2.5vw, 0.9rem);
+  line-height: 1.6;
+  color: #4a2060;
+  padding-left: 1.4rem;
+  position: relative;
+}
+
+.about-card-body li::before {
   content: "♡";
   position: absolute;
-  left: 0;
+  left: 0.1rem;
   color: #9933cc;
+  font-size: 0.9em;
 }
 
 /* about modal X button — purple themed */
 #about-overlay .reward-close-X {
   background:
-    linear-gradient(135deg, rgba(235, 210, 255, 0.9), rgba(215, 185, 255, 0.9))
+    linear-gradient(
+        135deg,
+        rgba(235, 210, 255, 0.95),
+        rgba(215, 185, 255, 0.95)
+      )
       padding-box,
     linear-gradient(120deg, #dd44ff, #9966ff) border-box;
-  color: #1a1a1a;
+  color: #1a1a2e;
+  z-index: 10;
 }
 
 #reminders-overlay .reward-modal {
@@ -1705,8 +1769,48 @@ footer {
       )
       padding-box,
     linear-gradient(120deg, #ffdd44, #ffcc22) border-box;
+  max-width: 360px;
+  padding: 1.75rem 1.75rem 1.75rem;
 }
 
+/* kill prettybg for clean yellow bg */
+#reminders-overlay .reward-modal::before {
+  display: none;
+}
+
+/* yellow X button */
+#reminders-overlay .reward-close-X {
+  background:
+    linear-gradient(
+        135deg,
+        rgba(255, 252, 210, 0.95),
+        rgba(255, 242, 175, 0.95)
+      )
+      padding-box,
+    linear-gradient(120deg, #ffdd44, #ffcc22) border-box;
+  color: #1a1a2e;
+}
+
+/* yellow-themed inputs + select inside reminders */
+#reminders-overlay #reminders-frequency,
+#reminders-overlay #reminders-new-input {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85))
+      padding-box,
+    linear-gradient(120deg, #ffdd44, #ffcc22) border-box;
+  color: #4a3a00;
+}
+
+/* yellow + button */
+#reminders-overlay #reminders-add-btn {
+  background:
+    linear-gradient(rgba(255, 252, 210, 0.7), rgba(255, 242, 175, 0.95))
+      padding-box,
+    linear-gradient(120deg, #ffdd44, #ffcc22) border-box;
+  color: #4a3a00;
+}
+
+/* reset modal — pink theme, compact */
 #reset-overlay .reward-modal {
   background:
     linear-gradient(
@@ -1716,6 +1820,8 @@ footer {
       )
       padding-box,
     linear-gradient(120deg, #dd6798, #ea6896) border-box;
+  max-width: 300px;
+  padding: 1.75rem 1.5rem;
 }
 
 /* kill prettybg texture for reset modal */
@@ -1723,48 +1829,26 @@ footer {
   display: none;
 }
 
-/* reset title — reasonable size */
-#reset-overlay .reward-title {
-  font-size: clamp(1.1rem, 4vw, 1.6rem);
-}
-
-/* reset subtitle — much smaller than default */
-#reset-overlay .reward-subtitle {
-  font-size: clamp(1.35rem, 2.5vw, 1rem);
-  margin-bottom: 0.5rem;
-}
-
-/* reset modal — tighter on mobile */
-#reset-overlay .reward-modal {
-  max-width: 280px;
-  padding: 1.5rem 1.25rem;
-}
-
-/* reset title — smaller than default reward-title */
-#reset-overlay .reward-title {
-  font-size: clamp(2.4rem, 3vw, 1.5rem);
-}
-
-/* X btn for pink reset modal */
-.reset-x-btn {
-  position: absolute;
-  top: 0.2rem;
-  right: 0.2rem;
+/* pink X button */
+#reset-overlay .reward-close-X {
   background:
-    linear-gradient(rgba(255, 215, 235, 0.9), rgba(255, 195, 220, 0.9))
+    linear-gradient(135deg, rgba(255, 215, 235, 0.9), rgba(255, 195, 220, 0.9))
       padding-box,
     linear-gradient(120deg, #dd6798, #ea6896) border-box;
-  border: 2px solid transparent;
-  color: #1a1a1a;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  font-size: 0.85rem;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: #1a1a2e;
+}
+
+/* reset title */
+#reset-overlay .reward-title {
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  margin-bottom: 0.4rem;
+}
+
+/* reset subtitle */
+#reset-overlay .reward-subtitle {
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  color: #7a2a4a;
+  margin-bottom: 0.5rem;
 }
 
 /* reward modal card */
@@ -1781,6 +1865,9 @@ footer {
   background-size:
     100% 100%,
     300% 300%;
+  box-shadow:
+    0 0 0 3px #1a1a2e,
+    0 12px 40px rgba(0, 0, 0, 0.4);
   /* animation: border-drift 10s ease-in-out infinite alternate; */
 }
 
@@ -1795,23 +1882,33 @@ footer {
   pointer-events: none;
 }
 
-/* X btn top right corner */
+/* X btn top right corner — rainbow fill + black outline */
 .reward-close-X {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1))
+    linear-gradient(
+        135deg,
+        rgba(255, 233, 248, 0.95),
+        rgba(212, 246, 255, 0.95),
+        rgba(232, 219, 255, 0.95)
+      )
       padding-box,
     linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
       border-box;
   border: 3px solid transparent;
-  backdrop-filter: blur(6px);
+  box-shadow: 0 0 0 2px #1a1a2e;
   color: var(--purple);
   border-radius: 50%;
   width: 28px;
   height: 28px;
   font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
 
@@ -1837,8 +1934,10 @@ footer {
 /* reward subtitle */
 .reward-subtitle {
   color: var(--purple);
-  font-size: clamp(1.4rem, 4vw, 2.6rem);
-  margin-bottom: 1rem;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  margin-bottom: 0.75rem;
 }
 
 /* prize suggestion list */
@@ -1847,21 +1946,8 @@ footer {
   padding: 0;
   margin: 0 0 1rem;
   color: var(--purple);
-  font-size: 1.3rem;
-}
-
-.reward-list li::before {
-  content: "♥";
-  margin-right: 0.5rem;
-  opacity: 0.6;
-  color: var(--purple);
-}
-
-.reward-list li::after {
-  content: " ♥";
-  margin-right: 0.5rem;
-  opacity: 0.6;
-  color: var(--purple);
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  font-family: "Storyteller", sans-serif;
 }
 
 /* Goooobie gif! */
@@ -1881,22 +1967,20 @@ footer {
   margin-bottom: 1.25rem;
 }
 
-/* big close button */
+/* unified modal action button — rainbow border + white fill */
 .reward-close-btn {
   background:
-    linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1))
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.92))
       padding-box,
     linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
       border-box;
-  border: 4px solid transparent;
-  backdrop-filter: blur(6px);
+  border: 3px solid transparent;
   color: var(--purple);
   border-radius: 999px;
-  padding: 0.75rem 1.5rem;
+  padding: 0.55rem 1.4rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 200;
-  letter-spacing: 0.05em;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  font-weight: 400;
   cursor: pointer;
 }
 
@@ -1947,4 +2031,46 @@ footer {
   * {
     animation: none !important;
   }
+}
+
+/* stats modal — blue theme */
+#stats-overlay .reward-modal {
+  background:
+    linear-gradient(
+        135deg,
+        rgba(210, 235, 255, 0.97),
+        rgba(185, 220, 255, 0.97)
+      )
+      padding-box,
+    linear-gradient(120deg, #44aaff, #0066cc) border-box;
+}
+
+/* kill prettybg texture for stats modal */
+#stats-overlay .reward-modal::before {
+  display: none;
+}
+
+/* stats modal size */
+.stats-modal {
+  width: min(540px, 94vw);
+  padding: 2rem 2rem 2.25rem;
+}
+
+/* stats X button — blue themed */
+#stats-overlay .reward-close-X {
+  background:
+    linear-gradient(
+        135deg,
+        rgba(210, 235, 255, 0.95),
+        rgba(185, 220, 255, 0.95)
+      )
+      padding-box,
+    linear-gradient(120deg, #44aaff, #0066cc) border-box;
+  color: #1a1a2e;
+}
+
+#stats-chart {
+  width: 100% !important;
+  height: 320px !important;
+  margin-top: 0.75rem;
 }
