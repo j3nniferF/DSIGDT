@@ -34,6 +34,12 @@
     url("assets/fonts/jennifer.woff") format("woff");
 }
 
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 /* my colors */
 :root {
   --purple: #1a1a2e;
@@ -58,6 +64,21 @@
         #ff3388
       )
       border-box;
+
+  /* 3 tab pill tokes */
+  --tab-font: "Popstar", sans-serif;
+  --tab-font-size: 1.5rem;
+  --tab-stroke: 1.2px #1a1a2e;
+  --tab-border: linear-gradient(
+    to right,
+    #ff6eb4,
+    #dd44ff,
+    #5599ff,
+    #44ddaa,
+    #ffdd44
+  );
+  --tab-fill: linear-gradient(rgb(255 255 255 / 80%), rgb(255 255 255 / 95%));
+  --tab-shadow: drop-shadow(1.5px 4px 10px rgba(247, 68, 214, 0.55));
 }
 
 * {
@@ -114,7 +135,7 @@ header {
     inset 0 0 0 2px #1a1a2e,
     0 6px 40px rgba(193, 77, 204, 0.95);
   border-radius: 999px;
-  /* animation: card-border-drift 10s ease-in-out infinite alternate; */
+  animation: card-border-drift 10s ease-in-out infinite alternate;
 }
 
 header::before {
@@ -150,10 +171,10 @@ h1 {
 }
 
 .title-sub {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(1.4rem, 7.8vw, 3rem);
-  letter-spacing: 0.1em;
-  -webkit-text-stroke: 2px #1a1a2e;
+  font-family: "Storyteller", sans-serif;
+  font-size: clamp(0rem, 6vw, 3rem);
+  -webkit-text-stroke: 1px;
+  letter-spacing: normal;
 }
 
 /* cards thats holds the stuffs */
@@ -214,8 +235,8 @@ h2 {
 /* banner strip — spans full card width at the top */
 .tasks-card > h2 {
   position: relative;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(3rem, 6vw, 4rem);
+  font-family: "Storyteller", sans-serif;
+  font-size: clamp(3.5rem, 6vw, 4rem);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-align: center;
@@ -233,8 +254,8 @@ h2 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  -webkit-text-stroke: 2px #1a1a2e;
-  filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.45));
+  -webkit-text-stroke: 0.5px;
+  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 
 .tasks-card > h2::before {
@@ -259,12 +280,11 @@ h2 {
   flex: 1 1 1;
   border: 2px solid transparent;
   background:
-    linear-gradient(rgb(255 255 255 / 50%), rgb(255 255 255 / 65%)) padding-box,
-    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
-      border-box;
+    var(--tab-fill) padding-box,
+    var(--tab-border) border-box;
   border-radius: 999px;
   padding: 0.45rem 1.3rem !important;
-  font-family: "Popstar";
+  font-family: var(--tab-font);
   font-size: clamp(1.3rem, 2.8vw, 1.9rem);
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -274,41 +294,59 @@ h2 {
   z-index: 1;
   font-weight: 900;
   transition: all 0.2s ease;
-  opacity: 0.65;
-  filter: drop-shadow(1px 3px 6px rgba(0, 0, 0, 0.3));
+  opacity: 0.45;
+  filter: var(--tab-shadow);
 }
 
-/* active tab: more opaque pill, full opacity, stronger shadow */
+/* active tab*/
 .tab-btn.active {
   opacity: 1;
   background:
-    linear-gradient(rgb(255 255 255 / 80%), rgb(255 255 255 / 95%)) padding-box,
-    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+    linear-gradient(rgb(255 255 255 / 88%), rgb(255 255 255 / 98%)) padding-box,
+    linear-gradient(
+        var(--angle),
+        #ff4fbe,
+        #7fd7ff,
+        #b615f6,
+        #ffdd44,
+        #44ddaa,
+        #ff4fbe
+      )
       border-box;
-  filter: drop-shadow(1.8px 3.7px 10px rgba(247, 68, 214, 0.6));
+  border: 4px solid transparent;
+  filter: drop-shadow(0px 0px 8px rgba(247, 68, 214, 0.9))
+    drop-shadow(0px 0px 16px rgba(100, 180, 255, 0.6));
+  animation: tab-border-spin 8s linear infinite;
+  transform: scale(1.08);
 }
 
-/* sliding indicator — hidden, active tab uses border instead */
+@keyframes tab-border-spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+/*  active tab border */
 .tab-indicator {
   display: none;
 }
 
-/* tab text: popstar sparkle + thin black stroke */
+/* tab text */
 .tab-btn span {
-  font-family: "Popstar", sans-serif;
+  font-family: var(--tab-font);
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   paint-order: stroke fill;
-  -webkit-text-stroke: 0.8px #1a1a2e;
-  filter: brightness(1.1) saturate(4);
+  -webkit-text-stroke: var(--tab-stroke);
+  filter: brightness(1.2) saturate(5);
 }
 
-/* active tab text: brighter, stronger stroke */
+/* active tab text */
 .tab-btn.active span {
   filter: brightness(1.2) saturate(5);
-  -webkit-text-stroke: 0.8px #1a1a2e;
+  -webkit-text-stroke: var(--tab-stroke);
 }
 
 /* + tab btn darker to stand out */
@@ -329,7 +367,7 @@ h2 {
   padding: 0.5rem 0.75rem;
 }
 
-/* tab rename input (matches tab btn size and style!) */
+/* tab rename input*/
 .tab-rename-input {
   flex: 1;
   text-align: center;
@@ -354,7 +392,7 @@ h2 {
   margin-bottom: 1rem;
 }
 
-/* type your stuff - clean white with rainbow gradient border */
+/* type your stuff CLEAN */
 #task-input {
   flex: 1;
   padding: 0.6rem 1.2rem;
@@ -488,31 +526,42 @@ h2 {
 
 /* ALL tab / tasks breakdown */
 .all-stuff-tab-header {
-  font-family: "Popstar", sans-serif;
-  font-size: 1.4rem;
-  background: url("assets/textures/prettybg.png") center / cover;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: brightness(1.2) saturate(5);
-  -webkit-text-stroke: 1px #1a1a2e;
-  margin: 1rem 0 0.4rem;
-  padding-left: 0.25rem;
-  text-align: center;
-  letter-spacing: 0.08em;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background:
+    var(--tab-fill) padding-box,
+    var(--tab-border) border-box;
+  padding: 0.3rem 1.4rem;
+  filter: var(--tab-shadow);
+  display: block;
+  width: fit-content;
+  margin: 0.75rem auto 0.4rem;
 }
 
 .all-stuff-tab-header:first-child {
   margin-top: 0;
 }
 
+.all-stuff-tab-header span {
+  font-family: var(--tab-font);
+  font-size: 1.4rem;
+  background: url("assets/textures/prettybg.png") center / cover;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: brightness(1.2) saturate(5);
+  paint-order: stroke fill;
+  -webkit-text-stroke: var(--tab-stroke);
+  letter-spacing: 0.08em;
+}
+
 /* x btn */
 .delete-btn {
   background: none;
   border: none;
-  color: #cc88ee;
+  color: #9933cc;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.2rem;
   padding: 0.2rem 0.35rem;
   flex-shrink: 0;
   line-height: 1;
@@ -570,7 +619,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 1rem;
-  z-index: 9999;
+  z-index: 1050;
 }
 
 .reminder-popup.is-showing {
@@ -755,7 +804,6 @@ h2 {
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  gap: 0.5rem;
 }
 
 /* back starts rotated */
@@ -772,27 +820,26 @@ h2 {
   border-radius: 999px;
   border: 2px solid transparent;
   background:
-    linear-gradient(rgb(255 255 255 / 74%), rgb(255 255 255 / 98%)) padding-box,
-    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
-      border-box;
+    var(--tab-fill) padding-box,
+    var(--tab-border) border-box;
   padding: 0.2rem 0.9rem;
-  filter: drop-shadow(1.8px 3.7px 8.6px rgba(247, 68, 214, 0.45));
+  filter: var(--tab-shadow);
   max-width: 90%;
   text-align: center;
+  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 
 /* tab name on front */
 .flip-card-tab-name {
-  font-family: "Popstar", sans-serif;
-  font-size: clamp(1.2rem, 4vw, 2rem);
+  font-family: var(--tab-font);
+  font-size: clamp(1.2rem, 3.5vw, 2rem);
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: brightness(1.2) saturate(5);
-  text-align: center;
   paint-order: stroke fill;
-  -webkit-text-stroke: 1.8px #1a1a2e;
+  -webkit-text-stroke: var(--tab-stroke);
 }
 
 /* single decorative heart above name */
@@ -1109,6 +1156,7 @@ h2 {
   justify-content: center;
   position: relative;
   margin: 0.5rem auto;
+  filter: drop-shadow(0 4px 18px rgba(180, 100, 255, 5));
   animation: drain-rainbow 4s linear infinite;
 }
 
@@ -1119,7 +1167,7 @@ h2 {
   width: 66%;
   height: 66%;
   border-radius: 50%;
-  background: rgba(250, 238, 255, 0.97);
+  background: rgb(250 238 255 / 77%);
   z-index: 0;
 }
 
@@ -1161,21 +1209,32 @@ h2 {
   display: none;
 }
 
-/* shared timer action buttons — rainbow style */
+/* timer btns rainbow style */
 .timer-action-btn {
   background:
-    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.92))
+    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.97))
       padding-box,
     linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
       border-box;
   border: 3px solid transparent;
   border-radius: 999px;
-  padding: 0.5rem 1.4rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(0.85rem, 2.5vw, 1rem);
-  font-weight: 400;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  padding: 0.45rem 1.2rem;
+  font-weight: 200;
   color: var(--purple);
   cursor: pointer;
+  box-shadow: 0 0 0 2px #1a1a2e;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.timer-action-btn:hover {
+  transform: scale(1.06) translateY(-2px);
+  box-shadow:
+    0 0 0 2px #1a1a2e,
+    0 4px 12px rgba(200, 80, 255, 0.35);
 }
 
 /* timer SETUP state: Start button = green */
@@ -1249,7 +1308,7 @@ h2 {
 
 /* drag handle title bar */
 .timer-drag-handle {
-  font-family: "Popstar", sans-serif;
+  font-family: "Storyteller", sans-serif;
   background: url("assets/textures/prettybg.png") center / cover;
   paint-order: stroke fill;
   -webkit-text-stroke: 0.1px !important;
@@ -1328,14 +1387,16 @@ h2 {
   font-weight: 100 !important;
   display: block;
   text-align: center;
-  font-size: clamp(2rem, 8vw, 2.8rem);
+  font-size: clamp(3rem, 8vw, 2.8rem);
   letter-spacing: 0.05em;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: brightness(1) saturate(3.5)
-    drop-shadow(1px 2px 4px rgba(255, 50, 200, 0.5));
+  paint-order: stroke fill;
+  -webkit-text-stroke: 1.5px #1a1a2e;
+  filter: brightness(1.2) saturate(5)
+    drop-shadow(0 4px 18px rgba(180, 100, 255, 0.5));
   white-space: nowrap;
   position: relative;
   z-index: 1;
@@ -1387,8 +1448,11 @@ h2 {
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
-  background: rgba(160, 235, 195, 0.7);
-  border: 2px solid #33cc77;
+  background:
+    linear-gradient(rgba(160, 235, 195, 0.5), rgba(130, 215, 170, 0.9))
+      padding-box,
+    linear-gradient(120deg, #33cc77, #22bb66) border-box;
+  border: 2px solid transparent;
   border-radius: 12px;
   padding: 0.4rem 0.6rem;
   min-width: 56px;
@@ -1462,8 +1526,8 @@ h2 {
 .timer-section-label {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.75rem;
-  font-weight: 600;
-  color: #1a3a6e;
+  font-weight: 200;
+  color: #1a5a3a;
   text-align: left;
   width: 100%;
   margin: 0.6rem 0 0.2rem;
@@ -1471,16 +1535,19 @@ h2 {
   text-transform: lowercase;
 }
 
-/* task dropdown — green themed */
+/* task dropdown — green themed, same bg/border as start btn, no pop */
 .timer-task-select {
   width: 100%;
   padding: 0.5rem 0.8rem;
-  background: rgba(160, 235, 195, 0.7);
-  border: 2px solid #33cc77;
+  background:
+    linear-gradient(rgba(160, 235, 195, 0.5), rgba(130, 215, 170, 0.9))
+      padding-box,
+    linear-gradient(120deg, #33cc77, #22bb66) border-box;
+  border: 2px solid transparent;
   border-radius: 999px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 200;
   color: #0a2a0a;
   margin-bottom: 0.5rem;
   outline: none;
@@ -1546,19 +1613,28 @@ h2 {
 /* "to work on" label */
 .timer-working-label {
   color: var(--purple);
-  font-size: 0.8rem;
-  opacity: 0.6;
+  font-size: 2.5rem;
   text-align: center;
   width: 100%;
+  -webkit-text-stroke: var(--tab-stroke) !important;
   margin: 0 0 0.15rem;
 }
 
 #timer-task-label {
+  font-family: "Storyteller", sans-serif;
+  background: url("assets/textures/prettybg.png") center / cover;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 1px !important;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   color: var(--purple);
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 2rem;
+  letter-spacing: normal;
+  font-weight: 400;
   text-align: center;
   margin-bottom: 0.75rem;
+  filter: brightness(1) saturate(3) drop-shadow(2px 4px 6px purple);
 }
 
 /* hide labels in timer (idle) */
@@ -1674,6 +1750,10 @@ footer {
     font-size: 2rem;
   }
 
+  .tab-btn.active {
+    transform: scale(1.04);
+  }
+
   .title-main {
     letter-spacing: 0.04em;
   }
@@ -1701,6 +1781,39 @@ footer {
   .reminder-popup.is-showing {
     transform: translateY(0);
   }
+
+  .flip-card {
+    height: 180px;
+  }
+
+  .flip-card-tab-name {
+    font-size: 2rem;
+  }
+
+  .flip-card-tab-pill {
+    padding: 0.5rem 1.6rem;
+  }
+
+  .flip-card-heart {
+    font-size: 3rem;
+  }
+
+  .flip-card-count {
+    font-size: 2.2rem;
+  }
+
+  /* keep X always visible — anchor about modal to top */
+  #about-overlay {
+    align-items: flex-start;
+    padding: 1rem;
+  }
+  .about-modal {
+    width: 100%;
+    max-height: calc(100dvh - 0.8rem);
+  }
+  .about-scroll {
+    max-height: calc(100dvh - 4.5rem);
+  }
 }
 
 /* reward modal darken overlay  */
@@ -1711,7 +1824,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1100;
+  z-index: 2000;
 }
 
 /* specificity .. beats .is-hidden alone */
@@ -1729,6 +1842,7 @@ footer {
       )
       padding-box,
     linear-gradient(120deg, #dd44ff, #9966ff) border-box;
+  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 
 /* kill prettybg texture for about modal */
@@ -1736,7 +1850,7 @@ footer {
   display: none;
 }
 
-/* about size x fixed, infor scrolls */
+/* about size x fixed, info scrolls */
 .about-modal {
   max-width: 480px;
   padding: 0.5rem 0 0;
@@ -1759,10 +1873,7 @@ footer {
 
 /* emoji at top of icon modals */
 .modal-emoji {
-  font-size: 2rem;
-  text-align: center;
-  margin: 0.25rem 0 0.1rem;
-  line-height: 1;
+  display: none;
 }
 
 /* about title spacing (wierd?!)  */
@@ -1775,24 +1886,22 @@ footer {
 .about-intro {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: clamp(0.85rem, 2.5vw, 0.95rem);
-  color: #4a2060;
   text-align: center;
   margin: 0 0 0.9rem;
   line-height: 1.5;
 }
 
-/* about grid : 1 mobile, 2 x 2 desktop */
-/* about cards — 2 col grid inside the modal */
+/* about cards — always 1 column */
 .about-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0.6rem;
 }
 
 /* size override for about context */
 .about-cards .flip-card {
   flex: unset;
-  height: 155px;
+  height: 135px;
 }
 
 /* emoji on front */
@@ -1801,18 +1910,11 @@ footer {
   line-height: 1;
 }
 
-.about-cards {
-  grid-template-columns: 1fr;
-}
-
-.about-cards .flip-card {
-  height: 130px;
-}
-
 /* title pill text — Popstar sparkle */
 .about-flip-name {
-  font-family: "Popstar", sans-serif;
-  font-size: clamp(0.9rem, 2.8vw, 1.2rem);
+  font-family: "Storyteller", sans-serif;
+  font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+  white-space: nowrap;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1820,6 +1922,76 @@ footer {
   filter: brightness(1.2) saturate(5);
   paint-order: stroke fill;
   -webkit-text-stroke: 1px #1a1a2e;
+  letter-spacing: 0.1em;
+}
+
+/* back title — small label at top of flipped card */
+.about-flip-back-title {
+  font-family: "Storyteller", sans-serif;
+  font-size: clamp(0.85rem, 3vw, 1rem);
+  letter-spacing: 0.08em;
+  background: url("assets/textures/prettybg.png") center / cover;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: brightness(1.2) saturate(5);
+  paint-order: stroke fill;
+  -webkit-text-stroke: 0.8px #1a1a2e;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 0.2rem;
+}
+
+/* colored titles per card — front name + back title */
+.about-card--timer .about-flip-name,
+.about-card--timer .about-flip-back-title {
+  background: linear-gradient(135deg, #33cc77, #22bb66);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: none;
+  -webkit-text-stroke: 0.6px #0d5c30;
+}
+.about-card--stats .about-flip-name,
+.about-card--stats .about-flip-back-title {
+  background: linear-gradient(135deg, #4488ff, #3366ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: none;
+  -webkit-text-stroke: 0.6px #1133aa;
+}
+.about-card--reminders .about-flip-name,
+.about-card--reminders .about-flip-back-title {
+  background: linear-gradient(135deg, #dd8800, #bb6600);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: none;
+  -webkit-text-stroke: 0.6px #7a3d00;
+}
+.about-card--sound .about-flip-name,
+.about-card--sound .about-flip-back-title {
+  background: linear-gradient(135deg, #ff9933, #dd7722);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: none;
+  -webkit-text-stroke: 0.6px #993300;
+}
+.about-card--reset .about-flip-name,
+.about-card--reset .about-flip-back-title {
+  background: linear-gradient(135deg, #ff4488, #cc1155);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: none;
+  -webkit-text-stroke: 0.6px #880033;
+}
+
+/* tighter padding on about backs */
+.about-cards .flip-card-back {
+  padding: 0.6rem 0.9rem 0.5rem;
 }
 
 /* back side list */
@@ -1832,10 +2004,10 @@ footer {
 
 .about-cards .flip-card-back li {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(0.72rem, 2vw, 0.82rem);
-  color: #4a2060;
-  line-height: 1.5;
-  padding-left: 1.2rem;
+  font-size: clamp(0.75rem, 2vw, 0.8rem);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  padding-left: 1.1rem;
   position: relative;
   text-align: left;
 }
@@ -1848,9 +2020,171 @@ footer {
   font-size: 0.85em;
 }
 
-/* center back info */
-.about-cards .flip-card-back {
-  justify-content: center;
+/* about card color tints + emoji watermarks */
+.about-card--tabs .flip-card-front {
+  background:
+    linear-gradient(
+        319deg,
+        rgba(255, 180, 230, 0.55),
+        rgba(180, 210, 255, 0.55),
+        rgba(210, 180, 255, 0.55)
+      )
+      padding-box,
+    linear-gradient(to left, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+      border-box;
+  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
+}
+.about-card--timer .flip-card-front {
+  background:
+    linear-gradient(135deg, rgba(160, 235, 195, 0.6), rgba(200, 255, 225, 0.5))
+      padding-box,
+    linear-gradient(120deg, #33cc77, #22bb66) border-box;
+  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
+}
+.about-card--rewards .flip-card-front {
+  background:
+    linear-gradient(
+        135deg,
+        rgba(255, 180, 230, 0.55),
+        rgba(180, 210, 255, 0.55),
+        rgba(210, 180, 255, 0.55)
+      )
+      padding-box,
+    linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
+      border-box;
+  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
+}
+.about-card--reminders .flip-card-front {
+  background:
+    linear-gradient(
+        135deg,
+        rgba(255, 240, 160, 0.65),
+        rgba(255, 220, 100, 0.45)
+      )
+      padding-box,
+    linear-gradient(120deg, #ffbb00, #ff9900) border-box;
+  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
+}
+.about-card--stats .flip-card-front {
+  background:
+    linear-gradient(135deg, rgba(160, 200, 255, 0.6), rgba(200, 220, 255, 0.45))
+      padding-box,
+    linear-gradient(120deg, #4488ff, #3366ee) border-box;
+  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
+}
+.about-card--sound .flip-card-front {
+  background:
+    linear-gradient(135deg, rgba(255, 210, 160, 0.6), rgba(255, 230, 200, 0.45))
+      padding-box,
+    linear-gradient(120deg, #ff9933, #ffbb44) border-box;
+  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
+}
+.about-card--reset .flip-card-front {
+  background:
+    linear-gradient(135deg, rgba(255, 160, 190, 0.6), rgba(255, 200, 220, 0.45))
+      padding-box,
+    linear-gradient(120deg, #ff4488, #ff2266) border-box;
+  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
+}
+/* pill border matches card theme color */
+.about-card--timer .flip-card-tab-pill {
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(120deg, #33cc77, #22bb66) border-box;
+}
+.about-card--stats .flip-card-tab-pill {
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(120deg, #4488ff, #3366ee) border-box;
+}
+.about-card--reminders .flip-card-tab-pill {
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(120deg, #ffbb00, #ff9900) border-box;
+}
+.about-card--sound .flip-card-tab-pill {
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(120deg, #ff9933, #ffbb44) border-box;
+}
+.about-card--reset .flip-card-tab-pill {
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(120deg, #ff4488, #ff2266) border-box;
+}
+
+/* back borders match card theme color */
+.about-card--timer .flip-card-back {
+  background:
+    linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
+    linear-gradient(120deg, #33cc77, #22bb66) border-box;
+}
+.about-card--reminders .flip-card-back {
+  background:
+    linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
+    linear-gradient(120deg, #ffbb00, #ff9900) border-box;
+}
+.about-card--stats .flip-card-back {
+  background:
+    linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
+    linear-gradient(120deg, #4488ff, #3366ee) border-box;
+}
+.about-card--sound .flip-card-back {
+  background:
+    linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
+    linear-gradient(120deg, #ff9933, #ffbb44) border-box;
+}
+.about-card--reset .flip-card-back {
+  background:
+    linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
+    linear-gradient(120deg, #ff4488, #ff2266) border-box;
+}
+
+/* faint emoji watermark behind card content */
+.about-card--tabs .flip-card-front::before,
+.about-card--tabs .flip-card-back::before {
+  content: "📄";
+}
+.about-card--timer .flip-card-front::before,
+.about-card--timer .flip-card-back::before {
+  content: "⏱️";
+}
+.about-card--rewards .flip-card-front::before,
+.about-card--rewards .flip-card-back::before {
+  content: "🎉";
+}
+.about-card--reminders .flip-card-front::before,
+.about-card--reminders .flip-card-back::before {
+  content: "🔔";
+}
+.about-card--stats .flip-card-front::before,
+.about-card--stats .flip-card-back::before {
+  content: "🍩";
+}
+.about-card--sound .flip-card-front::before,
+.about-card--sound .flip-card-back::before {
+  content: "🔊";
+}
+.about-card--reset .flip-card-front::before,
+.about-card--reset .flip-card-back::before {
+  content: "💣";
+}
+
+/* shared watermark positioning */
+.about-card .flip-card-front::before,
+.about-card .flip-card-back::before {
+  position: absolute;
+  font-size: 5rem;
+  pointer-events: none;
+  bottom: 0.5rem;
+  right: 0.75rem;
+  line-height: 1;
+}
+.about-card .flip-card-front::before {
+  opacity: 0.08;
+}
+.about-card .flip-card-back::before {
+  opacity: 0.04;
 }
 
 /* about modal X button — purple themed */
@@ -1965,7 +2299,6 @@ footer {
   background: var(--pbgradient);
   border: 9px solid transparent;
   border-radius: 24px;
-  padding: 2rem;
   max-width: 400px;
   width: 90%;
   text-align: center;
@@ -2022,7 +2355,7 @@ footer {
 /* reward title to override the h2 pill badge style */
 .reward-title {
   font-family: "Popstar", sans-serif;
-  font-size: clamp(1.4rem, 4vw, 2.6rem);
+  font-size: clamp(2rem, 5vw, 3rem);
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -2038,12 +2371,53 @@ footer {
   margin-bottom: 0.5rem;
 }
 
+/* color-themed titles per modal */
+#timer-overlay .reward-title {
+  background: linear-gradient(135deg, #33cc77, #22bb66, #44ddaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(1px 3px 6px rgba(30, 180, 100, 0.5));
+}
+
+#stats-overlay .reward-title {
+  background: linear-gradient(135deg, #4488ff, #3366ee, #7fd7ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(1px 3px 6px rgba(50, 100, 255, 0.5));
+}
+
+#about-overlay .reward-title {
+  background: linear-gradient(135deg, #dd44ff, #9966ff, #bb44ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(1px 3px 6px rgba(180, 50, 255, 0.5));
+}
+
+#reminders-overlay .reward-title {
+  background: linear-gradient(135deg, #ffbb00, #ff9900, #ffdd44);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(1px 3px 6px rgba(220, 150, 0, 0.5));
+}
+
+#reset-overlay .reward-title {
+  background: linear-gradient(135deg, #ff4488, #ff2266, #ff88aa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(1px 3px 6px rgba(255, 50, 100, 0.5));
+}
+
 /* reward subtitle */
 .reward-subtitle {
   color: var(--purple);
   font-size: clamp(0.85rem, 2.5vw, 1rem);
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 400;
+  font-weight: 200;
   margin-bottom: 0.75rem;
 }
 
@@ -2111,7 +2485,7 @@ footer {
   padding: 0.5rem 1.25rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: clamp(0.8rem, 2.5vw, 0.95rem);
-  font-weight: 500;
+  font-weight: 300;
   cursor: pointer;
   filter: drop-shadow(1px 3px 5px rgba(180, 50, 100, 0.35));
 }

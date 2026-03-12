@@ -62,12 +62,12 @@
 <!-- time's up! -->
 <div id="timesup-overlay" class="reward-overlay is-hidden">
   <div class="reward-modal timesup-modal">
-    <h2 class="reward-title">Time's Up!</h2>
-    <p class="timesup-question">Done with</p>
+    <h2 class="reward-title">You Did Stuff!</h2>
+    <p class="timesup-question">done with</p>
     <p id="timesup-task-name" class="timesup-task-name"></p>
     <div class="timesup-buttons">
-      <button id="timesup-done-btn" class="timer-action-btn">Yes</button>
-      <button id="timesup-more-btn" class="timer-action-btn">+5 Min</button>
+      <button id="timesup-done-btn" class="timer-action-btn">Stuff Yah!</button>
+      <button id="timesup-more-btn" class="timer-action-btn">+ 5 min pls!</button>
     </div>
   </div>
 </div>
@@ -81,7 +81,7 @@
            </header>
 <div class="header-btns">
 <button id="about-btn" class="header-icon-btn btn-purple" data-tooltip="About">🤓</button>
-<button id="stats-btn" class="header-icon-btn btn-blue" data-tooltip="Stats">📊</button>
+<button id="stats-btn" class="header-icon-btn btn-blue" data-tooltip="Stats">🍩</button>
 <button id="timer-btn" class="header-icon-btn btn-green" data-tooltip="Timer">⏱️</button>
 <button id="reminders-btn" class="header-icon-btn btn-yellow" data-tooltip="Reminders">🔔</button>
 <button id="sound-btn" class="header-icon-btn btn-orange" data-tooltip="Sound">🔊</button>
@@ -147,107 +147,132 @@
 
 <div class="about-cards">
 
-  <div class="about-card flip-card">
+  <div class="about-card flip-card about-card--tabs">
     <div class="flip-card-inner">
       <div class="flip-card-front">
-        <span class="about-flip-emoji">📑</span>
         <div class="flip-card-tab-pill">
           <span class="about-flip-name">Tabs &amp; Stuff</span>
         </div>
       </div>
       <div class="flip-card-back">
+        <p class="about-flip-back-title">Tabs &amp; Stuff</p>
         <ul>
-          <li>GOTTA, WANNA, OTHER tabs to start</li>
-          <li>Hit + or Enter to add a task</li>
-          <li>Double-click a tab to rename or delete</li>
-          <li>Double-click ALL to add a new tab</li>
+          <li>GOTTA / WANNA / OTHER / ALL to start</li>
+          <li>Hit Enter to add a task to a tab</li>
+          <li>Double-click a tab to rename</li>
+          <li>ALL tab stays to keep track of STUFF!</li>
         </ul>
       </div>
     </div>
   </div>
 
-  <div class="about-card flip-card">
+  <div class="about-card flip-card about-card--rewards">
     <div class="flip-card-inner">
       <div class="flip-card-front">
-        <span class="about-flip-emoji">⏱️</span>
-        <div class="flip-card-tab-pill">
-          <span class="about-flip-name">Timer</span>
-        </div>
-      </div>
-      <div class="flip-card-back">
-        <ul>
-          <li>Scroll the dial to pick a time</li>
-          <li>Choose a task, hit Start</li>
-          <li>The circle drains as time runs out</li>
-          <li>Goober visits when the timer finishes</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="about-card flip-card">
-    <div class="flip-card-inner">
-      <div class="flip-card-front">
-        <span class="about-flip-emoji">🎉</span>
         <div class="flip-card-tab-pill">
           <span class="about-flip-name">Rewards</span>
         </div>
       </div>
       <div class="flip-card-back">
+        <p class="about-flip-back-title">Rewards</p>
         <ul>
-          <li>Clear a whole tab to get a surprise</li>
-          <li>Confetti + Goober the cat shows up</li>
+          <li>Stuff stinks and Rewards Rule!</li>
+          <li>Confetti?!</li>
+          <li>A cute cat?!</li>
+          <li>Clear all tasks from any tab to find out!</li>
         </ul>
       </div>
     </div>
   </div>
 
-  <div class="about-card flip-card">
+  <div class="about-card flip-card about-card--stats">
     <div class="flip-card-inner">
       <div class="flip-card-front">
-        <span class="about-flip-emoji">🔔</span>
-        <div class="flip-card-tab-pill">
-          <span class="about-flip-name">Reminders</span>
-        </div>
-      </div>
-      <div class="flip-card-back">
-        <ul>
-          <li>Set wellness popups on a timer</li>
-          <li>Custom interval and your own messages</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="about-card flip-card">
-    <div class="flip-card-inner">
-      <div class="flip-card-front">
-        <span class="about-flip-emoji">📊</span>
         <div class="flip-card-tab-pill">
           <span class="about-flip-name">Stats</span>
         </div>
       </div>
       <div class="flip-card-back">
+        <p class="about-flip-back-title">Stats</p>
         <ul>
-          <li>Line chart tracks completions per day</li>
-          <li>Updates live as you finish tasks</li>
+          <li>Donut chart tracks completions per tab</li>
+          <li>Updates live as you finish tasks!</li>
+          <li>Fill up that donut with STUFF!</li>
+          <li>Stats stay safe during a full reset</li>
         </ul>
       </div>
     </div>
   </div>
 
-  <div class="about-card flip-card">
+  <div class="about-card flip-card about-card--timer">
     <div class="flip-card-inner">
       <div class="flip-card-front">
-        <span class="about-flip-emoji">🔊</span>
+        <div class="flip-card-tab-pill">
+          <span class="about-flip-name">Timer</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <p class="about-flip-back-title">Timer</p>
+        <ul>
+          <li>Choose a focus task from your tabs</li>
+          <li>Or just pick a time for ANY STUFF timer</li>
+          <li>Press Start to get to work!</li>
+          <li>The circle drains as time runs out</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-card flip-card about-card--reminders">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <div class="flip-card-tab-pill">
+          <span class="about-flip-name">Reminders</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <p class="about-flip-back-title">Reminders</p>
+        <ul>
+          <li>Set wellness popups on a timer!</li>
+          <li>Pick your check-in interval</li>
+          <li>Choose from reminder suggestions</li>
+          <li>Or write your own!</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-card flip-card about-card--sound">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
         <div class="flip-card-tab-pill">
           <span class="about-flip-name">Sound</span>
         </div>
       </div>
       <div class="flip-card-back">
+        <p class="about-flip-back-title">Sound</p>
         <ul>
-          <li>Toggle chimes on and off</li>
-          <li>Plays on task or timer completion</li>
+          <li>Click to toggle chimes on / off</li>
+          <li>Plays on task or timer completion!</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-card flip-card about-card--reset">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <div class="flip-card-tab-pill">
+          <span class="about-flip-name">Reset</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <p class="about-flip-back-title">Reset</p>
+        <ul>
+          <li>Clears all tasks and custom tabs</li>
+          <li>Resets reminders to defaults</li>
+          <li>Your stats are safe — they stay!</li>
+          <li>Reset stats separately in the 🍩 panel</li>
         </ul>
       </div>
     </div>
@@ -264,7 +289,7 @@
     <div id="stats-overlay" class="reward-overlay is-hidden">
   <div class="reward-modal stats-modal">
     <button class="reward-close-X" id="stats-close">✕</button>
-    <p class="modal-emoji">📊</p>
+    <p class="modal-emoji">🍩</p>
     <h2 class="reward-title">Stats</h2>
     <canvas id="stats-chart"></canvas>
   </div>
@@ -277,7 +302,7 @@
         <p class="modal-emoji">💣</p>
         <h2 class="reward-title">Reset<br>Everything?</h2>
         <p class="reward-subtitle">
-           This will wipe and reset ALL your STUFF!
+          Clears all tasks, tabs &amp; reminders.<br>Your stats stay safe!
         </p>
         <div class="reset-modal-btns">
           <button id="reset-confirm-btn" class="reset-confirm-btn">

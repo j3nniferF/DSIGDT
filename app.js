@@ -53,6 +53,7 @@ function initializeTasks() {
   // reset btn resets ALL STUFF if selected
   const resetBtn = document.getElementById("reset-btn");
   resetBtn.addEventListener("click", () => {
+    hideReminderBanner();
     document.getElementById("reset-overlay").classList.remove("is-hidden");
   });
 }
@@ -123,7 +124,7 @@ function renderTasks() {
       // tab name header
       const header = document.createElement("p");
       header.className = "all-stuff-tab-header";
-      header.textContent = tab.name.toUpperCase();
+      header.innerHTML = `<span>${tab.name.toUpperCase()}</span>`;
       list.appendChild(header);
 
       // tasks for this tab
@@ -349,6 +350,7 @@ async function loadQuote() {
 
 // reminder popups
 function showReminderBanner() {
+  if (document.querySelector(".reward-overlay:not(.is-hidden)")) return;
   if (reminderSettings.messages.length === 0) return;
   const msg =
     reminderSettings.messages[
@@ -405,6 +407,7 @@ function renderRemindersList() {
 
 function initializeRemindersSettings() {
   document.getElementById("reminders-btn").addEventListener("click", () => {
+    hideReminderBanner();
     document.getElementById("reminders-frequency").value =
       reminderSettings.frequency;
     renderRemindersList();
@@ -438,24 +441,31 @@ function initializeRemindersSettings() {
   });
 }
 
-// draw or update the chart: done vs to do
+// draw / update chart- done vs to do
 function renderChart() {
   const canvasEl = document.getElementById("stats-chart");
   if (!canvasEl) return;
   if (typeof Chart === "undefined") return;
 
-  const stats = loadStats();
-  const byDate = stats.completionByDate;
-  const dates = Object.keys(byDate).sort();
+  const tabData = tabs
+    .map((tab) => ({
+      name: tab.name,
+      count: tasks.filter((t) => t.tabId === tab.id && t.completed).length,
+    }))
+    .filter((d) => d.count > 0);
 
-  if (dates.length === 0) return;
+  if (tabData.length === 0) return;
 
-  const labels = dates.map((d) => {
-    const date = new Date(d + "T12:00:00");
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  });
-
-  const data = dates.map((d) => byDate[d]);
+  const labels = tabData.map((d) => d.name);
+  const data = tabData.map((d) => d.count);
+  const colors = [
+    "#ff6eb4",
+    "#dd44ff",
+    "#5599ff",
+    "#44ddaa",
+    "#ffdd44",
+    "#ff9933",
+  ];
 
   if (chart) {
     chart.data.labels = labels;
@@ -466,34 +476,24 @@ function renderChart() {
 
   const ctx = canvasEl.getContext("2d");
   chart = new Chart(ctx, {
-    type: "line",
+    type: "doughnut",
     data: {
       labels,
       datasets: [
         {
-          label: "tasks done",
           data,
-          borderColor: "#dd44ff",
-          backgroundColor: "rgba(221, 68, 255, 0.1)",
-          pointBackgroundColor: "#ff6eb4",
-          pointBorderColor: "#fff",
-          pointRadius: 6,
-          tension: 0.4,
-          fill: true,
+          backgroundColor: colors.slice(0, data.length),
+          borderColor: "#fff",
+          borderWidth: 3,
         },
       ],
     },
     options: {
       responsive: true,
       plugins: {
-        legend: { display: false },
+        legend: { display: true, position: "bottom" },
       },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { stepSize: 1 },
-        },
-      },
+      cutout: "65%",
     },
   });
 }
@@ -756,6 +756,8 @@ function goToSetup() {
 
 // the actual countdown tick — extracted so +5 min can reuse it
 function startCountdown() {
+  clearInterval(timerInterval); // always kill any existing interval before starting a new one
+  timerInterval = null;
   const display = document.getElementById("timer-display");
 
   timerInterval = setInterval(() => {
@@ -878,8 +880,12 @@ function initializeTimer() {
     }
   });
 
-  // DONE! — triggers the timesup modal immediately (same flow as running out of time)
-  document.getElementById("timer-done").addEventListener("click", showTimesUp);
+  // DONE! — clear interval first, then trigger timesup (prevents double-chime)
+  document.getElementById("timer-done").addEventListener("click", () => {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    showTimesUp();
+  });
 
   // RESET — cancels timer and goes back to setup view
   document
@@ -1029,10 +1035,15 @@ function initializeResetModal() {
 function initializeAboutModal() {
   document.getElementById("about-btn").addEventListener("click", (e) => {
     e.stopPropagation();
+    hideReminderBanner();
     document.getElementById("about-overlay").classList.remove("is-hidden");
   });
   document.getElementById("about-close").addEventListener("click", () => {
     document.getElementById("about-overlay").classList.add("is-hidden");
+    // flip all about cards back to front when modal closes
+    document.querySelectorAll(".about-card.is-flipped").forEach((c) => {
+      c.classList.remove("is-flipped");
+    });
   });
 
   // card flip
@@ -1045,6 +1056,7 @@ function initializeAboutModal() {
 
 // stats stuff!
 document.getElementById("stats-btn").addEventListener("click", () => {
+  hideReminderBanner();
   document.getElementById("stats-overlay").classList.remove("is-hidden");
   renderChart();
 });
