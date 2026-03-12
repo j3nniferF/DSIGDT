@@ -355,7 +355,7 @@ function showReminderBanner() {
       Math.floor(Math.random() * reminderSettings.messages.length)
     ];
   document.getElementById("reminder-message").textContent = msg.replace(
-    /\s*[♡♥]+\s*$/,
+    /^\s*[♡♥]+\s*|\s*[♡♥]+\s*$/g,
     "",
   );
   document.getElementById("reminder-popup").classList.add("is-showing");
@@ -427,7 +427,7 @@ function initializeRemindersSettings() {
   document.getElementById("reminders-add-btn").addEventListener("click", () => {
     const text = addInput.value.trim();
     if (!text) return;
-    reminderSettings.messages.push(text);
+    reminderSettings.messages.push("♡ " + text);
     saveReminderSettings();
     renderRemindersList();
     addInput.value = "";
@@ -1002,6 +1002,17 @@ function initializeResetModal() {
     ];
 
     activeTabId = "tab_dumb";
+    reminderSettings = {
+      frequency: 20,
+      messages: [
+        "♡ Unclench your jaw!",
+        "♡ Drink some water!",
+        "♡ Stretch your shoulders!",
+        "♡ Take a deep breath!",
+        "♡ Check your posture!",
+      ],
+    };
+    saveReminderSettings();
     saveTasks();
     saveTabs();
     initializeTabs();

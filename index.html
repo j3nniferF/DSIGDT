@@ -80,12 +80,12 @@
         </h1>
            </header>
 <div class="header-btns">
-  <button id="about-btn" class="header-icon-btn btn-purple" title="About">🤓</button>
-  <button id="stats-btn" class="header-icon-btn btn-blue" title="Stats">📊</button>
-  <button id="timer-btn" class="header-icon-btn btn-green" title="Open Timer">⏱️</button>
-  <button id="reminders-btn" class="header-icon-btn btn-yellow" title="Reminders">🔔</button>
-  <button id="sound-btn" class="header-icon-btn btn-orange" title="Sound">🔊</button>
-  <button id="reset-btn" class="header-icon-btn btn-pink" title="Reset">💣</button>
+<button id="about-btn" class="header-icon-btn btn-purple" data-tooltip="About">🤓</button>
+<button id="stats-btn" class="header-icon-btn btn-blue" data-tooltip="Stats">📊</button>
+<button id="timer-btn" class="header-icon-btn btn-green" data-tooltip="Timer">⏱️</button>
+<button id="reminders-btn" class="header-icon-btn btn-yellow" data-tooltip="Reminders">🔔</button>
+<button id="sound-btn" class="header-icon-btn btn-orange" data-tooltip="Sound">🔊</button>
+<button id="reset-btn" class="header-icon-btn btn-pink" data-tooltip="Reset">💣</button>
 </div>
       <main id="app">
         <section class="tasks-card">
@@ -303,7 +303,7 @@
     </div>
     <!-- reminder banner -->
      <div id="reminder-popup" class="reminder-popup">
-      <p id="reminder-message">♡ Unclench your jaw!</p>
+<p><span class="reminder-heart">♡</span> <span id="reminder-message">Unclench your jaw!</span></p>
       <button id="reminder-dismiss">I did it!</button></p>
      </div>
      <!-- reminders settings modal -->
