@@ -44,8 +44,10 @@
 
     <!-- 2: RUNNING -->
     <div class="timer-running-view">
-      <div class="timer-display" id="timer-display">25:00</div>
-      <p class="timer-working-label timer-drag-handle">working on</p>
+<div class="timer-ring">
+  <div class="timer-display" id="timer-display">25:00</div>
+</div>
+<p class="timer-working-label timer-drag-handle">working on</p>
       <p class="timer-task-label" id="timer-task-label"></p>
 
       <div class="timer-buttons">
@@ -143,98 +145,119 @@
         <h2 class="reward-title">About</h2>
         <p class="about-intro">Keep all your dumb stuff organized in one cute place.</p>
 
+<div class="about-cards">
 
-        <div class="about-cards">
-
-  <div class="about-card">
-    <button class="about-card-header">
-      <span class="about-card-emoji">📑</span>
-      <span class="about-card-title">Tabs &amp; Stuff</span>
-      <span class="about-card-chevron">▼</span>
-    </button>
-    <div class="about-card-body">
-      <ul>
-        <li>GOTTA, WANNA, OTHER tabs to start</li>
-        <li>Hit + or Enter to add a task</li>
-        <li>Double-click a tab to rename or delete</li>
-        <li>Double-click ALL to add a new tab</li>
-      </ul>
+  <div class="about-card flip-card">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <span class="about-flip-emoji">📑</span>
+        <div class="flip-card-tab-pill">
+          <span class="about-flip-name">Tabs &amp; Stuff</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <ul>
+          <li>GOTTA, WANNA, OTHER tabs to start</li>
+          <li>Hit + or Enter to add a task</li>
+          <li>Double-click a tab to rename or delete</li>
+          <li>Double-click ALL to add a new tab</li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <div class="about-card">
-    <button class="about-card-header">
-      <span class="about-card-emoji">⏱️</span>
-      <span class="about-card-title">Timer</span>
-      <span class="about-card-chevron">▼</span>
-    </button>
-    <div class="about-card-body">
-      <ul>
-        <li>Scroll the dial to pick a time</li>
-        <li>Choose a task, hit Start</li>
-        <li>The circle drains as time runs out</li>
-        <li>Goober visits when the timer finishes</li>
-      </ul>
+  <div class="about-card flip-card">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <span class="about-flip-emoji">⏱️</span>
+        <div class="flip-card-tab-pill">
+          <span class="about-flip-name">Timer</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <ul>
+          <li>Scroll the dial to pick a time</li>
+          <li>Choose a task, hit Start</li>
+          <li>The circle drains as time runs out</li>
+          <li>Goober visits when the timer finishes</li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <div class="about-card">
-    <button class="about-card-header">
-      <span class="about-card-emoji">🎉</span>
-      <span class="about-card-title">Rewards</span>
-      <span class="about-card-chevron">▼</span>
-    </button>
-    <div class="about-card-body">
-      <ul>
-        <li>Clear a whole tab to get a surprise</li>
-        <li>Confetti + Goober the cat shows up</li>
-      </ul>
+  <div class="about-card flip-card">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <span class="about-flip-emoji">🎉</span>
+        <div class="flip-card-tab-pill">
+          <span class="about-flip-name">Rewards</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <ul>
+          <li>Clear a whole tab to get a surprise</li>
+          <li>Confetti + Goober the cat shows up</li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <div class="about-card">
-    <button class="about-card-header">
-      <span class="about-card-emoji">🔔</span>
-      <span class="about-card-title">Reminders</span>
-      <span class="about-card-chevron">▼</span>
-    </button>
-    <div class="about-card-body">
-      <ul>
-        <li>Set wellness popups on a timer</li>
-        <li>Custom interval and your own messages</li>
-      </ul>
+  <div class="about-card flip-card">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <span class="about-flip-emoji">🔔</span>
+        <div class="flip-card-tab-pill">
+          <span class="about-flip-name">Reminders</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <ul>
+          <li>Set wellness popups on a timer</li>
+          <li>Custom interval and your own messages</li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <div class="about-card">
-    <button class="about-card-header">
-      <span class="about-card-emoji">📊</span>
-      <span class="about-card-title">Stats</span>
-      <span class="about-card-chevron">▼</span>
-    </button>
-    <div class="about-card-body">
-      <ul>
-        <li>Line chart tracks completions per day</li>
-        <li>Updates live as you finish tasks</li>
-      </ul>
+  <div class="about-card flip-card">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <span class="about-flip-emoji">📊</span>
+        <div class="flip-card-tab-pill">
+          <span class="about-flip-name">Stats</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <ul>
+          <li>Line chart tracks completions per day</li>
+          <li>Updates live as you finish tasks</li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <div class="about-card">
-    <button class="about-card-header">
-      <span class="about-card-emoji">🔊</span>
-      <span class="about-card-title">Sound</span>
-      <span class="about-card-chevron">▼</span>
-    </button>
-    <div class="about-card-body">
-      <ul>
-        <li>Toggle chimes on and off with the sound button</li>
-        <li>Plays when you complete a task or timer</li>
-      </ul>
+  <div class="about-card flip-card">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        <span class="about-flip-emoji">🔊</span>
+        <div class="flip-card-tab-pill">
+          <span class="about-flip-name">Sound</span>
+        </div>
+      </div>
+      <div class="flip-card-back">
+        <ul>
+          <li>Toggle chimes on and off</li>
+          <li>Plays on task or timer completion</li>
+        </ul>
+      </div>
     </div>
   </div>
 
 </div>
+
+        </div><!-- /about-scroll -->
+      </div><!-- /about-modal -->
+    </div><!-- /about-overlay -->
 
 
 <!-- stats stuffs -->
@@ -252,7 +275,7 @@
       <div class="reward-modal">
         <button id="reset-cancel-btn" class="reward-close-X">✕</button>
         <p class="modal-emoji">💣</p>
-        <h2 class="reward-title">Reset Everything?</h2>
+        <h2 class="reward-title">Reset<br>Everything?</h2>
         <p class="reward-subtitle">
            This will wipe and reset ALL your STUFF!
         </p>

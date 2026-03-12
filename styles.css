@@ -180,7 +180,6 @@ h1 {
   padding: 1.5rem;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
-  box-shadow: 0 4px 24px rgba(193, 77, 204, 0.35);
   box-shadow:
     0 0 0 3.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
@@ -234,7 +233,6 @@ h2 {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   -webkit-text-stroke: 2px #1a1a2e;
-  filter: brightness(1.1) saturate(1.2);
   filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.45));
 }
 
@@ -264,12 +262,13 @@ h2 {
     linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
       border-box;
   border-radius: 999px;
-  padding: 0rem 1.3rem !important;
+  padding: 0.45rem 1.3rem !important;
   font-family: "Popstar";
   font-size: clamp(1.3rem, 2.8vw, 1.9rem);
   letter-spacing: 0.05em;
   white-space: nowrap;
   cursor: pointer;
+  user-select: none;
   position: relative;
   z-index: 1;
   font-weight: 900;
@@ -1004,33 +1003,48 @@ h2 {
   color: var(--purple);
 }
 
-/* draining rainbow border — shows when timer is running */
-.timer-modal.is-running::after {
-  content: "";
-  position: absolute;
-  inset: -8px;
-  border-radius: 26px;
+/* rainbow circle drain — the donut! */
+.timer-ring {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
   background: conic-gradient(
     from -90deg,
-    #ff3388 calc(var(--timer-pct, 100) * 1%),
-    rgba(255, 200, 230, 0.2) calc(var(--timer-pct, 100) * 1%)
+    hsl(0, 100%, 65%)   0%,
+    hsl(60, 100%, 65%)  calc(var(--timer-pct, 100) * 0.166%),
+    hsl(120, 100%, 65%) calc(var(--timer-pct, 100) * 0.333%),
+    hsl(180, 100%, 65%) calc(var(--timer-pct, 100) * 0.5%),
+    hsl(240, 100%, 65%) calc(var(--timer-pct, 100) * 0.666%),
+    hsl(300, 100%, 65%) calc(var(--timer-pct, 100) * 0.833%),
+    hsl(0, 100%, 65%)   calc(var(--timer-pct, 100) * 1%),
+    rgba(230, 210, 255, 0.35) calc(var(--timer-pct, 100) * 1%)
   );
-  z-index: -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0.5rem auto;
   animation: drain-rainbow 4s linear infinite;
 }
 
-@keyframes drain-rainbow {
-  from {
-    filter: hue-rotate(0deg);
-  }
-  to {
-    filter: hue-rotate(360deg);
-  }
+/* donut hole — sits in front of conic, behind the time text */
+.timer-ring::after {
+  content: "";
+  position: absolute;
+  width: 66%;
+  height: 66%;
+  border-radius: 50%;
+  background: rgba(250, 238, 255, 0.97);
+  z-index: 0;
 }
 
-/* warning — half time gone: no override, keeps rainbow drain */
-/* danger — 20% left: pulses faster */
-.timer-modal.is-danger::after {
+@keyframes drain-rainbow {
+  from { filter: hue-rotate(0deg); }
+  to   { filter: hue-rotate(360deg); }
+}
+
+/* danger — 20% left: ring pulses */
+.timer-modal.is-danger .timer-ring {
   animation:
     drain-rainbow 4s linear infinite,
     timerPulse 0.7s ease-in-out infinite;
@@ -1219,23 +1233,23 @@ h2 {
   }
 }
 
-/* big countdown display — rainbow Popstar, huge */
+/* countdown display — inside the donut ring */
 .timer-display {
   font-family: "Popstar";
   font-weight: 100 !important;
   display: block;
   text-align: center;
-  margin: 0.5rem auto 0.75rem;
-  font-size: clamp(3.5rem, 14vw, 5rem);
+  font-size: clamp(2rem, 8vw, 2.8rem);
   letter-spacing: 0.05em;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: brightness(1) saturate(3.5)
-    drop-shadow(2px 4px 8px rgba(255, 50, 200, 0.5));
+    drop-shadow(1px 2px 4px rgba(255, 50, 200, 0.5));
   white-space: nowrap;
-  opacity: 1;
+  position: relative;
+  z-index: 1;
   pointer-events: none;
 }
 
@@ -1385,27 +1399,24 @@ h2 {
 }
 
 /* rainbow pulse for running timer — cycles hue + glows */
-@keyframes rainbow-pulse {
-  0%,
-  100% {
-    filter: brightness(1) saturate(4) hue-rotate(0deg)
-      drop-shadow(0 0 10px rgba(255, 50, 150, 0.7));
-    transform: scale(1);
-  }
-  33% {
-    filter: brightness(1) saturate(4) hue-rotate(120deg)
-      drop-shadow(0 0 16px rgba(50, 200, 255, 0.7));
-    transform: scale(1.03);
-  }
-  66% {
-    filter: brightness(1) saturate(4) hue-rotate(240deg)
-      drop-shadow(0 0 13px rgba(150, 50, 255, 0.7));
-    transform: scale(1.01);
-  }
+@keyframes heartbeat {
+  0%   { transform: scale(1); }
+  10%  { transform: scale(1.22); } /* big beat */
+  20%  { transform: scale(1); }    /* valley */
+  30%  { transform: scale(1.12); } /* second beat */
+  45%  { transform: scale(1); }    /* rest */
+  100% { transform: scale(1); }    /* hold until next beat */
+}
+
+@keyframes rainbow-cycle {
+  from { filter: brightness(1) saturate(4) hue-rotate(0deg)   drop-shadow(0 0 10px rgba(255, 50, 150, 0.6)); }
+  to   { filter: brightness(1) saturate(4) hue-rotate(360deg) drop-shadow(0 0 10px rgba(255, 50, 150, 0.6)); }
 }
 
 .timer-display.is-running {
-  animation: rainbow-pulse 2s ease-in-out infinite;
+  animation:
+    heartbeat 1.4s ease-in-out infinite,
+    rainbow-cycle 3s linear infinite;
 }
 
 @keyframes timer-enter {
@@ -1648,102 +1659,62 @@ footer {
 }
 
 /* about grid : 1 mobile, 2 x 2 desktop */
+/* about cards — 2 col grid inside the modal */
 .about-cards {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 0.6rem;
 }
 
-@media (min-width: 480px) {
-  .about-cards {
-    grid-template-columns: 1fr 1fr;
-  }
+/* size override for about context */
+.about-cards .flip-card {
+  flex: unset;
+  height: 155px;
 }
 
-/* each card */
-.about-card {
-  border: 1.5px solid rgba(140, 40, 200, 0.35);
-  border-radius: 14px;
-  background: rgba(245, 235, 255, 0.6);
-  overflow: hidden;
+/* emoji on front */
+.about-flip-emoji {
+  font-size: 1.8rem;
+  line-height: 1;
 }
 
-/* header btn*/
-.about-card-header {
-  width: 100%;
-  background: none;
-  border: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-}
-
-.about-card-emoji {
-  font-size: 1.3rem;
-  flex-shrink: 0;
-}
-
-.about-card-title {
+/* title pill text — Popstar sparkle */
+.about-flip-name {
   font-family: "Popstar", sans-serif;
-  font-size: clamp(1rem, 3vw, 1.3rem);
+  font-size: clamp(0.9rem, 2.8vw, 1.2rem);
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: brightness(1) saturate(3)
-    drop-shadow(1px 2px 4px rgba(140, 40, 200, 0.5));
-  flex: 1;
+  filter: brightness(1.2) saturate(5);
+  paint-order: stroke fill;
+  -webkit-text-stroke: 1px #1a1a2e;
+}
+
+/* back side list */
+.about-cards .flip-card-back ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.about-cards .flip-card-back li {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(0.72rem, 2vw, 0.82rem);
+  color: #4a2060;
+  line-height: 1.5;
+  padding-left: 1.2rem;
+  position: relative;
   text-align: left;
 }
 
-/* flip when card opens */
-.about-card-chevron {
-  font-size: 0.8rem;
-  color: #9933cc;
-  transition: transform 0.3s ease;
-  flex-shrink: 0;
-}
-
-.about-card.is-open .about-card-chevron {
-  transform: rotate(180deg);
-}
-
-/* hidden / animates open */
-.about-card-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease;
-  padding: 0 1rem;
-}
-
-.about-card.is-open .about-card-body {
-  max-height: 300px;
-  padding-bottom: 0.75rem;
-}
-
-.about-card-body ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.about-card-body li {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(0.82rem, 2.5vw, 0.9rem);
-  line-height: 1.6;
-  color: #4a2060;
-  padding-left: 1.4rem;
-  position: relative;
-}
-
-.about-card-body li::before {
+.about-cards .flip-card-back li::before {
   content: "♡";
   position: absolute;
-  left: 0.1rem;
+  left: 0;
   color: #9933cc;
-  font-size: 0.9em;
+  font-size: 0.85em;
 }
 
 /* about modal X button — purple themed */

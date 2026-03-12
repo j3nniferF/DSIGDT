@@ -533,15 +533,6 @@ function saveReminderSettings() {
 }
 
 // moving slider for active tab
-function moveTabIndicator() {
-  const container = document.getElementById("task-tabs");
-  const indicator = document.getElementById("tab-indicator");
-  const active = container ? container.querySelector(".tab-btn.active") : null;
-  if (!active || !indicator) return;
-  indicator.style.width = active.offsetWidth + "px";
-  indicator.style.transform = `translateX(${active.offsetLeft}px)`;
-}
-
 // render tab bts + handle clicks
 function initializeTabs() {
   const container = document.getElementById("task-tabs");
@@ -592,8 +583,7 @@ function initializeTabs() {
   });
 
   container.appendChild(allBtn);
-
-  requestAnimationFrame(moveTabIndicator);
+  allBtn.addEventListener("dblclick", () => openTabEditModal("__all_tasks__"));
 }
 
 function addTab(name) {
@@ -906,6 +896,9 @@ function initializeTimesUpModal() {
       const task = tasks.find((t) => t.id === taskId);
       // toggleTask marks it complete + checks if tab is fully done → Goober
       if (task && !task.completed) toggleTask(taskId);
+    } else {
+      // free timer — no task selected, still deserves confetti!
+      confetti({ particleCount: 666, spread: 50, origin: { y: 0.6 } });
     }
     document.getElementById("timesup-overlay").classList.add("is-hidden");
     goToSetup();
@@ -1031,11 +1024,10 @@ function initializeAboutModal() {
     document.getElementById("about-overlay").classList.add("is-hidden");
   });
 
-  // card expand/collapse
-  document.querySelectorAll(".about-card-header").forEach((header) => {
-    header.addEventListener("click", () => {
-      const card = header.parentElement;
-      card.classList.toggle("is-open");
+  // card flip
+  document.querySelectorAll(".about-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      card.classList.toggle("is-flipped");
     });
   });
 }
