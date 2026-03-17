@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Background Preview</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Helvetica Neue", sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    .option {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    /* A — shifting aurora */
+    .option-a {
+      background: linear-gradient(135deg, #ffb3e6, #c4b3ff, #b3d9ff, #b3f0e0, #fffbb3, #ffb3e6);
+      background-size: 400% 400%;
+      animation: bg-shift 20s ease infinite;
+    }
+    @keyframes bg-shift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* B — static diagonal rainbow */
+    .option-b {
+      background: linear-gradient(135deg, #ffb3e6 0%, #c4b3ff 25%, #b3d9ff 50%, #b3f0e0 75%, #fffbb3 100%);
+    }
+
+    /* C — radial soft glow */
+    .option-c {
+      background: radial-gradient(ellipse at center, #f7d4ff 0%, #d4eaff 50%, #d4fff3 100%);
+    }
+
+    .label {
+      background: rgba(255,255,255,0.75);
+      border-radius: 999px;
+      padding: 0.4rem 1.2rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* fake card to see how content looks on top */
+    .fake-card {
+      background: rgba(255,255,255,0.85);
+      border-radius: 16px;
+      border: 4px solid rgba(180,100,255,0.4);
+      padding: 1rem 1.5rem;
+      text-align: center;
+      width: 80%;
+      font-size: 0.9rem;
+      color: #333;
+    }
+
+    .divider {
+      width: 2px;
+      background: rgba(0,0,0,0.12);
+      align-self: stretch;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="option option-a">
+    <div class="label">A — Aurora (animated)</div>
+    <div class="fake-card">✨ slow shifting colors<br>pink → purple → blue → teal → yellow</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="option option-b">
+    <div class="label">B — Diagonal Rainbow</div>
+    <div class="fake-card">🌈 static stripe<br>all 5 colors at once</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="option option-c">
+    <div class="label">C — Radial Glow</div>
+    <div class="fake-card">🌸 soft center glow<br>purple → blue → mint</div>
+  </div>
+
+</body>
+</html>

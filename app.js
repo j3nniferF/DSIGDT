@@ -3,6 +3,7 @@ let chart = null;
 let tabs = [];
 let activeTabId = "tab_dumb";
 let editingTabId = null;
+let selectedTaskId = null;
 
 // reminder popup msgs
 let reminderSettings = {
@@ -81,6 +82,7 @@ function addTask() {
 function buildTaskItem(task) {
   const li = document.createElement("li");
   li.className = "task-item";
+  if (task.id === selectedTaskId) li.classList.add("selected");
 
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
@@ -89,6 +91,38 @@ function buildTaskItem(task) {
 
   const label = document.createElement("label");
   label.textContent = task.text;
+
+  // single click = mark as in progress
+  label.addEventListener("click", (e) => {
+    e.preventDefault();
+    selectedTaskId = task.id === selectedTaskId ? null : task.id;
+    const select = document.getElementById("timer-task-select");
+    if (select) select.value = selectedTaskId ?? "";
+    renderTasks();
+  });
+
+  // double click / double tap = open timer with this task pre-selected
+  function openTimerForTask() {
+    selectedTaskId = task.id;
+    const overlay = document.getElementById("timer-overlay");
+    if (overlay.classList.contains("is-hidden")) {
+      document.getElementById("timer-btn").click();
+    }
+    const select = document.getElementById("timer-task-select");
+    if (select) select.value = task.id;
+    renderTasks();
+  }
+  li.addEventListener("dblclick", openTimerForTask);
+  // mobile: detect double-tap via two touchend events within 350ms
+  let lastTap = 0;
+  li.addEventListener("touchend", (e) => {
+    const now = Date.now();
+    if (now - lastTap < 350) {
+      e.preventDefault();
+      openTimerForTask();
+    }
+    lastTap = now;
+  });
 
   const deleteBtn = document.createElement("button");
   deleteBtn.textContent = "x";
@@ -284,6 +318,7 @@ function toggleTask(id) {
     return t;
   });
   saveTasks();
+  if (!wasCompleted && selectedTaskId === id) selectedTaskId = null;
 
   if (!wasCompleted) {
     const stats = loadStats();
@@ -803,7 +838,7 @@ function showTimesUp() {
     const tab = tabs.find((t) => t.id === task.tabId);
     taskNameEl.textContent = `"${task.text}"${tab ? " from " + tab.name : ""}`;
   } else {
-    taskNameEl.textContent = "your timer session";
+    taskNameEl.textContent = "your timer session?";
   }
 
   // hide timer, show timesup
@@ -997,7 +1032,7 @@ function initializeResetModal() {
     timerInterval = null;
     timerSeconds = 0;
     document.getElementById("timer-start").textContent = "Start";
-    document.getElementById("timer-display").textContent = "25:00";
+    document.getElementById("timer-display").textContent = "15:00";
     document.getElementById("timer-display").classList.remove("is-running");
     document.getElementById("timer-task-label").textContent = "";
     tasks = [];

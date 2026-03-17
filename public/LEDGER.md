@@ -19,7 +19,7 @@ Style pass — footer quote treatment, reminder popup rainbow, doughnut chart ra
 Enhanced timer — task select, time's up modal, floating panel, +5 min
 Per-tab completed breakdown
 
-ABOUT
+ABOUT ♥ ♡
 ♡ ♥ Add stuff to your tabs, check it off when done
 ♡ ♥ Double-click a tab name to rename it
 ♡ ♥ Finish a whole tab → Goober appears 🐱

@@ -1,4 +1,6 @@
 /* font friends */
+/* font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; */
+
 @font-face {
   font-family: "Bubblegums";
   src:
@@ -96,6 +98,24 @@ body {
   min-height: 100vh;
 }
 
+@keyframes bg-shift {
+  0% {
+    background-position:
+      0% 50%,
+      0% 50%;
+  }
+  50% {
+    background-position:
+      100% 50%,
+      0% 50%;
+  }
+  100% {
+    background-position:
+      0% 50%,
+      0% 50%;
+  }
+}
+
 /* centers how wide */
 .container {
   max-width: 1111px;
@@ -109,9 +129,18 @@ header {
   isolation: isolate;
   filter: drop-shadow(3px 8px 16px purple);
   background:
-    url("assets/textures/prettybg.png") center / cover padding-box,
     linear-gradient(
-        to top right,
+        135deg,
+        #ffb3e6bb,
+        #c4b3ffbb,
+        #b3d9ffbb,
+        #b3f0e0bb,
+        #fffbb3bb,
+        #ffb3e6bb
+      )
+      padding-box,
+    linear-gradient(
+        var(--angle),
         #ff3388,
         #dd44ff,
         #5599ff,
@@ -120,11 +149,9 @@ header {
         #ff3388
       )
       border-box;
-  background-color: #1f1f1f;
-  background-blend-mode: hard-light, normal, normal;
   background-size:
-    cover,
-    300% 300%;
+    400% 400%,
+    auto;
   border: 10px solid transparent;
   padding: 0.75rem 2rem;
   text-align: center;
@@ -135,7 +162,9 @@ header {
     inset 0 0 0 2px #1a1a2e,
     0 6px 40px rgba(193, 77, 204, 0.95);
   border-radius: 999px;
-  animation: card-border-drift 10s ease-in-out infinite alternate;
+  animation:
+    bg-shift 20s ease infinite,
+    tab-border-spin 20s linear infinite;
 }
 
 header::before {
@@ -171,9 +200,9 @@ h1 {
 }
 
 .title-sub {
-  font-family: "Storyteller", sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: clamp(0rem, 6vw, 3rem);
-  -webkit-text-stroke: 1px;
+  -webkit-text-stroke: 2px;
   letter-spacing: normal;
 }
 
@@ -183,21 +212,30 @@ h1 {
   position: relative;
   isolation: isolate;
   background:
-    url("assets/textures/prettybg.png") center / cover padding-box,
     linear-gradient(
-        to top right,
-        #ff3388,
-        #dd44ff,
-        #5599ff,
-        #44ddaa,
+        135deg,
+        #ffb3e6bb,
+        #c4b3ffbb,
+        #b3d9ffbb,
+        #b3f0e0bb,
+        #fffbb3bb,
+        #ffb3e6bb
+      )
+      padding-box,
+    linear-gradient(
+        var(--angle),
+        #ff4fbe,
+        #7fd7ff,
+        #b615f6,
         #ffdd44,
-        #ff3388
+        #44ddaa,
+        #ff4fbe
       )
       border-box;
   background-size:
-    cover,
-    300% 300%;
-  border: 9px solid transparent;
+    400% 400%,
+    auto;
+  border: 6px solid transparent;
   border-radius: 30px;
   padding: 1.5rem;
   margin-top: 2rem;
@@ -206,7 +244,9 @@ h1 {
     0 0 0 3.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
     0 6px 40px rgba(193, 77, 204, 0.95);
-  /* animation: card-border-drift 10s ease-in-out infinite alternate; */
+  animation:
+    bg-shift 20s ease infinite,
+    tab-border-spin 30s linear infinite;
 }
 
 .tasks-card::before {
@@ -235,27 +275,21 @@ h2 {
 /* banner strip — spans full card width at the top */
 .tasks-card > h2 {
   position: relative;
-  font-family: "Storyteller", sans-serif;
+  font-family: "Popstar", sans-serif;
   font-size: clamp(3.5rem, 6vw, 4rem);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-align: center;
   margin: 0 0 0.75rem 0;
   padding: 0.5rem 1rem;
-  background: linear-gradient(
-    to right,
-    #ff6eb4,
-    #dd44ff,
-    #5599ff,
-    #44ddaa,
-    #ffdd44
-  );
   width: inherit;
+  background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  paint-order: stroke fill;
   -webkit-text-stroke: 0.5px;
-  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
+  filter: brightness(1.2) saturate(5) drop-shadow(2px 6px 22px rgba(130, 60, 200, 0.7));
 }
 
 .tasks-card > h2::before {
@@ -267,7 +301,7 @@ h2 {
   position: relative;
   display: flex;
   padding: 0.25rem 0;
-  gap: 0;
+  gap: 0.5rem;
   margin: 0 auto 1rem;
   width: 100%;
   justify-content: space-around;
@@ -283,7 +317,7 @@ h2 {
     var(--tab-fill) padding-box,
     var(--tab-border) border-box;
   border-radius: 999px;
-  padding: 0.45rem 1.3rem !important;
+  padding: 0rem 1.3rem !important;
   font-family: var(--tab-font);
   font-size: clamp(1.3rem, 2.8vw, 1.9rem);
   letter-spacing: 0.05em;
@@ -314,9 +348,10 @@ h2 {
       )
       border-box;
   border: 4px solid transparent;
+  padding: 0.3rem 1.4rem;
   filter: drop-shadow(0px 0px 8px rgba(247, 68, 214, 0.9))
     drop-shadow(0px 0px 16px rgba(100, 180, 255, 0.6));
-  animation: tab-border-spin 8s linear infinite;
+  animation: tab-border-spin 25s linear infinite;
   transform: scale(1.08);
 }
 
@@ -333,20 +368,20 @@ h2 {
 
 /* tab text */
 .tab-btn span {
-  font-family: var(--tab-font);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   paint-order: stroke fill;
-  -webkit-text-stroke: var(--tab-stroke);
+  -webkit-text-stroke: 1px #1a1a2e;
   filter: brightness(1.2) saturate(5);
 }
 
 /* active tab text */
 .tab-btn.active span {
   filter: brightness(1.2) saturate(5);
-  -webkit-text-stroke: var(--tab-stroke);
+  -webkit-text-stroke: 1.75px #1a1a2e;
 }
 
 /* + tab btn darker to stand out */
@@ -518,6 +553,45 @@ h2 {
   flex-shrink: 0;
 }
 
+/* IN PROGRESS selected task */
+.task-item.selected {
+  position: relative;
+  background:
+    linear-gradient(rgba(255, 230, 250, 0.6), rgba(220, 235, 255, 0.6))
+      padding-box,
+    linear-gradient(
+        var(--angle),
+        #ff4fbe,
+        #7fd7ff,
+        #b615f6,
+        #ffdd44,
+        #44ddaa,
+        #ff4fbe
+      )
+      border-box;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  padding: 0.5rem 0.6rem 0.5rem 0.6rem;
+  margin: 0.25rem -0.6rem;
+  animation: tab-border-spin 6s linear infinite;
+}
+
+.task-item.selected::before {
+  content: "in progress ✦";
+  position: absolute;
+  top: -0.7rem;
+  left: 0.75rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(to right, #ff4fbe, #b615f6, #7fd7ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* ♡ on completed tasks in groups */
 .completed-group .task-item label::before {
   content: "♡  ";
@@ -527,7 +601,7 @@ h2 {
 /* ALL tab / tasks breakdown */
 .all-stuff-tab-header {
   border-radius: 999px;
-  border: 2px solid transparent;
+  border: 4px solid transparent;
   background:
     var(--tab-fill) padding-box,
     var(--tab-border) border-box;
@@ -543,7 +617,8 @@ h2 {
 }
 
 .all-stuff-tab-header span {
-  font-family: var(--tab-font);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 900;
   font-size: 1.4rem;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
@@ -551,7 +626,7 @@ h2 {
   background-clip: text;
   filter: brightness(1.2) saturate(5);
   paint-order: stroke fill;
-  -webkit-text-stroke: var(--tab-stroke);
+  -webkit-text-stroke: 1.5px;
   letter-spacing: 0.08em;
 }
 
@@ -559,7 +634,7 @@ h2 {
 .delete-btn {
   background: none;
   border: none;
-  color: #9933cc;
+  color: #1a1a2e;
   cursor: pointer;
   font-size: 1.2rem;
   padding: 0.2rem 0.35rem;
@@ -572,7 +647,7 @@ h2 {
 }
 
 .delete-btn:hover {
-  color: #ff4488;
+  color: #ff4fbe;
   background: rgba(255, 100, 150, 0.12);
 }
 
@@ -586,36 +661,34 @@ h2 {
   background:
     linear-gradient(
         135deg,
-        rgba(255, 107, 107, 0.25),
-        rgba(255, 217, 61, 0.25),
-        rgba(107, 255, 154, 0.25),
-        rgba(107, 180, 255, 0.25),
-        rgba(195, 107, 255, 0.25)
+        #ffb3e6bb,
+        #c4b3ffbb,
+        #b3d9ffbb,
+        #b3f0e0bb,
+        #fffbb3bb,
+        #ffb3e6bb
       )
-      padding-box,
-    linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95))
       padding-box,
     linear-gradient(
-        to right,
-        #ff3388,
-        #dd44ff,
-        #5599ff,
-        #44ddaa,
+        var(--angle),
+        #ff4fbe,
+        #7fd7ff,
+        #b615f6,
         #ffdd44,
-        #ff3388
+        #44ddaa,
+        #ff4fbe
       )
       border-box;
-  border: 3px solid transparent;
+  background-size:
+    400% 400%,
+    auto;
+  border: 4px solid transparent;
   border-radius: 999px;
   padding: 0.75rem 1.5rem;
   box-shadow:
-    0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(193, 77, 204, 0.4);
-  background-size:
-    100% 100%,
-    100% 100%,
-    300% 300%;
-  /* animation: card-border-drift 8s ease-in-out infinite alternate; */
+    0 0 0 2.5px #1a1a2e,
+    0 6px 28px rgba(193, 77, 204, 0.55);
+  animation: tab-border-spin 15s linear infinite;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -627,9 +700,9 @@ h2 {
 }
 
 #reminder-message {
-  color: var(--purple);
-  font-family: "Storyteller", sans-serif;
-  font-size: 1rem;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 300;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -641,19 +714,14 @@ h2 {
 #reminder-dismiss {
   margin-left: auto;
   flex-shrink: 0;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.92))
-      padding-box,
-    linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
-      border-box;
-  border: 3px solid transparent;
   border-radius: 999px;
-  padding: 0.4rem 1rem;
+  background: transparent;
+  padding: 0.45rem 1.1rem;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
   color: var(--purple);
   cursor: pointer;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 /* reminders settings modal */
@@ -753,17 +821,17 @@ h2 {
 
 /* flip card for completed */
 #completed-list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   padding: 0.5rem 0.25rem 1rem;
+  width: 100%;
 }
 
 /* outside shell */
 .flip-card {
-  flex: 1 1 140px;
-  height: 210px;
+  container-type: inline-size;
+  height: 185px;
   perspective: 1000px;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -793,7 +861,7 @@ h2 {
   position: absolute;
   inset: 0;
   border-radius: 20px;
-  border: 3px solid transparent;
+  border: 7px solid transparent;
   background:
     linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
     linear-gradient(to right, #ff6eb4, #dd44ff, #5599ff, #44ddaa, #ffdd44)
@@ -803,7 +871,8 @@ h2 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
 }
 
 /* back starts rotated */
@@ -818,33 +887,35 @@ h2 {
 /* active-tab-style pill wrapper around the name */
 .flip-card-tab-pill {
   border-radius: 999px;
-  border: 2px solid transparent;
+  border: 4px solid transparent;
   background:
     var(--tab-fill) padding-box,
     var(--tab-border) border-box;
-  padding: 0.2rem 0.9rem;
-  filter: var(--tab-shadow);
-  max-width: 90%;
+  padding: 0.25rem 1.1rem;
+  width: auto;
+  max-width: 85%;
   text-align: center;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 
 /* tab name on front */
 .flip-card-tab-name {
-  font-family: var(--tab-font);
-  font-size: clamp(1.2rem, 3.5vw, 2rem);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  font-size: clamp(0.9rem, 14cqi, 1.8rem);
+  display: block;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: brightness(1.2) saturate(5);
   paint-order: stroke fill;
-  -webkit-text-stroke: var(--tab-stroke);
+  -webkit-text-stroke: 1.35px;
 }
 
 /* single decorative heart above name */
 .flip-card-heart {
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 20cqi, 3rem);
   background: linear-gradient(
     to right,
     #ff6eb4,
@@ -858,10 +929,10 @@ h2 {
   background-clip: text;
 }
 
-/* "X of Y" count — big, rainbow, faded */
+/* "X of Y" count */
 .flip-card-count {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 1.6rem;
+  font-size: clamp(0.9rem, 10cqi, 1.4rem);
   font-weight: 700;
   text-align: center;
   background: linear-gradient(
@@ -875,12 +946,18 @@ h2 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-text-stroke: 1px;
   opacity: 0.8;
 }
 
 /* flip back btn hidden — click card to flip back instead */
 .flip-back-btn {
   display: none;
+}
+
+/* ALL card: spans full row, same height as other cards */
+.flip-card--all {
+  grid-column: 1 / -1;
 }
 
 /* ALL card gets a gold shimmer border */
@@ -1156,8 +1233,7 @@ h2 {
   justify-content: center;
   position: relative;
   margin: 0.5rem auto;
-  filter: drop-shadow(0 4px 18px rgba(180, 100, 255, 5));
-  animation: drain-rainbow 4s linear infinite;
+  filter: drop-shadow(0 4px 18px rgba(180, 100, 255, 0.8));
 }
 
 /* donut hole — sits in front of conic, behind the time text */
@@ -1182,9 +1258,7 @@ h2 {
 
 /* danger — 20% left: ring pulses */
 .timer-modal.is-danger .timer-ring {
-  animation:
-    drain-rainbow 4s linear infinite,
-    timerPulse 0.7s ease-in-out infinite;
+  animation: timerPulse 0.7s ease-in-out infinite;
 }
 
 /* kill prettybg texture — clean blue bg only */
@@ -1224,7 +1298,6 @@ h2 {
   font-weight: 200;
   color: var(--purple);
   cursor: pointer;
-  box-shadow: 0 0 0 2px #1a1a2e;
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease;
@@ -1232,9 +1305,7 @@ h2 {
 
 .timer-action-btn:hover {
   transform: scale(1.06) translateY(-2px);
-  box-shadow:
-    0 0 0 2px #1a1a2e,
-    0 4px 12px rgba(200, 80, 255, 0.35);
+  box-shadow: 0 4px 12px rgba(200, 80, 255, 0.35);
 }
 
 /* timer SETUP state: Start button = green */
@@ -1243,7 +1314,6 @@ h2 {
     linear-gradient(rgba(160, 235, 195, 0.5), rgba(130, 215, 170, 0.9))
       padding-box,
     linear-gradient(120deg, #33cc77, #22bb66) border-box;
-  color: #1a1a2e;
 }
 
 /* heartbeat animation on the countdown numbers */
@@ -1281,29 +1351,36 @@ h2 {
   opacity: 0.55;
 }
 
+#timesup-overlay .reward-modal {
+  max-width: 340px;
+  padding-bottom: 1.5rem;
+}
+
 #timesup-overlay .reward-title {
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: clamp(2.2rem, 6vw, 3rem);
 }
 
 .timesup-question {
+  font-family: "Storyteller", sans-serif;
   color: var(--purple);
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   font-weight: 400;
   margin: 0.25rem 0 0;
 }
 
 .timesup-task-name {
-  font-weight: 500;
   font-family: "Storyteller", sans-serif;
+  font-weight: 400;
   color: var(--purple);
-  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
-  margin: 0.25rem 0 1rem;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  margin: 0.2rem 0 1.2rem;
 }
 
 .timesup-buttons {
   display: flex;
   gap: 0.75rem;
   justify-content: center;
+  margin-bottom: 0.5rem;
 }
 
 /* drag handle title bar */
@@ -1449,7 +1526,7 @@ h2 {
   align-items: center;
   gap: 0.25rem;
   background:
-    linear-gradient(rgba(160, 235, 195, 0.5), rgba(130, 215, 170, 0.9))
+    linear-gradient(rgba(220, 255, 235, 0.6), rgba(235, 255, 245, 0.9))
       padding-box,
     linear-gradient(120deg, #33cc77, #22bb66) border-box;
   border: 2px solid transparent;
@@ -1525,10 +1602,9 @@ h2 {
 /* "choose some stuff:" / "choose some time:" */
 .timer-section-label {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.75rem;
-  font-weight: 200;
-  color: #1a5a3a;
-  text-align: left;
+  font-size: 1rem;
+  font-weight: 300;
+  text-align: center;
   width: 100%;
   margin: 0.6rem 0 0.2rem;
   letter-spacing: 0.04em;
@@ -1539,10 +1615,6 @@ h2 {
 .timer-task-select {
   width: 100%;
   padding: 0.5rem 0.8rem;
-  background:
-    linear-gradient(rgba(160, 235, 195, 0.5), rgba(130, 215, 170, 0.9))
-      padding-box,
-    linear-gradient(120deg, #33cc77, #22bb66) border-box;
   border: 2px solid transparent;
   border-radius: 999px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1552,6 +1624,10 @@ h2 {
   margin-bottom: 0.5rem;
   outline: none;
   cursor: pointer;
+  background:
+    linear-gradient(rgba(220, 255, 235, 0.7), rgba(235, 255, 245, 0.9))
+      padding-box,
+    linear-gradient(120deg, #33cc77, #22bb66) border-box;
 }
 
 /* rainbow pulse for running timer — cycles hue + glows */
@@ -1677,7 +1753,6 @@ footer {
   letter-spacing: 0.04em;
   color: #7b3fa0;
   filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
-  box-shadow: 0 0 0 2px #1a1a2e;
 }
 
 /* shimmer sweep across title text */
@@ -1697,7 +1772,7 @@ footer {
 }
 
 /* the drifting animation - 2 layer */
-/* @keyframes border-drift {
+@keyframes border-drift {
   0% {
     background-position:
       0 0,
@@ -1708,10 +1783,10 @@ footer {
       0 0,
       100% 50%;
   }
-} */
+}
 
 /* the drifting animation - 3 layer (for cards with texture) */
-/* @keyframes card-border-drift {
+@keyframes card-border-drift {
   0% {
     background-position:
       0 0,
@@ -1724,15 +1799,21 @@ footer {
       center,
       100% 50%;
   }
-} */
+}
 
 @media (max-width: 600px) {
+  body {
+    background-attachment: scroll;
+    background-size: contain;
+    background-repeat: repeat;
+  }
+
   .container {
     padding: 1rem;
   }
 
   .tasks-card > h2 {
-    font-size: clamp(2.6rem, 7.7vw, 3.7rem);
+    font-size: clamp(2.8rem, 10vw, 3.5rem);
     letter-spacing: 0.12em;
   }
 
@@ -1745,9 +1826,9 @@ footer {
 
   .tab-btn {
     flex: 0 0 auto;
-    padding: 0.6rem 1.4rem;
+    padding: 0.4rem 1rem;
     letter-spacing: 0.02em;
-    font-size: 2rem;
+    font-size: 1.1rem;
   }
 
   .tab-btn.active {
@@ -1755,11 +1836,13 @@ footer {
   }
 
   .title-main {
-    letter-spacing: 0.04em;
+    font-size: clamp(2.8rem, 12vw, 4rem);
+    letter-spacing: 0.08em;
   }
 
   .title-sub {
-    letter-spacing: 0.1em;
+    font-size: clamp(1.2rem, 5vw, 2rem);
+    letter-spacing: 0.08em;
   }
 
   h2 {
@@ -1782,24 +1865,38 @@ footer {
     transform: translateY(0);
   }
 
+  #completed-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .flip-card {
-    height: 180px;
+    height: 165px;
+  }
+
+  .flip-card {
+    height: 220px;
   }
 
   .flip-card-tab-name {
-    font-size: 2rem;
+    font-size: clamp(1.1rem, 5vw, 1.7rem);
   }
 
   .flip-card-tab-pill {
-    padding: 0.5rem 1.6rem;
+    padding: 0.2rem 1rem;
   }
 
   .flip-card-heart {
-    font-size: 3rem;
+    font-size: 2.8rem;
   }
 
   .flip-card-count {
-    font-size: 2.2rem;
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 420px) {
+  #completed-list {
+    grid-template-columns: 1fr;
   }
 
   /* keep X always visible — anchor about modal to top */
@@ -1882,13 +1979,22 @@ footer {
   margin-bottom: 0.4rem;
 }
 
-/* intro */
+/* about title */
 .about-intro {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  font-size: clamp(1.1rem, 2.5vw, 0.95rem);
   text-align: center;
-  margin: 0 0 0.9rem;
+  font-weight: 200;
   line-height: 1.5;
+}
+
+/* about sub title */
+.about-sub {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(1rem, 2.5vw, 0.95rem);
+  text-align: center;
+  font-weight: 100;
+  margin: 0 0 0.9rem;
 }
 
 /* about cards — always 1 column */
@@ -1912,8 +2018,9 @@ footer {
 
 /* title pill text — Popstar sparkle */
 .about-flip-name {
-  font-family: "Storyteller", sans-serif;
-  font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3.5vw, 1.1rem);
   white-space: nowrap;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
@@ -1921,14 +2028,15 @@ footer {
   background-clip: text;
   filter: brightness(1.2) saturate(5);
   paint-order: stroke fill;
-  -webkit-text-stroke: 1px #1a1a2e;
+  -webkit-text-stroke: 1.55px;
   letter-spacing: 0.1em;
 }
 
 /* back title — small label at top of flipped card */
 .about-flip-back-title {
-  font-family: "Storyteller", sans-serif;
-  font-size: clamp(0.85rem, 3vw, 1rem);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.45rem, 3vw, 1rem);
   letter-spacing: 0.08em;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
@@ -1936,7 +2044,7 @@ footer {
   background-clip: text;
   filter: brightness(1.2) saturate(5);
   paint-order: stroke fill;
-  -webkit-text-stroke: 0.8px #1a1a2e;
+  -webkit-text-stroke: 1.15px;
   text-align: center;
   width: 100%;
   margin-bottom: 0.2rem;
@@ -2296,7 +2404,24 @@ footer {
 .reward-modal {
   position: relative;
   isolation: isolate;
-  background: var(--pbgradient);
+  background:
+    linear-gradient(
+        to top right,
+        rgba(255, 233, 248, 0.97),
+        rgba(212, 246, 255, 0.97),
+        rgba(232, 219, 255, 0.97)
+      )
+      padding-box,
+    linear-gradient(
+        var(--angle),
+        #ff4fbe,
+        #7fd7ff,
+        #b615f6,
+        #ffdd44,
+        #44ddaa,
+        #ff4fbe
+      )
+      border-box;
   border: 9px solid transparent;
   border-radius: 24px;
   max-width: 400px;
@@ -2308,7 +2433,12 @@ footer {
   box-shadow:
     0 0 0 3px #1a1a2e,
     0 12px 40px rgba(0, 0, 0, 0.4);
-  /* animation: border-drift 10s ease-in-out infinite alternate; */
+  animation: tab-border-spin 20s linear infinite;
+}
+
+/* goober reward modal — padding so button doesn't hug the border */
+#reward-modal {
+  padding: 1.5rem 1.5rem 2rem;
 }
 
 .reward-modal::before {
@@ -2338,7 +2468,6 @@ footer {
     linear-gradient(to right, #ff3388, #dd44ff, #5599ff, #44ddaa, #ffdd44)
       border-box;
   border: 3px solid transparent;
-  box-shadow: 0 0 0 2px #1a1a2e;
   color: var(--purple);
   border-radius: 50%;
   width: 28px;
