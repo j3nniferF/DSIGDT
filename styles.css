@@ -167,11 +167,8 @@ h1 {
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-background-clip: text;
   background-clip: text;
-  background-clip: text;
-  background-clip: text;
   -webkit-text-fill-color: white;
   -webkit-text-stroke: 3px #1a1a2e;
-  background-clip: text;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -250,7 +247,6 @@ h2 {
   width: fit-content;
   background: url("assets/textures/prettybg.png") center / cover;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0.1px #1a1a2e;
   background-clip: text;
   font-size: clamp(1.4rem, 5vw, 2.6rem);
   text-align: center;
@@ -503,6 +499,11 @@ h2 {
   justify-content: center;
   padding: 0;
   font-weight: bold;
+}
+
+/* hide add btn — enter key works */
+#add-task-btn {
+  display: none;
 }
 
 /* removes bullet from list */
@@ -981,11 +982,6 @@ h2 {
   display: none;
 }
 
-/* hide add btn  enter key works */
-#add-task-btn {
-  display: none;
-}
-
 /*  header btns (timer, about, etc )  */
 .header-btns {
   display: flex;
@@ -996,6 +992,7 @@ h2 {
 }
 
 .header-icon-btn {
+  position: relative;
   border: 4px solid transparent;
   border-radius: 50%;
   width: 52px;
@@ -1069,10 +1066,6 @@ h2 {
 }
 
 /* cooltips! slide on hover */
-.header-icon-btn {
-  position: relative;
-}
-
 .header-icon-btn::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -1387,24 +1380,17 @@ h2 {
   }
 }
 
-.timer-display.is-running {
-  animation: heartbeat 1s ease-in-out infinite;
-}
-
 /* timesup modal — rainbow + prettybg */
 #timesup-overlay .reward-modal {
   background: var(--pbgradient);
+  max-width: 340px;
+  padding-bottom: 1.5rem;
 }
 
 /* let prettybg texture show through */
 #timesup-overlay .reward-modal::before {
   display: block;
   opacity: 0.55;
-}
-
-#timesup-overlay .reward-modal {
-  max-width: 340px;
-  padding-bottom: 1.5rem;
 }
 
 #timesup-overlay .reward-title {
@@ -1448,7 +1434,7 @@ h2 {
   margin-bottom: 0.75rem;
   cursor: grab;
   user-select: none;
-  filter: brightness(1) saturate(3) drop-shadow(2px 4px 6px purple);
+  filter: drop-shadow(2px 4px 6px purple);
 }
 
 .timer-drag-handle:active {
@@ -1781,7 +1767,6 @@ h2 {
   font-weight: 400;
   text-align: center;
   margin-bottom: 0.75rem;
-  filter: brightness(1) saturate(3) drop-shadow(2px 4px 6px purple);
 }
 
 /* hide labels in timer (idle) */
@@ -2026,7 +2011,7 @@ footer {
 /* about size x fixed, info scrolls */
 .about-modal {
   max-width: 480px;
-  padding: 0.5rem 0 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
@@ -2619,9 +2604,9 @@ footer {
   width: auto;
   border-radius: 15px 15px 0 0;
   background: url("assets/textures/prettybg.png") center / cover;
-  color: white;
+  color: black;
   -webkit-text-fill-color: white;
-  -webkit-text-stroke: 1.5px #1a1a2e;
+  -webkit-text-stroke: 3.5px #1a1a2e;
   paint-order: stroke fill;
   text-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
   -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
@@ -2635,35 +2620,43 @@ footer {
 #timer-overlay .reward-title {
   margin: -1.5rem -1.25rem 1rem -1.25rem;
   padding: 0.8rem 1.25rem 2.5rem;
-  color: #3EBF7B;
-  -webkit-text-fill-color: #3EBF7B;
+  font-size: clamp(2.5rem, 10vw, 4.5rem);
+  color: black;
+  -webkit-text-fill-color: #6dd99a;
+  -webkit-text-stroke: 3.4px !important;
 }
 #stats-overlay .reward-title {
   margin: -2rem -2rem 1rem -2rem;
   padding: 0.8rem 2rem 2.5rem;
-  color: #4081fc;
+  font-size: clamp(2.4rem, 10vw, 5.6rem);
+  color: black;
   -webkit-text-fill-color: #4081fc;
+  -webkit-text-stroke: 3.4px;
 }
+/* about title — stays within scroll container, no top gap */
 #about-overlay .reward-title {
-  color: #a441fc;
+  margin: -0.5rem -1.25rem 0.75rem -1.25rem;
+  padding: 0.8rem 1.25rem 2rem;
+  font-size: clamp(2.5rem, 10vw, 5rem);
+  color: black;
   -webkit-text-fill-color: #a441fc;
+    -webkit-text-stroke: 3.4px;
 }
 #reminders-overlay .reward-title {
   margin: -1.75rem -1.75rem 1rem -1.75rem;
   padding: 0.8rem 1.75rem 2.5rem;
-  color: #fec919;
+  color: black;
+  font-size: clamp(2.4rem, 10vw, 3.4rem);
   -webkit-text-fill-color: #fec919;
+  -webkit-text-stroke: 3.4px;
 }
 #reset-overlay .reward-title {
   margin: -1.75rem -1.5rem 1rem -1.5rem;
   padding: 0.8rem 1.5rem 2.5rem;
-  color: #df6797;
+  color: black;
+  font-size: clamp(2.4rem, 10vw, 2.7rem);
   -webkit-text-fill-color: #df6797;
-}
-/* about title stays within its scroll container */
-#about-overlay .reward-title {
-  margin: -0.5rem -1.25rem 0.75rem -1.25rem;
-  padding: 0.8rem 1.25rem 2rem;
+  -webkit-text-stroke: 3.4px;
 }
 
 /* reward subtitle */
