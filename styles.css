@@ -275,15 +275,15 @@ h2 {
   width: auto;
   border-radius: 24px 24px 0 0;
   /* prettybg fills the banner, fades into card below */
-  /* background: url("assets/textures/prettybg.png") center / cover; */
+  background: url("assets/textures/prettybg.png") center / cover;
   color: black;
   -webkit-text-fill-color: white;
   -webkit-text-stroke: 6px;
   -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
   /* mask-image: linear-gradient(to bottom, black 60%, transparent 100%); */
   text-shadow:
-    0 1px 18px rgba(100, 20, 180, 0.95),
-    0 1px 6px rgba(0, 0, 0, 0.85);
+    0 2px 8px rgba(80, 0, 160, 0.45),
+    0 1px 4px rgba(0, 0, 0, 0.7);
 }
 
 /* tab btns — no container, just floating labels */
@@ -2049,11 +2049,7 @@ footer {
   display: none;
 }
 
-/* about title spacing (wierd?!)  */
-.about-scroll .reward-title {
-  margin-top: 0.1rem;
-  margin-bottom: 0.4rem;
-}
+/* about title spacing handled by #about-overlay .reward-title override */
 
 /* about title */
 .about-intro {
@@ -2127,48 +2123,49 @@ footer {
 }
 
 /* colored titles per card — front name + back title */
-.about-card--timer .about-flip-name,
-.about-card--timer .about-flip-back-title {
-  background: linear-gradient(135deg, #33cc77, #22bb66);
+.about-card--tabs .about-flip-name,
+.about-card--tabs .about-flip-back-title,
+.about-card--rewards .about-flip-name,
+.about-card--rewards .about-flip-back-title {
+  background: linear-gradient(135deg, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: none;
+  -webkit-text-stroke: 0.5px #1a1a2e;
+}
+.about-card--timer .about-flip-name,
+.about-card--timer .about-flip-back-title {
+  color: #33c673;
+  -webkit-text-fill-color: #33c673;
   filter: none;
   -webkit-text-stroke: 0.6px #0d5c30;
 }
 .about-card--stats .about-flip-name,
 .about-card--stats .about-flip-back-title {
-  background: linear-gradient(135deg, #4488ff, #3366ee);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #4081fc;
+  -webkit-text-fill-color: #4081fc;
   filter: none;
   -webkit-text-stroke: 0.6px #1133aa;
 }
 .about-card--reminders .about-flip-name,
 .about-card--reminders .about-flip-back-title {
-  background: linear-gradient(135deg, #dd8800, #bb6600);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #fec919;
+  -webkit-text-fill-color: #fec919;
   filter: none;
-  -webkit-text-stroke: 0.6px #7a3d00;
+  -webkit-text-stroke: 0.6px #7a5c00;
 }
 .about-card--sound .about-flip-name,
 .about-card--sound .about-flip-back-title {
-  background: linear-gradient(135deg, #ff9933, #dd7722);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ff9e36;
+  -webkit-text-fill-color: #ff9e36;
   filter: none;
-  -webkit-text-stroke: 0.6px #993300;
+  -webkit-text-stroke: 0.6px #7a3d00;
 }
 .about-card--reset .about-flip-name,
 .about-card--reset .about-flip-back-title {
-  background: linear-gradient(135deg, #ff4488, #cc1155);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #df6797;
+  -webkit-text-fill-color: #df6797;
   filter: none;
   -webkit-text-stroke: 0.6px #880033;
 }
@@ -2205,213 +2202,105 @@ footer {
 }
 
 /* about card color tints + emoji watermarks */
-.about-card--tabs .flip-card-front {
+/* about flip cards — each card matches its icon button color */
+.about-card--tabs .flip-card-front,
+.about-card--rewards .flip-card-front {
   background:
-    linear-gradient(
-        319deg,
-        rgba(255, 180, 230, 0.55),
-        rgba(180, 210, 255, 0.55),
-        rgba(210, 180, 255, 0.55)
-      )
+    linear-gradient(135deg, rgba(255,180,230,0.45), rgba(180,210,255,0.45), rgba(210,180,255,0.45))
       padding-box,
-    linear-gradient(to left, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(135deg, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc, #df6797)
       border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 .about-card--timer .flip-card-front {
   background:
-    linear-gradient(135deg, rgba(160, 235, 195, 0.6), rgba(200, 255, 225, 0.5))
+    linear-gradient(135deg, rgba(51,198,115,0.18), rgba(51,198,115,0.08))
       padding-box,
-    linear-gradient(
-        135deg,
-        #df6797,
-        #ff9e36,
-        #fec919,
-        #33c673,
-        #4081fc,
-        #a441fc,
-        #df6797
-      )
-      border-box;
-  filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
-}
-.about-card--rewards .flip-card-front {
-  background:
-    linear-gradient(
-        135deg,
-        rgba(255, 180, 230, 0.55),
-        rgba(180, 210, 255, 0.55),
-        rgba(210, 180, 255, 0.55)
-      )
-      padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
-      border-box;
+    linear-gradient(120deg, #33c673, #4bcf85) border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 .about-card--reminders .flip-card-front {
   background:
-    linear-gradient(
-        135deg,
-        rgba(255, 240, 160, 0.65),
-        rgba(255, 220, 100, 0.45)
-      )
+    linear-gradient(135deg, rgba(254,201,25,0.25), rgba(254,201,25,0.1))
       padding-box,
-    linear-gradient(120deg, #ffbb00, #ff9900) border-box;
+    linear-gradient(120deg, #fec919, #ffdd55) border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 .about-card--stats .flip-card-front {
   background:
-    linear-gradient(135deg, rgba(160, 200, 255, 0.6), rgba(200, 220, 255, 0.45))
+    linear-gradient(135deg, rgba(64,129,252,0.18), rgba(64,129,252,0.08))
       padding-box,
-    linear-gradient(
-        135deg,
-        #df6797,
-        #ff9e36,
-        #fec919,
-        #33c673,
-        #4081fc,
-        #a441fc,
-        #df6797
-      )
-      border-box;
+    linear-gradient(120deg, #4081fc, #6499fd) border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 .about-card--sound .flip-card-front {
   background:
-    linear-gradient(135deg, rgba(255, 210, 160, 0.6), rgba(255, 230, 200, 0.45))
+    linear-gradient(135deg, rgba(255,158,54,0.2), rgba(255,158,54,0.08))
       padding-box,
-    linear-gradient(
-        135deg,
-        #df6797,
-        #ff9e36,
-        #fec919,
-        #33c673,
-        #4081fc,
-        #a441fc,
-        #df6797
-      )
-      border-box;
+    linear-gradient(120deg, #ff9e36, #ffb85a) border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 .about-card--reset .flip-card-front {
   background:
-    linear-gradient(135deg, rgba(255, 160, 190, 0.6), rgba(255, 200, 220, 0.45))
+    linear-gradient(135deg, rgba(223,103,151,0.2), rgba(223,103,151,0.08))
       padding-box,
-    linear-gradient(120deg, #ff4488, #ff2266) border-box;
+    linear-gradient(120deg, #df6797, #e884b0) border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 /* pill border matches card theme color */
+.about-card--tabs .flip-card-tab-pill,
+.about-card--rewards .flip-card-tab-pill {
+  background: var(--tab-fill) padding-box,
+    linear-gradient(135deg, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc, #df6797) border-box;
+}
 .about-card--timer .flip-card-tab-pill {
-  background:
-    var(--tab-fill) padding-box,
-    linear-gradient(
-        135deg,
-        #df6797,
-        #ff9e36,
-        #fec919,
-        #33c673,
-        #4081fc,
-        #a441fc,
-        #df6797
-      )
-      border-box;
+  background: var(--tab-fill) padding-box, linear-gradient(120deg, #33c673, #4bcf85) border-box;
 }
 .about-card--stats .flip-card-tab-pill {
-  background:
-    var(--tab-fill) padding-box,
-    linear-gradient(
-        135deg,
-        #df6797,
-        #ff9e36,
-        #fec919,
-        #33c673,
-        #4081fc,
-        #a441fc,
-        #df6797
-      )
-      border-box;
+  background: var(--tab-fill) padding-box, linear-gradient(120deg, #4081fc, #6499fd) border-box;
 }
 .about-card--reminders .flip-card-tab-pill {
-  background:
-    var(--tab-fill) padding-box,
-    linear-gradient(120deg, #ffbb00, #ff9900) border-box;
+  background: var(--tab-fill) padding-box, linear-gradient(120deg, #fec919, #ffdd55) border-box;
 }
 .about-card--sound .flip-card-tab-pill {
-  background:
-    var(--tab-fill) padding-box,
-    linear-gradient(
-        135deg,
-        #df6797,
-        #ff9e36,
-        #fec919,
-        #33c673,
-        #4081fc,
-        #a441fc,
-        #df6797
-      )
-      border-box;
+  background: var(--tab-fill) padding-box, linear-gradient(120deg, #ff9e36, #ffb85a) border-box;
 }
 .about-card--reset .flip-card-tab-pill {
-  background:
-    var(--tab-fill) padding-box,
-    linear-gradient(120deg, #ff4488, #ff2266) border-box;
+  background: var(--tab-fill) padding-box, linear-gradient(120deg, #df6797, #e884b0) border-box;
 }
 
 /* back borders match card theme color */
+.about-card--tabs .flip-card-back,
+.about-card--rewards .flip-card-back {
+  background:
+    linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
+    linear-gradient(135deg, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc, #df6797)
+      border-box;
+}
 .about-card--timer .flip-card-back {
   background:
     linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
-    linear-gradient(
-        135deg,
-        #df6797,
-        #ff9e36,
-        #fec919,
-        #33c673,
-        #4081fc,
-        #a441fc,
-        #df6797
-      )
-      border-box;
+    linear-gradient(120deg, #33c673, #4bcf85) border-box;
 }
 .about-card--reminders .flip-card-back {
   background:
     linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
-    linear-gradient(120deg, #ffbb00, #ff9900) border-box;
+    linear-gradient(120deg, #fec919, #ffdd55) border-box;
 }
 .about-card--stats .flip-card-back {
   background:
     linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
-    linear-gradient(
-        135deg,
-        #df6797,
-        #ff9e36,
-        #fec919,
-        #33c673,
-        #4081fc,
-        #a441fc,
-        #df6797
-      )
-      border-box;
+    linear-gradient(120deg, #4081fc, #6499fd) border-box;
 }
 .about-card--sound .flip-card-back {
   background:
     linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
-    linear-gradient(
-        135deg,
-        #df6797,
-        #ff9e36,
-        #fec919,
-        #33c673,
-        #4081fc,
-        #a441fc,
-        #df6797
-      )
-      border-box;
+    linear-gradient(120deg, #ff9e36, #ffb85a) border-box;
 }
 .about-card--reset .flip-card-back {
   background:
     linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
-    linear-gradient(120deg, #ff4488, #ff2266) border-box;
+    linear-gradient(120deg, #df6797, #e884b0) border-box;
 }
 
 /* faint emoji watermark behind card content */
@@ -2694,6 +2583,7 @@ footer {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
+  z-index: 20;
   background:
     linear-gradient(
         135deg,
@@ -2719,63 +2609,61 @@ footer {
 }
 
 /* reward title to override the h2 pill badge style */
+/* full-width prettybg banner — same treatment as MY STUFF / GOT DONE */
 .reward-title {
   font-family: "Popstar", sans-serif;
   font-size: clamp(2rem, 7.5vw, 3rem);
+  /* bleed to modal edges — default assumes 1.5rem modal padding */
+  margin: -1.5rem -1.5rem 1rem -1.5rem;
+  padding: 0.8rem 1.5rem 2.5rem;
+  width: auto;
+  border-radius: 15px 15px 0 0;
   background: url("assets/textures/prettybg.png") center / cover;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: white;
+  -webkit-text-fill-color: white;
+  -webkit-text-stroke: 1.5px #1a1a2e;
   paint-order: stroke fill;
-  -webkit-text-stroke: 0.1px;
-  filter: brightness(1) saturate(3) drop-shadow(2px 4px 6px purple);
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
   border: none;
-  border-radius: 0;
-  padding: 0;
   box-shadow: none;
   animation: none;
-  margin-bottom: 0.5rem;
 }
 
-/* color-themed titles per modal */
+/* per-modal margin + themed color adjustments */
 #timer-overlay .reward-title {
-  background: linear-gradient(135deg, #33cc77, #22bb66, #44ddaa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(1px 3px 6px rgba(30, 180, 100, 0.5));
+  margin: -1.5rem -1.25rem 1rem -1.25rem;
+  padding: 0.8rem 1.25rem 2.5rem;
+  color: #3EBF7B;
+  -webkit-text-fill-color: #3EBF7B;
 }
-
 #stats-overlay .reward-title {
-  background: linear-gradient(135deg, #4488ff, #3366ee, #7fd7ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(1px 3px 6px rgba(50, 100, 255, 0.5));
+  margin: -2rem -2rem 1rem -2rem;
+  padding: 0.8rem 2rem 2.5rem;
+  color: #4081fc;
+  -webkit-text-fill-color: #4081fc;
 }
-
 #about-overlay .reward-title {
-  background: linear-gradient(135deg, #dd44ff, #9966ff, #bb44ee);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(1px 3px 6px rgba(180, 50, 255, 0.5));
+  color: #a441fc;
+  -webkit-text-fill-color: #a441fc;
 }
-
 #reminders-overlay .reward-title {
-  background: linear-gradient(135deg, #ffbb00, #ff9900, #ffdd44);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(1px 3px 6px rgba(220, 150, 0, 0.5));
+  margin: -1.75rem -1.75rem 1rem -1.75rem;
+  padding: 0.8rem 1.75rem 2.5rem;
+  color: #fec919;
+  -webkit-text-fill-color: #fec919;
 }
-
 #reset-overlay .reward-title {
-  background: linear-gradient(135deg, #ff4488, #ff2266, #ff88aa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(1px 3px 6px rgba(255, 50, 100, 0.5));
+  margin: -1.75rem -1.5rem 1rem -1.5rem;
+  padding: 0.8rem 1.5rem 2.5rem;
+  color: #df6797;
+  -webkit-text-fill-color: #df6797;
+}
+/* about title stays within its scroll container */
+#about-overlay .reward-title {
+  margin: -0.5rem -1.25rem 0.75rem -1.25rem;
+  padding: 0.8rem 1.25rem 2rem;
 }
 
 /* reward subtitle */
