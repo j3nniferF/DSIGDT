@@ -1910,7 +1910,7 @@ footer {
   }
 
   .title-main {
-    font-size: clamp(2rem, 9vw, 3rem);
+    font-size: clamp(3rem, 9vw, 3rem);
     letter-spacing: 0.06em;
     white-space: nowrap;
   }
