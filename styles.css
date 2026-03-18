@@ -2636,7 +2636,7 @@ footer {
 /* about title — stays within scroll container, no top gap */
 #about-overlay .reward-title {
   margin: -0.5rem -1.25rem 0.75rem -1.25rem;
-  padding: 0.8rem 1.25rem 2rem;
+  padding: 0.2rem 1.25rem .2rem;
   font-size: clamp(2.5rem, 10vw, 5rem);
   color: black;
   -webkit-text-fill-color: #a441fc;
