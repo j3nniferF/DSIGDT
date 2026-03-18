@@ -5,6 +5,7 @@ let activeTabId = "tab_dumb";
 let editingTabId = null;
 let selectedTaskId = null;
 
+
 // reminder popup msgs
 let reminderSettings = {
   frequency: 20,
