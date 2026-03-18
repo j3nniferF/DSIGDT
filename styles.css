@@ -275,15 +275,15 @@ h2 {
   width: auto;
   border-radius: 24px 24px 0 0;
   /* prettybg fills the banner, fades into card below */
-  background: url("assets/textures/prettybg.png") center / cover;
+  /* background: url("assets/textures/prettybg.png") center / cover; */
   color: black;
   -webkit-text-fill-color: white;
   -webkit-text-stroke: 6px;
   -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  /* mask-image: linear-gradient(to bottom, black 60%, transparent 100%); */
   text-shadow:
-    0 4px 18px rgba(100, 20, 180, 0.95),
-    0 2px 6px rgba(0, 0, 0, 0.85);
+    0 1px 18px rgba(100, 20, 180, 0.95),
+    0 1px 6px rgba(0, 0, 0, 0.85);
 }
 
 /* tab btns — no container, just floating labels */
@@ -1020,7 +1020,7 @@ h2 {
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(140, 50, 255, 0.4);
+    0 4px 20px rgba(140, 50, 255, .95);
 }
 
 .btn-blue {
@@ -1035,7 +1035,7 @@ h2 {
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(50, 100, 255, 0.4);
+    0 4px 20px rgba(50, 100, 255, .95);
 }
 
 .btn-green {
@@ -1137,7 +1137,7 @@ h2 {
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(220, 30, 60, 0.4);
+    0 4px 20px rgba(220, 30, 60, .95);
 }
 
 .btn-red {
@@ -1152,7 +1152,7 @@ h2 {
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(200, 0, 0, 0.4);
+    0 4px 20px rgba(200, 0, 0, .95);
 }
 
 .btn-orange {
@@ -1167,7 +1167,7 @@ h2 {
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(220, 100, 0, 0.4);
+    0 4px 20px rgba(220, 100, 0, .95);
 }
 
 /* timer modal — GREEN for setup state */
@@ -1823,6 +1823,10 @@ footer {
   font-size: 1.2rem;
   letter-spacing: 0.04em;
   filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
+  box-shadow: 0 0 0 3.5px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    0 6px 40px rgba(193, 77, 204, 0.95);
+    
 }
 
 /* shimmer sweep across title text */
@@ -2665,7 +2669,7 @@ footer {
     300% 300%;
   box-shadow:
     0 0 0 3px #1a1a2e,
-    0 12px 40px rgba(0, 0, 0, 0.4);
+    0 12px 40px rgba(0, 0, 0, .95);
   animation: tab-border-spin 20s linear infinite;
 }
 
