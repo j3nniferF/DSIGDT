@@ -5,7 +5,6 @@ let activeTabId = "tab_dumb";
 let editingTabId = null;
 let selectedTaskId = null;
 
-
 // reminder popup msgs
 let reminderSettings = {
   frequency: 20,
@@ -66,6 +65,8 @@ function addTask() {
 
   if (text === "") return;
 
+  // each task is an object with a timestamp ID,
+  // the text, a complete flag, and which tab
   const task = {
     id: Date.now(),
     text: text,
@@ -79,7 +80,7 @@ function addTask() {
   input.value = "";
 }
 
-// return single <li> task in normal and all stuff views
+// returns single li task in normal + all stuff
 function buildTaskItem(task) {
   const li = document.createElement("li");
   li.className = "task-item";
@@ -93,7 +94,7 @@ function buildTaskItem(task) {
   const label = document.createElement("label");
   label.textContent = task.text;
 
-  // single click = mark as in progress
+  // click = mark in progress
   label.addEventListener("click", (e) => {
     e.preventDefault();
     selectedTaskId = task.id === selectedTaskId ? null : task.id;
@@ -102,7 +103,7 @@ function buildTaskItem(task) {
     renderTasks();
   });
 
-  // double click / double tap = open timer with this task pre-selected
+  // double click / double tap = open timer with selected task
   function openTimerForTask() {
     selectedTaskId = task.id;
     const overlay = document.getElementById("timer-overlay");
@@ -114,7 +115,7 @@ function buildTaskItem(task) {
     renderTasks();
   }
   li.addEventListener("dblclick", openTimerForTask);
-  // mobile: detect double-tap via two touchend events within 350ms
+  // mobile: detect double-tap
   let lastTap = 0;
   li.addEventListener("touchend", (e) => {
     const now = Date.now();
@@ -198,7 +199,7 @@ function renderTasks() {
   renderCompleted();
 }
 
-// render completed to the "got done" card
+// render completed to "got done"
 function renderCompleted() {
   const list = document.getElementById("completed-list");
   const empty = document.getElementById("completed-empty");
@@ -221,7 +222,7 @@ function renderCompleted() {
 
     if (tabDone === 0) return;
 
-    // outside shell
+    // outside
     const card = document.createElement("div");
     card.className = "flip-card";
 
@@ -252,7 +253,7 @@ function renderCompleted() {
         back.appendChild(item);
       });
 
-    // click card anywhere → toggle flip
+    // click card to flip
     card.addEventListener("click", () => {
       card.classList.toggle("is-flipped");
     });
@@ -263,7 +264,7 @@ function renderCompleted() {
     list.appendChild(card);
   });
 
-  // ALL card — summary of everything completed across all tabs
+  // ALL card summary completed across tabs
   const allTotal = tasks.length;
   const allDone = tasks.filter((t) => t.completed).length;
 
@@ -295,7 +296,7 @@ function renderCompleted() {
         back.appendChild(item);
       });
 
-    // click card anywhere → toggle flip
+    // click card to flip
     card.addEventListener("click", () => {
       card.classList.toggle("is-flipped");
     });
@@ -305,13 +306,20 @@ function renderCompleted() {
     card.appendChild(inner);
     list.appendChild(card);
   }
+
+  // tag count so CSS can pick the right grid layout
+  list.dataset.count = list.children.length;
 }
 
 // toggle + delete + save + load
 function toggleTask(id) {
   const task = tasks.find((t) => t.id === id);
+  // wasCompleted = state BEFORE the toggle,
+  // so we know whether this was a completed or not yet
   const wasCompleted = task ? task.completed : false;
 
+  // spread operator copies all properties
+  // then overrides completed with the flipped value
   tasks = tasks.map((t) => {
     if (t.id === id) {
       return { ...t, completed: !t.completed };
@@ -477,7 +485,7 @@ function initializeRemindersSettings() {
   });
 }
 
-// draw / update chart- done vs to do
+// draw / update chart - done vs to do
 function renderChart() {
   const canvasEl = document.getElementById("stats-chart");
   if (!canvasEl) return;
@@ -503,6 +511,8 @@ function renderChart() {
     "#ff9933",
   ];
 
+  // if chart already exists, update its data instead of creating a new one
+  // creating a new Chart on top of an existing canvas causes conflict
   if (chart) {
     chart.data.labels = labels;
     chart.data.datasets[0].data = data;
@@ -601,7 +611,7 @@ function initializeTabs() {
     btn.addEventListener("dblclick", () => openTabEditModal(tab.id));
   });
 
-  // permanent "all stuff" tab — cannot be renamed or deleted
+  // permanent "all stuff" tab
   const allBtn = document.createElement("button");
   const allSpan = document.createElement("span");
   allSpan.textContent = "ALL";
@@ -708,7 +718,7 @@ function initializeTabEditModal() {
   });
 }
 
-// === timer ===
+// timer
 let timerInterval = null;
 const DIAL_ITEM_HEIGHT = 30;
 let timerSeconds = 0;
@@ -733,7 +743,8 @@ function populateDialColumns() {
   fillColumn(minsCol, 60);
   fillColumn(secsCol, 60);
 
-  // scroll to 25:00 default after layout renders
+  // two nested requestAnimationFrames ensure the DOM has fully painted
+  // before we set scrollTop — one frame isn't always enough for the layout to settle
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       minsCol.scrollTop = 25 * DIAL_ITEM_HEIGHT;
@@ -741,6 +752,8 @@ function populateDialColumns() {
   });
 }
 
+// each dial item is DIAL_ITEM_HEIGHT px tall, so dividing scrollTop by that
+// gives us which number is currently centered in the window
 function getDialSeconds() {
   const mins = Math.round(
     document.getElementById("dial-mins").scrollTop / DIAL_ITEM_HEIGHT,
@@ -751,18 +764,18 @@ function getDialSeconds() {
   return mins * 60 + secs;
 }
 
-// sound toggle — saved to localStorage so it remembers between visits
+// sound toggle saved
 let soundEnabled = JSON.parse(localStorage.getItem("dsigdt_sound") ?? "true");
 
-// tracks which task ID is running in the timer
+// tracks ID running in timer
 let selectedTimerTaskId = null;
 
-// helper: resets everything and goes back to setup view
+// helper: resets everything
 function goToSetup() {
   const modal = document.getElementById("timer-modal");
   const display = document.getElementById("timer-display");
 
-  // reset drag position
+  // reset drag
   modal.style.cssText = "";
   document.getElementById("timer-overlay").style.alignItems = "";
   document.getElementById("timer-overlay").style.justifyContent = "";
@@ -790,9 +803,9 @@ function goToSetup() {
   populateTimerTasks();
 }
 
-// the actual countdown tick — extracted so +5 min can reuse it
+// countdown tick extracted so +5 min can reuse it
 function startCountdown() {
-  clearInterval(timerInterval); // always kill any existing interval before starting a new one
+  clearInterval(timerInterval); // kill existing interval before starting a new one
   timerInterval = null;
   const display = document.getElementById("timer-display");
 
@@ -802,12 +815,12 @@ function startCountdown() {
     const secs = timerSeconds % 60;
     display.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 
-    // update draining border — ratio goes from 1.0 down to 0
+    // update draining from 1.0 down to 0
     const ratio = timerSeconds / totalTimerSeconds;
     const modal = document.getElementById("timer-modal");
     modal.style.setProperty("--timer-pct", Math.round(ratio * 100));
 
-    // color state on the card border
+    // color on the card border
     if (ratio <= 0.2) {
       modal.classList.remove("is-warning");
       modal.classList.add("is-danger");
@@ -827,7 +840,7 @@ function startCountdown() {
   }, 1000);
 }
 
-// show the time's up modal with task info filled in
+// show time's up with task info
 function showTimesUp() {
   playChime("timer");
   const timerOverlay = document.getElementById("timer-overlay");
@@ -858,7 +871,7 @@ function initializeTimer() {
   const taskLabel = document.getElementById("timer-task-label");
   const taskSelect = document.getElementById("timer-task-select");
 
-  // open/close the overlay
+  // open / close the overlay
   btn.addEventListener("click", () => {
     if (overlay.classList.contains("is-hidden")) {
       overlay.classList.remove("is-hidden");
@@ -879,7 +892,7 @@ function initializeTimer() {
     totalTimerSeconds = timerSeconds;
     if (timerSeconds <= 0) return;
 
-    // remember which task was chosen
+    // remember task chosen
     const selectedOption = taskSelect.options[taskSelect.selectedIndex];
     selectedTimerTaskId =
       selectedOption && selectedOption.value ? selectedOption.value : null;
@@ -890,7 +903,7 @@ function initializeTimer() {
         ? selectedOption.textContent.trim()
         : "✨ any stuff! ✨";
 
-    // reset draining border to full before countdown starts
+    // reset draining border to full before countdown
     modal.style.setProperty("--timer-pct", 100);
     modal.classList.remove("is-warning", "is-danger");
 
@@ -931,12 +944,12 @@ function initializeTimer() {
 
 // wire up the time's up modal buttons
 function initializeTimesUpModal() {
-  // YES, DONE — mark the task complete and go home
+  // YES, DONE will mark the task complete and go home
   document.getElementById("timesup-done-btn").addEventListener("click", () => {
     if (selectedTimerTaskId) {
       const taskId = parseInt(selectedTimerTaskId);
       const task = tasks.find((t) => t.id === taskId);
-      // toggleTask marks it complete + checks if tab is fully done → Goober
+      // toggleTask marks it complete + checks if tab is fully done → Goober!
       if (task && !task.completed) toggleTask(taskId);
     } else {
       // free timer — no task selected, still deserves confetti!
@@ -1076,7 +1089,7 @@ function initializeAboutModal() {
   });
   document.getElementById("about-close").addEventListener("click", () => {
     document.getElementById("about-overlay").classList.add("is-hidden");
-    // flip all about cards back to front when modal closes
+    // flip about cards back to front when closed
     document.querySelectorAll(".about-card.is-flipped").forEach((c) => {
       c.classList.remove("is-flipped");
     });
@@ -1153,20 +1166,20 @@ function initializeTimerDrag() {
   document.addEventListener("touchend", onDragEnd);
 }
 
-// update the sound button to show on/off state visually
+// update sound button to show on / off
 function updateSoundBtn() {
   const btn = document.getElementById("sound-btn");
   btn.style.opacity = soundEnabled ? "1" : "0.4";
   btn.title = soundEnabled ? "Sound: ON" : "Sound: OFF";
 }
 
-// play a chime using the Web Audio API — no files needed!
+// play chime with Web Audio API — no files needed!
 function playChime(type = "task") {
   if (!soundEnabled) return;
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
 
   if (type === "task") {
-    // single soft chime for task complete
+    // soft chime for complete
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.connect(gain);
@@ -1178,7 +1191,7 @@ function playChime(type = "task") {
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.5);
   } else if (type === "timer") {
-    // little C-E-G melody for timer done
+    // for timer done
     [523, 659, 784].forEach((freq, i) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();

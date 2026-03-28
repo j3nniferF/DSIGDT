@@ -152,7 +152,7 @@ header {
   box-shadow:
     0 0 0 3.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 6px 40px rgba(193, 77, 204, 0.95);
+    0 6px 24px rgba(193, 77, 204, 0.3);
 }
 
 header::before {
@@ -194,7 +194,7 @@ h1 {
 
 /* cards thats holds the stuffs */
 .tasks-card {
-  filter: drop-shadow(2px 6px 22px rgba(130, 60, 200, 0.7));
+  filter: drop-shadow(2px 4px 10px rgba(130, 60, 200, 0.25));
   position: relative;
   isolation: isolate;
   background:
@@ -230,7 +230,7 @@ h1 {
   box-shadow:
     0 0 0 3.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 6px 40px rgba(193, 77, 204, 0.95);
+    0 6px 24px rgba(193, 77, 204, 0.3);
   animation:
     bg-shift 20s ease infinite,
     tab-border-spin 30s linear infinite; */
@@ -276,10 +276,9 @@ h2 {
   -webkit-text-fill-color: white;
   -webkit-text-stroke: 6px;
   -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-  /* mask-image: linear-gradient(to bottom, black 60%, transparent 100%); */
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
   text-shadow:
-    0 2px 8px rgba(80, 0, 160, 0.45),
-    0 1px 4px rgba(0, 0, 0, 0.7);
+    0 1px 1px rgba(0, 0, 0, 0.7);
 }
 
 /* tab btns — no container, just floating labels */
@@ -814,10 +813,35 @@ h2 {
 /* flip card for completed */
 #completed-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
   padding: 0.5rem 0.25rem 1rem;
   width: 100%;
+}
+
+/* 2 cards (1 tab + ALL) → side by side */
+#completed-list[data-count="2"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 3 cards (2 tabs + ALL) → 2 on top, ALL spans full bottom row */
+#completed-list[data-count="3"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 4+ cards (3+ tabs + ALL) → tabs on top, ALL spans full bottom row */
+#completed-list[data-count="4"],
+#completed-list[data-count="5"],
+#completed-list[data-count="6"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ALL card spans the full bottom row (except count=2 where it's side-by-side) */
+#completed-list[data-count="3"] .flip-card--all,
+#completed-list[data-count="4"] .flip-card--all,
+#completed-list[data-count="5"] .flip-card--all,
+#completed-list[data-count="6"] .flip-card--all {
+  grid-column: 1 / -1;
 }
 
 /* outside shell */
@@ -1384,7 +1408,7 @@ h2 {
 #timesup-overlay .reward-modal {
   background: var(--pbgradient);
   max-width: 340px;
-  padding-bottom: 1.5rem;
+  padding: 1.5rem 1.5rem 1.5rem;
 }
 
 /* let prettybg texture show through */
@@ -1926,10 +1950,6 @@ footer {
     transform: translateY(0);
   }
 
-  #completed-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .flip-card {
     height: 165px;
   }
@@ -1956,8 +1976,19 @@ footer {
 }
 
 @media (max-width: 420px) {
-  #completed-list {
+  /* always single column on mobile regardless of card count */
+  #completed-list,
+  #completed-list[data-count="2"],
+  #completed-list[data-count="3"],
+  #completed-list[data-count="4"],
+  #completed-list[data-count="5"],
+  #completed-list[data-count="6"] {
     grid-template-columns: 1fr;
+  }
+
+  /* no spanning on mobile — each card gets its own row */
+  #completed-list .flip-card--all {
+    grid-column: auto;
   }
 
   /* keep X always visible — anchor about modal to top */
@@ -2608,7 +2639,7 @@ footer {
   -webkit-text-fill-color: white;
   -webkit-text-stroke: 3.5px #1a1a2e;
   paint-order: stroke fill;
-  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 3px 3px rgba(0, 0, 0, 0.7);
   -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
   border: none;
