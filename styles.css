@@ -2070,6 +2070,15 @@ footer {
   .about-scroll {
     max-height: calc(100dvh - 4.5rem);
   }
+
+  /* timer goes full screen on mobile */
+  #timer-overlay .reward-modal {
+    width: 100%;
+    height: 100dvh;
+    max-width: 100%;
+    border-radius: 0;
+    margin: 0;
+  }
 }
 
 /* reward modal darken overlay  */
