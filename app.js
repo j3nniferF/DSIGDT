@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeReward();
   initializeResetModal();
   initializeAboutModal();
+  initializeStats();
   initializeSounds();
   initializeRemindersSettings();
   initializeTabEditModal();
@@ -1046,7 +1047,7 @@ function initializeResetModal() {
     timerInterval = null;
     timerSeconds = 0;
     document.getElementById("timer-start").textContent = "Start";
-    document.getElementById("timer-display").textContent = "15:00";
+    document.getElementById("timer-display").textContent = "25:00";
     document.getElementById("timer-display").classList.remove("is-running");
     document.getElementById("timer-task-label").textContent = "";
     tasks = [];
@@ -1103,16 +1104,18 @@ function initializeAboutModal() {
   });
 }
 
-// stats stuff!
-document.getElementById("stats-btn").addEventListener("click", () => {
-  hideReminderBanner();
-  document.getElementById("stats-overlay").classList.remove("is-hidden");
-  renderChart();
-});
+// stats modal open/close
+function initializeStats() {
+  document.getElementById("stats-btn").addEventListener("click", () => {
+    hideReminderBanner();
+    document.getElementById("stats-overlay").classList.remove("is-hidden");
+    renderChart();
+  });
 
-document.getElementById("stats-close").addEventListener("click", () => {
-  document.getElementById("stats-overlay").classList.add("is-hidden");
-});
+  document.getElementById("stats-close").addEventListener("click", () => {
+    document.getElementById("stats-overlay").classList.add("is-hidden");
+  });
+}
 
 // drag the timer modal by its TIMER title
 function initializeTimerDrag() {

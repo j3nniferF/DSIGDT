@@ -233,7 +233,7 @@ h1 {
     0 6px 24px rgba(193, 77, 204, 0.3);
   animation:
     bg-shift 20s ease infinite,
-    tab-border-spin 30s linear infinite; */
+    tab-border-spin 30s linear infinite;
 }
 
 .tasks-card::before {
@@ -277,8 +277,7 @@ h2 {
   -webkit-text-stroke: 6px;
   -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-  text-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
 }
 
 /* tab btns — no container, just floating labels */
@@ -418,7 +417,15 @@ h2 {
   background:
     linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.82))
       padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   border: 3px solid transparent;
   border-radius: 999px;
@@ -469,7 +476,15 @@ h2 {
   background:
     linear-gradient(rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.96))
       padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   border: 2px solid transparent;
 }
@@ -484,7 +499,15 @@ h2 {
   background:
     linear-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.25))
       padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   border: 2px solid transparent;
   backdrop-filter: blur(6px);
@@ -770,7 +793,15 @@ h2 {
   background:
     linear-gradient(rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.96))
       padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   border: 2px solid transparent;
   border-radius: 999px;
@@ -880,7 +911,15 @@ h2 {
   border: 7px solid transparent;
   background:
     linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   backface-visibility: hidden;
   display: flex;
@@ -1041,7 +1080,7 @@ h2 {
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(140, 50, 255, .95);
+    0 4px 20px rgba(140, 50, 255, 0.95);
 }
 
 .btn-blue {
@@ -1056,7 +1095,7 @@ h2 {
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(50, 100, 255, .95);
+    0 4px 20px rgba(50, 100, 255, 0.95);
 }
 
 .btn-green {
@@ -1154,7 +1193,7 @@ h2 {
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(220, 30, 60, .95);
+    0 4px 20px rgba(220, 30, 60, 0.95);
 }
 
 .btn-red {
@@ -1169,7 +1208,7 @@ h2 {
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(200, 0, 0, .95);
+    0 4px 20px rgba(200, 0, 0, 0.95);
 }
 
 .btn-orange {
@@ -1184,7 +1223,7 @@ h2 {
   box-shadow:
     0 0 0 2.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
-    0 4px 20px rgba(220, 100, 0, .95);
+    0 4px 20px rgba(220, 100, 0, 0.95);
 }
 
 /* timer modal — GREEN for setup state */
@@ -1227,7 +1266,15 @@ h2 {
   background:
     linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1))
       padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   color: var(--purple);
 }
@@ -1253,7 +1300,11 @@ h2 {
   justify-content: center;
   position: relative;
   margin: 0.5rem auto;
-  filter: drop-shadow(0 4px 18px rgba(180, 100, 255, 0.8));
+  filter: drop-shadow(5px 5px 5px purple);
+  box-shadow:
+    0 0 0 1px #1a1a2e,
+    inset 0 0 0 3px #1a1a2e,
+    2px 1px 50px rgba(193, 77, 204, 0.5);
 }
 
 /* donut hole — sits in front of conic, behind the time text */
@@ -1265,6 +1316,10 @@ h2 {
   border-radius: 50%;
   background: rgb(250 238 255 / 77%);
   z-index: 0;
+  box-shadow:
+    0 0 0 0.01px #1a1a2e,
+    inset 0 0 0 2px #1a1a2e,
+    2px 1px 1px rgba(193, 77, 204, 0.5);
 }
 
 @keyframes drain-rainbow {
@@ -1332,7 +1387,15 @@ h2 {
   background:
     linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.97))
       padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   border: 3px solid transparent;
   border-radius: 999px;
@@ -1458,7 +1521,7 @@ h2 {
   margin-bottom: 0.75rem;
   cursor: grab;
   user-select: none;
-  filter: drop-shadow(2px 4px 6px purple);
+  filter: drop-shadow(2px 2px 2px purple);
 }
 
 .timer-drag-handle:active {
@@ -1527,14 +1590,22 @@ h2 {
   text-align: center;
   font-size: clamp(3rem, 8vw, 2.8rem);
   letter-spacing: 0.05em;
-  background: url("assets/textures/prettybg.png") center / cover;
+  background: linear-gradient(
+    to right,
+    #df6797,
+    #ff9e36,
+    #fec919,
+    #33c673,
+    #4081fc,
+    #a441fc
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   paint-order: stroke fill;
   -webkit-text-stroke: 1.5px #1a1a2e;
-  filter: brightness(1.2) saturate(5)
-    drop-shadow(0 4px 18px rgba(180, 100, 255, 0.5));
+  filter: drop-shadow(2px 2px 2px purple);
+  /* filter: drop-shadow(0 4px 18px rgba(180, 100, 255, 0.5)); */
   white-space: nowrap;
   position: relative;
   z-index: 1;
@@ -1733,21 +1804,8 @@ h2 {
   } /* hold until next beat */
 }
 
-@keyframes rainbow-cycle {
-  from {
-    filter: brightness(1) saturate(4) hue-rotate(0deg)
-      drop-shadow(0 0 10px rgba(255, 50, 150, 0.6));
-  }
-  to {
-    filter: brightness(1) saturate(4) hue-rotate(360deg)
-      drop-shadow(0 0 10px rgba(255, 50, 150, 0.6));
-  }
-}
-
 .timer-display.is-running {
-  animation:
-    heartbeat 1.4s ease-in-out infinite,
-    rainbow-cycle 3s linear infinite;
+  animation: heartbeat 1.4s ease-in-out infinite;
 }
 
 @keyframes timer-enter {
@@ -1791,6 +1849,7 @@ h2 {
   font-weight: 400;
   text-align: center;
   margin-bottom: 0.75rem;
+  filter: drop-shadow(2px 2px 2px purple);
 }
 
 /* hide labels in timer (idle) */
@@ -1826,16 +1885,24 @@ footer {
   border: 4px solid transparent;
   background:
     url("assets/textures/prettybg.png") center / cover padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   font-family: "Storyteller", sans-serif;
   font-size: 1.2rem;
   letter-spacing: 0.04em;
   filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
-  box-shadow: 0 0 0 3.5px #1a1a2e,
+  box-shadow:
+    0 0 0 3.5px #1a1a2e,
     inset 0 0 0 2px #1a1a2e,
     0 6px 40px rgba(193, 77, 204, 0.95);
-    
 }
 
 /* shimmer sweep across title text */
@@ -2143,7 +2210,15 @@ footer {
 .about-card--tabs .about-flip-back-title,
 .about-card--rewards .about-flip-name,
 .about-card--rewards .about-flip-back-title {
-  background: linear-gradient(135deg, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc);
+  background: linear-gradient(
+    135deg,
+    #df6797,
+    #ff9e36,
+    #fec919,
+    #33c673,
+    #4081fc,
+    #a441fc
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -2222,43 +2297,57 @@ footer {
 .about-card--tabs .flip-card-front,
 .about-card--rewards .flip-card-front {
   background:
-    linear-gradient(135deg, rgba(255,180,230,0.45), rgba(180,210,255,0.45), rgba(210,180,255,0.45))
+    linear-gradient(
+        135deg,
+        rgba(255, 180, 230, 0.45),
+        rgba(180, 210, 255, 0.45),
+        rgba(210, 180, 255, 0.45)
+      )
       padding-box,
-    linear-gradient(135deg, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc, #df6797)
+    linear-gradient(
+        135deg,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc,
+        #df6797
+      )
       border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 .about-card--timer .flip-card-front {
   background:
-    linear-gradient(135deg, rgba(51,198,115,0.18), rgba(51,198,115,0.08))
+    linear-gradient(135deg, rgba(51, 198, 115, 0.18), rgba(51, 198, 115, 0.08))
       padding-box,
     linear-gradient(120deg, #33c673, #4bcf85) border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 .about-card--reminders .flip-card-front {
   background:
-    linear-gradient(135deg, rgba(254,201,25,0.25), rgba(254,201,25,0.1))
+    linear-gradient(135deg, rgba(254, 201, 25, 0.25), rgba(254, 201, 25, 0.1))
       padding-box,
     linear-gradient(120deg, #fec919, #ffdd55) border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 .about-card--stats .flip-card-front {
   background:
-    linear-gradient(135deg, rgba(64,129,252,0.18), rgba(64,129,252,0.08))
+    linear-gradient(135deg, rgba(64, 129, 252, 0.18), rgba(64, 129, 252, 0.08))
       padding-box,
     linear-gradient(120deg, #4081fc, #6499fd) border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 .about-card--sound .flip-card-front {
   background:
-    linear-gradient(135deg, rgba(255,158,54,0.2), rgba(255,158,54,0.08))
+    linear-gradient(135deg, rgba(255, 158, 54, 0.2), rgba(255, 158, 54, 0.08))
       padding-box,
     linear-gradient(120deg, #ff9e36, #ffb85a) border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
 }
 .about-card--reset .flip-card-front {
   background:
-    linear-gradient(135deg, rgba(223,103,151,0.2), rgba(223,103,151,0.08))
+    linear-gradient(135deg, rgba(223, 103, 151, 0.2), rgba(223, 103, 151, 0.08))
       padding-box,
     linear-gradient(120deg, #df6797, #e884b0) border-box;
   filter: drop-shadow(2px 3px 8px rgba(0, 0, 0, 0.65));
@@ -2266,23 +2355,44 @@ footer {
 /* pill border matches card theme color */
 .about-card--tabs .flip-card-tab-pill,
 .about-card--rewards .flip-card-tab-pill {
-  background: var(--tab-fill) padding-box,
-    linear-gradient(135deg, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc, #df6797) border-box;
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(
+        135deg,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc,
+        #df6797
+      )
+      border-box;
 }
 .about-card--timer .flip-card-tab-pill {
-  background: var(--tab-fill) padding-box, linear-gradient(120deg, #33c673, #4bcf85) border-box;
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(120deg, #33c673, #4bcf85) border-box;
 }
 .about-card--stats .flip-card-tab-pill {
-  background: var(--tab-fill) padding-box, linear-gradient(120deg, #4081fc, #6499fd) border-box;
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(120deg, #4081fc, #6499fd) border-box;
 }
 .about-card--reminders .flip-card-tab-pill {
-  background: var(--tab-fill) padding-box, linear-gradient(120deg, #fec919, #ffdd55) border-box;
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(120deg, #fec919, #ffdd55) border-box;
 }
 .about-card--sound .flip-card-tab-pill {
-  background: var(--tab-fill) padding-box, linear-gradient(120deg, #ff9e36, #ffb85a) border-box;
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(120deg, #ff9e36, #ffb85a) border-box;
 }
 .about-card--reset .flip-card-tab-pill {
-  background: var(--tab-fill) padding-box, linear-gradient(120deg, #df6797, #e884b0) border-box;
+  background:
+    var(--tab-fill) padding-box,
+    linear-gradient(120deg, #df6797, #e884b0) border-box;
 }
 
 /* back borders match card theme color */
@@ -2290,7 +2400,16 @@ footer {
 .about-card--rewards .flip-card-back {
   background:
     linear-gradient(rgb(255 255 255), rgb(255 255 255 / 44%)) padding-box,
-    linear-gradient(135deg, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc, #df6797)
+    linear-gradient(
+        135deg,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc,
+        #df6797
+      )
       border-box;
 }
 .about-card--timer .flip-card-back {
@@ -2574,7 +2693,8 @@ footer {
     300% 300%;
   box-shadow:
     0 0 0 3px #1a1a2e,
-    0 12px 40px rgba(0, 0, 0, .95);
+    inset 0 0 0 2px #1a1a2e,
+    0 12px 40px rgba(0, 0, 0, 0.95);
   animation: tab-border-spin 20s linear infinite;
 }
 
@@ -2608,7 +2728,15 @@ footer {
         rgba(232, 219, 255, 0.95)
       )
       padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   border: 3px solid transparent;
   color: var(--purple);
@@ -2667,11 +2795,11 @@ footer {
 /* about title — stays within scroll container, no top gap */
 #about-overlay .reward-title {
   margin: -0.5rem -1.25rem 0.75rem -1.25rem;
-  padding: 0.2rem 1.25rem .2rem;
+  padding: 0.2rem 1.25rem 0.2rem;
   font-size: clamp(2.5rem, 10vw, 5rem);
   color: black;
   -webkit-text-fill-color: #a441fc;
-    -webkit-text-stroke: 3.4px;
+  -webkit-text-stroke: 3.4px;
 }
 #reminders-overlay .reward-title {
   margin: -1.75rem -1.75rem 1rem -1.75rem;
@@ -2731,7 +2859,15 @@ footer {
   background:
     linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95))
       padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   border: 3px solid transparent;
   color: var(--purple);
@@ -2787,7 +2923,15 @@ footer {
   background:
     linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 1))
       padding-box,
-    linear-gradient(to right, #df6797, #ff9e36, #fec919, #33c673, #4081fc, #a441fc)
+    linear-gradient(
+        to right,
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc
+      )
       border-box;
   border: 1px solid transparent;
   backdrop-filter: blur(6px);
