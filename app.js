@@ -1,6 +1,6 @@
-let tasks = [];
 let chart = null;
 let tabs = [];
+let tasks = [];
 let activeTabId = "tab_dumb";
 let editingTabId = null;
 let selectedTaskId = null;
@@ -73,6 +73,8 @@ function addTask() {
     text: text,
     completed: false,
     tabId: activeTabId,
+    createdAt: Date.now(),
+    completedAt: null,
   };
 
   tasks.push(task);
@@ -82,10 +84,21 @@ function addTask() {
 }
 
 // returns single li task in normal + all stuff
+function formatCompletedTime(task) {
+  if (!task.completedAt) return "";
+  const d = new Date(task.completedAt);
+  const time = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  const mins = task.createdAt
+    ? Math.round((task.completedAt - task.createdAt) / 60000)
+    : null;
+  return mins !== null ? `${time} · ${mins} min` : time;
+}
+
 function buildTaskItem(task) {
   const li = document.createElement("li");
   li.className = "task-item";
-  if (task.id === selectedTaskId) li.classList.add("selected");
+  if (task.id === selectedTaskId && !task.completed)
+    li.classList.add("selected");
 
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
@@ -134,6 +147,12 @@ function buildTaskItem(task) {
 
   li.appendChild(checkbox);
   li.appendChild(label);
+  if (task.completed && task.completedAt) {
+    const timeSpan = document.createElement("span");
+    timeSpan.className = "task-time";
+    timeSpan.textContent = formatCompletedTime(task);
+    li.appendChild(timeSpan);
+  }
   li.appendChild(deleteBtn);
   return li;
 }
@@ -323,7 +342,11 @@ function toggleTask(id) {
   // then overrides completed with the flipped value
   tasks = tasks.map((t) => {
     if (t.id === id) {
-      return { ...t, completed: !t.completed };
+      return {
+        ...t,
+        completed: !t.completed,
+        completedAt: wasCompleted ? null : Date.now(),
+      };
     }
     return t;
   });
@@ -384,12 +407,16 @@ function saveStats(stats) {
 // fetch quote from affirmations.dev api
 async function loadQuote() {
   const quoteEl = document.getElementById("quote");
+  const completedQuoteEl = document.getElementById("completed-quote");
   try {
     const response = await fetch("/api/quote");
     const data = await response.json();
-    quoteEl.textContent = data.affirmation;
+    if (quoteEl) quoteEl.textContent = data.affirmation;
+    if (completedQuoteEl) completedQuoteEl.textContent = `${data.affirmation}`;
   } catch {
-    quoteEl.textContent = "✨You're awesome! 🌟 Keep it up!✨";
+    if (quoteEl) quoteEl.textContent = "✨You're awesome! 🌟 Keep it up!✨";
+    if (completedQuoteEl)
+      completedQuoteEl.textContent = "✨ You're awesome! Keep it up! ✨";
   }
 }
 
@@ -487,6 +514,35 @@ function initializeRemindersSettings() {
 }
 
 // draw / update chart - done vs to do
+function renderStatsSummary() {
+  const el = document.getElementById("stats-summary");
+  if (!el) return;
+  const completedTasks = tasks.filter((t) => t.completed);
+  if (completedTasks.length === 0) {
+    el.textContent = "No tasks completed yet — get after it!";
+    return;
+  }
+  const byTab = tabs
+    .map((tab) => ({
+      name: tab.name,
+      count: completedTasks.filter((t) => t.tabId === tab.id).length,
+    }))
+    .filter((t) => t.count > 0);
+  const tabSummary = byTab.map((t) => `${t.count} ${t.name}`).join(", ");
+  const totalMins = completedTasks
+    .filter((t) => t.completedAt && t.createdAt)
+    .reduce(
+      (sum, t) => sum + Math.round((t.completedAt - t.createdAt) / 60000),
+      0,
+    );
+  const hrs = Math.floor(totalMins / 60);
+  const mins = totalMins % 60;
+  const timeStr = hrs > 0 ? `${hrs}hr ${mins}min` : `${totalMins} min`;
+  const total = completedTasks.length;
+  const hearts = byTab.map((t) => `♡ ${t.count} ${t.name}`).join("<br>");
+  el.innerHTML = `<span class="stats-headline">You DID DUMB STUFF TODAY!</span>${hearts}<br><span class="stats-subline">${total} of ♡ ALL your STUFF DONE!</span><span class="stats-total">Total Time: ${timeStr}</span>`;
+}
+
 function renderChart() {
   const canvasEl = document.getElementById("stats-chart");
   if (!canvasEl) return;
@@ -1110,6 +1166,7 @@ function initializeStats() {
     hideReminderBanner();
     document.getElementById("stats-overlay").classList.remove("is-hidden");
     renderChart();
+    renderStatsSummary();
   });
 
   document.getElementById("stats-close").addEventListener("click", () => {

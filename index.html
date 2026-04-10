@@ -105,9 +105,11 @@
         </section>
         <section class="tasks-card" id="completed-card">
           <h2> Got Done</h2>
-          <p id="stats-summary" class="stats-summary"></p>
           <div id="completed-list"></div>
-          <p id="completed-empty" class="empty-state"></p>
+          <div id="completed-empty" class="completed-empty-state is-hidden">
+            <p class="completed-empty-msg">nothing done yet — and that's ok!</p>
+            <p id="completed-quote" class="completed-quote-text">Loading positive stuff...</p>
+          </div>
         </section>
       </main>
       <footer>
@@ -291,8 +293,8 @@
     <div id="stats-overlay" class="reward-overlay is-hidden">
   <div class="reward-modal stats-modal">
     <button class="reward-close-X" id="stats-close">✕</button>
-    <p class="modal-emoji">🍩</p>
     <h2 class="reward-title">Stats</h2>
+    <p id="stats-summary" class="stats-summary"></p>
     <canvas id="stats-chart"></canvas>
   </div>
 </div>

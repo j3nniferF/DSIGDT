@@ -565,6 +565,13 @@ h2 {
   flex-shrink: 0;
 }
 
+.task-time {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
 /* IN PROGRESS selected task */
 .task-item.selected {
   position: relative;
@@ -832,13 +839,81 @@ h2 {
   padding: 1rem 0;
 }
 
-/* stats summary text */
-.stats-summary {
+.completed-empty-state {
+  text-align: center;
+  padding: 1.5rem 1rem;
+}
+
+.completed-empty-msg {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: var(--purple);
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  letter-spacing: 0.03em;
-  display: none; /* hidden while testing flip cards */
+  font-size: 1rem;
+  opacity: 0.8;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.completed-quote-text {
+  font-family: "Storyteller", sans-serif;
+  font-size: 1.6rem;
+  display: inline-block;
+  border: 4px solid transparent;
+  background:
+    url("assets/textures/prettybg.png") center / cover padding-box,
+    linear-gradient(
+        var(--angle),
+        #df6797,
+        #ff9e36,
+        #fec919,
+        #33c673,
+        #4081fc,
+        #a441fc,
+        #df6797
+      )
+      border-box;
+  border-radius: 999px;
+  padding: 0.75rem 1rem;
+  box-shadow:
+    0 0 0 2px #1a1a2e,
+    inset 0 0 0 1px #1a1a2e,
+    0 6px 40px rgba(193, 77, 204, 0.95);
+  white-space: nowrap;
+}
+
+/* stats summary text */
+.stats-headline {
+  font-family: "Storyteller", sans-serif;
+  display: block;
+  margin-top: -1.05rem;
+  font-size: 1.5rem;
+  white-space: nowrap;
+}
+
+.stats-subline {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  display: block;
+  font-size: 1.3rem;
+}
+
+.stats-total {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  display: block;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+}
+
+.stats-summary {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 1.8;
+  color: #444;
 }
 
 /* flip card for completed */
@@ -1012,8 +1087,11 @@ h2 {
   display: none;
 }
 
-/* ALL card: spans full row, same height as other cards */
-.flip-card--all {
+/* ALL card spans full row only when there are 3+ cards */
+#completed-list[data-count="3"] .flip-card--all,
+#completed-list[data-count="4"] .flip-card--all,
+#completed-list[data-count="5"] .flip-card--all,
+#completed-list[data-count="6"] .flip-card--all {
   grid-column: 1 / -1;
 }
 
@@ -1866,59 +1944,6 @@ h2 {
 
 .timer-modal.is-running .timer-task-select {
   display: none;
-}
-
-/* quote footer */
-footer {
-  text-align: center;
-  padding: 1.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#quote {
-  display: inline-block;
-  width: fit-content;
-  padding: 0.3rem 1.4rem;
-  border-radius: 999px;
-  border: 4px solid transparent;
-  background:
-    url("assets/textures/prettybg.png") center / cover padding-box,
-    linear-gradient(
-        to right,
-        #df6797,
-        #ff9e36,
-        #fec919,
-        #33c673,
-        #4081fc,
-        #a441fc
-      )
-      border-box;
-  font-family: "Storyteller", sans-serif;
-  font-size: 1.2rem;
-  letter-spacing: 0.04em;
-  filter: drop-shadow(1px 3px 8px rgba(0, 0, 0, 0.25));
-  box-shadow:
-    0 0 0 3.5px #1a1a2e,
-    inset 0 0 0 2px #1a1a2e,
-    0 6px 40px rgba(193, 77, 204, 0.95);
-}
-
-/* shimmer sweep across title text */
-@keyframes title-shimmer {
-  0%,
-  25% {
-    background-position:
-      -150% center,
-      center center;
-  }
-  75%,
-  100% {
-    background-position:
-      250% center,
-      center center;
-  }
 }
 
 /* the drifting animation - 2 layer */
@@ -2794,12 +2819,14 @@ footer {
   -webkit-text-stroke: 3.4px !important;
 }
 #stats-overlay .reward-title {
-  margin: -2rem -2rem 1rem -2rem;
-  padding: 0.8rem 2rem 2.5rem;
+  margin: -2rem -2rem 0.25rem -2rem;
+  padding: 0.8rem 2rem 1rem;
   font-size: clamp(2.4rem, 10vw, 5.6rem);
   color: black;
   -webkit-text-fill-color: #4081fc;
   -webkit-text-stroke: 3.4px;
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
 }
 /* about title — stays within scroll container, no top gap */
 #about-overlay .reward-title {
