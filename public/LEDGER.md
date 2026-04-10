@@ -1,7 +1,7 @@
     FIND KEY
 
 ♡♡♡♡♡♡♡♡
-2.22 TO DO:
+2.22 UI / TO DO:
 
 <!-- DONE -->
 <!-- FIX1 = fonts -->
